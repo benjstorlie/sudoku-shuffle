@@ -1,0 +1,79 @@
+:root {
+  --sudoku-bg-color: rgb(237, 237, 237);
+  --sudoku-cell-border: gray;
+  --sudoku-text-color: black;
+  --sudoku-grid-border: black;
+  --hover-color: rgba(43, 126, 154,.5);
+  --active-color: rgba(13, 79, 100,.5);
+  --selected-color: red;
+}
+
+* {
+  box-sizing: border-box;
+  color: var(--sudoku-text-color);
+}
+
+.show {
+  z-index: 2;
+}
+
+.hide {
+  z-index: -1;
+}
+
+#sudoku-grid,
+.sudoku-block,
+.sudoku-cell {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+#sudoku-grid {
+  background-color: var(--sudoku-grid-border);
+  border: 3px solid var(--sudoku-grid-border);
+  gap: 3px;
+}
+
+.sudoku-block {
+  background-color: var(--sudoku-cell-border);
+  gap: 2px;
+}
+
+.sudoku-cell {
+  background-color: var(--sudoku-bg-color);
+  border: 2px solid var(--sudoku-bg-color);
+}
+
+.sudoku-cell.selected {
+  border-color: var(--selected-color);
+}
+
+.digit {
+  display: flex;
+  grid-area: 1 / 1 / 4 / 4;
+  justify-content: center;
+  align-items: center;
+  font-size: 48px;
+}
+
+.candidate {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+}
+
+.candidate.eliminated {
+  color: var(--sudoku-bg-color);
+}
+
+.candidate:hover {
+  background-color: var(--hover-color);
+  cursor: pointer;
+}
+
+.candidate:active {
+  background-color: var(--active-color);
+}
+
