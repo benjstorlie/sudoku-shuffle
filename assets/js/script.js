@@ -29,19 +29,19 @@ function buildSudokuGrid() {
     for (let bigCol=0; bigCol <3 ; bigCol++ ) {
 
       const block = document.createElement("div");
-      utils.addClasses(block,"block-"+ (3*bigRow+bigCol),"block");
+      utils.addClass(block,"block-"+ (3*bigRow+bigCol),"block");
       sudokuGrid.append(block)
 
       for (let smRow=0; smRow <3 ; smRow++ ) {
         for (let smCol=0; smCol <3 ; smCol++ ) {
 
           const cell = document.createElement("div");
-          utils.addClasses(cell,"cell-"+(3*smRow + smCol),"cell");
+          utils.addClass(cell,"cell-"+(3*smRow + smCol),"cell");
           cell.addEventListener("contextmenu",selectCell);
           block.append(cell);
 
           const digit = document.createElement("div");
-          utils.addClasses(digit,"digit hide");
+          utils.addClass(digit,"digit hide");
           digit.textContent = (3*smRow + smCol);
           utils.each([digit,cell],
             utils.setDataAttributes,
@@ -56,7 +56,7 @@ function buildSudokuGrid() {
               const value = (3*candidateRow + candidateCol + 1);
               const candidate=document.createElement("div");
               candidate.textContent = value;
-              utils.addClasses(candidate,"candidate show uneliminated");
+              utils.addClass(candidate,"candidate show uneliminated");
 
               utils.setDataAttributes(candidate,
                 ["block", (3*bigRow + smRow)],
@@ -128,7 +128,7 @@ function fillCell(cell,num) {
 function buildHighlightButtons() {
   for (let value=1; value<=9; value++) {
     const button = document.createElement("button");
-    utils.addClasses(button,"btn btn-primary highlighter");
+    utils.addClass(button,"btn btn-primary highlighter");
     button.setAttribute("data-value",value);
     button.textContent = value;
     highlighterBtnGrid.append(button);

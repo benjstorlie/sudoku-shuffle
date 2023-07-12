@@ -26,7 +26,7 @@ const utils = {
    * @param {HTMLElement} el 
    * @param {String} classes - classes separated by spaces, just like in the html
    */
-  addClasses(el,...classes) {
+  addClass(el,...classes) {
     if (classes.length === 1) {
       classes = classes[0].replaceAll(/\s+/ig," ").trim().split(" ");
     }
@@ -35,7 +35,7 @@ const utils = {
     });
   },
 
-  toggleClasses(el,...classes) {
+  toggleClass(el,...classes) {
     classes.forEach(className => {
       el.classList.toggle(className);
   });
