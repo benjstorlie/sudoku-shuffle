@@ -5,15 +5,12 @@ const sudokuGrid = document.getElementById("sudoku-grid");
 const multiSelectBtn = document.getElementById("multi-select-btn");
 multiSelectBtn.addEventListener("click",toggleMultiSelect);
 
-displaySudokuGrid();
+buildSudokuGrid();
 
-const allCells = document.querySelectorAll(".sudoku-cell");
+const allCells = document.querySelectorAll(".cell");
 
 document.addEventListener("keydown",keyDownHandler);
 
-function toggleElimination(event) {
-  event.target.classList.toggle("eliminated");
-}
 
 function selectCell(event) {
   event.preventDefault();
@@ -25,13 +22,13 @@ function selectCell(event) {
   event.currentTarget.classList.toggle("selected");
 }
 
-function displaySudokuGrid() {
+function buildSudokuGrid() {
   for (let bigRow=0; bigRow <3 ; bigRow++ ) {
     for (let bigCol=0; bigCol <3 ; bigCol++ ) {
 
       const block = document.createElement("div");
       block.classList.add("block-"+ (3*bigRow+bigCol));
-      block.classList.add("sudoku-block");
+      block.classList.add("block");
       sudokuGrid.append(block)
 
       for (let smRow=0; smRow <3 ; smRow++ ) {
@@ -39,7 +36,7 @@ function displaySudokuGrid() {
 
           const cell = document.createElement("div");
           cell.classList.add("cell-"+(3*smRow + smCol));
-          cell.classList.add("sudoku-cell");
+          cell.classList.add("cell");
           cell.addEventListener("contextmenu",selectCell);
           addRowColBlockValueDataAttributes(cell,
             (3*bigRow + smRow),
@@ -74,7 +71,7 @@ function displaySudokuGrid() {
               );
               candidate.style.gridColumn = candidateCol + 1;
               candidate.style.gridRow = candidateRow + 1;
-              candidate.addEventListener("click",toggleElimination);
+              candidate.addEventListener("click",toggleEliminationHandler);
 
               cell.append(candidate);
             }
@@ -91,6 +88,24 @@ function toggleMultiSelect() {
   multiSelectOn = !multiSelectOn;
 }
 
+function toggleEliminationHandler(event) {
+  if (!multiSelectOn) {
+    event.target.classList.toggle("eliminated");
+  } else {
+    //try {
+      const value = event.target.getAttribute("data-value");
+      const selectedCandidates = document.querySelectorAll(`.cell.selected .candidate[data-value="${value}"]`);
+      console.log(selectedCandidates);
+      selectedCandidates.forEach(element => {
+        element.classList.toggle("eliminated");
+      })
+    // } catch {
+    //   console.log("error eliminating multiple values")
+    //   event.target.classList.toggle("eliminated");
+    // }
+  }
+}
+
 const display = { 
   show(el) {
     el.classList.add("show");
@@ -105,7 +120,7 @@ const display = {
 function keyDownHandler(event) {
   const key = event.key;
   if (key >= '1' && key <= '9') {
-    const selectedCells = document.querySelectorAll(".sudoku-cell.selected");
+    const selectedCells = document.querySelectorAll(".cell.selected");
     try {
       selectedCells.forEach(cell => {
         fillCell(cell,key);
