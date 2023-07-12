@@ -141,3 +141,25 @@ function highlightCandidates(event) {
 
 }
 
+function highlightCandidates(value=highlightedNumber) {
+  allCells.removeClass("highlighted");
+  $(`.cell.show-candidates>.candidate.possible[data-value="${value}"]`).parent().addClass("highlighted")
+}
+
+function clearCandidates() {
+  utils.each(allCandidates,utils.addRemoveClass,"eliminated","possible");
+}
+
+function showCandidates() {
+  utils.each(allCandidates,utils.addRemoveClass,"eliminated","possible");
+}
+
+function eliminateConflicts(cell, value) {
+  const block = cell.data("block");
+  const row = cell.data("row");
+  const col = cell.data("col");
+
+  $(`.cell[data-block="${block}"] .candidate[data-value="${value}"]`).removeClass("eliminated").addClass("possible");
+  $(`.cell[data-row="${row}"] .candidate[data-value="${value}"]`).removeClass("eliminated").addClass("possible");
+  $(`.cell[data-col="${col}"] .candidate[data-value="${value}"]`).removeClass("eliminated").addClass("possible");
+}
