@@ -6,6 +6,7 @@
   --hover-color: rgba(43, 126, 154,.5);
   --active-color: rgba(13, 79, 100,.5);
   --selected-color: red;
+  --highlight-color: yellow;
 }
 
 * {
@@ -23,7 +24,8 @@
 
 #sudoku-grid,
 .block,
-.cell {
+.cell,
+#highlighter-btn-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
@@ -47,6 +49,10 @@
 
 .cell.selected {
   border-color: var(--selected-color);
+}
+
+.cell.highlighted {
+  background-color: var(--highlight-color);
 }
 
 .digit {
@@ -77,3 +83,6 @@
   background-color: var(--active-color);
 }
 
+button.highlighter {
+  display: flex;
+}

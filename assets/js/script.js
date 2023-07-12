@@ -2,12 +2,16 @@
 let multiSelectOn = false;
 
 const sudokuGrid = document.getElementById("sudoku-grid");
+const controls = document.getElementById("controls");
+const highlighterBtnGrid = document.getElementById("highlighter-btn-grid")
 const multiSelectBtn = document.getElementById("multi-select-btn");
 multiSelectBtn.addEventListener("click",toggleMultiSelect);
 
 buildSudokuGrid();
 
-const allCells = document.querySelectorAll(".cell");
+const allCells = sudokuGrid.querySelectorAll(".cell");
+
+buildHighlightButtons();
 
 document.addEventListener("keydown",keyDownHandler);
 
@@ -15,9 +19,7 @@ document.addEventListener("keydown",keyDownHandler);
 function selectCell(event) {
   event.preventDefault();
   if (!multiSelectOn) {
-    allCells.forEach(el => {
-      el.classList.remove("selected");
-    });
+    utils.each(allCells,"classList.remove","selected")
   }
   event.currentTarget.classList.toggle("selected");
 }
@@ -27,32 +29,25 @@ function buildSudokuGrid() {
     for (let bigCol=0; bigCol <3 ; bigCol++ ) {
 
       const block = document.createElement("div");
-      block.classList.add("block-"+ (3*bigRow+bigCol));
-      block.classList.add("block");
+      utils.addClasses(block,"block-"+ (3*bigRow+bigCol),"block");
       sudokuGrid.append(block)
 
       for (let smRow=0; smRow <3 ; smRow++ ) {
         for (let smCol=0; smCol <3 ; smCol++ ) {
 
           const cell = document.createElement("div");
-          cell.classList.add("cell-"+(3*smRow + smCol));
-          cell.classList.add("cell");
+          utils.addClasses(cell,"cell-"+(3*smRow + smCol),"cell");
           cell.addEventListener("contextmenu",selectCell);
-          addRowColBlockValueDataAttributes(cell,
-            (3*bigRow + smRow),
-            (3*bigCol + smCol),
-            (3*bigRow + bigCol),
-          );
           block.append(cell);
 
           const digit = document.createElement("div");
-          digit.classList.add("digit");
-          digit.classList.add("hide");
+          utils.addClasses(digit,"digit hide");
           digit.textContent = (3*smRow + smCol);
-          addRowColBlockValueDataAttributes(digit,
-            (3*bigRow + smRow),
-            (3*bigCol + smCol),
-            (3*bigRow + bigCol),
+          utils.each([digit,cell],
+            utils.setDataAttributes,
+            ["block", (3*bigRow + smRow)],
+            ["row",(3*bigCol + smCol)],
+            ["col",(3*bigRow + bigCol)]
           );
           cell.append(digit);
 
@@ -61,14 +56,13 @@ function buildSudokuGrid() {
               const value = (3*candidateRow + candidateCol + 1);
               const candidate=document.createElement("div");
               candidate.textContent = value;
-              candidate.classList.add("candidate");
-              candidate.classList.add("show");
-              addRowColBlockValueDataAttributes(candidate,
-                (3*bigRow + smRow),
-                (3*bigCol + smCol),
-                (3*bigRow + bigCol),
-                value,
-              );
+              utils.addClasses(candidate,"candidate show uneliminated");
+
+              utils.setDataAttributes(candidate,
+                ["block", (3*bigRow + smRow)],
+                ["row",(3*bigCol + smCol)],
+                ["col",(3*bigRow + bigCol)],
+                ["value",value]);
               candidate.style.gridColumn = candidateCol + 1;
               candidate.style.gridRow = candidateRow + 1;
               candidate.addEventListener("click",toggleEliminationHandler);
@@ -83,26 +77,17 @@ function buildSudokuGrid() {
 }
 
 function toggleMultiSelect() {
-  multiSelectBtn.classList.toggle("btn-dark");
-  multiSelectBtn.classList.toggle("btn-light");
+  utils.toggleClasses(multiSelectBtn,"btn-dark","btn-light");
   multiSelectOn = !multiSelectOn;
 }
 
 function toggleEliminationHandler(event) {
   if (!multiSelectOn) {
-    event.target.classList.toggle("eliminated");
+    utils.toggleClasses(event.target,"eliminated","uneliminated");
   } else {
-    //try {
-      const value = event.target.getAttribute("data-value");
-      const selectedCandidates = document.querySelectorAll(`.cell.selected .candidate[data-value="${value}"]`);
-      console.log(selectedCandidates);
-      selectedCandidates.forEach(element => {
-        element.classList.toggle("eliminated");
-      })
-    // } catch {
-    //   console.log("error eliminating multiple values")
-    //   event.target.classList.toggle("eliminated");
-    // }
+    const value = event.target.getAttribute("data-value");
+    const selectedCandidates = document.querySelectorAll(`.cell.selected .candidate[data-value="${value}"]`);
+    utils.each(selectedCandidates,utils.toggleClasses,"eliminated","uneliminated");
   }
 }
 
@@ -122,20 +107,11 @@ function keyDownHandler(event) {
   if (key >= '1' && key <= '9') {
     const selectedCells = document.querySelectorAll(".cell.selected");
     try {
-      selectedCells.forEach(cell => {
-        fillCell(cell,key);
-      });
+      utils.each(selectedCells,fillCell,key);
     } catch {
       console.log("error filling cells",selectedCells);
     }
   }
-}
-
-function addRowColBlockValueDataAttributes(element,row,col,block,value="") {
-  element.setAttribute("data-block", block)
-  element.setAttribute("data-row", row);
-  element.setAttribute("data-col", col);
-  element.setAttribute("data-value", value);
 }
 
 function fillCell(cell,num) {
@@ -143,12 +119,25 @@ function fillCell(cell,num) {
   const digit = cell.querySelector(".digit");
   if (!value) {
     display.show(digit);
-    cell.querySelectorAll(".candidate").forEach( candidate => {
-      display.hide(candidate);
-      }
-    );
+    utils.each(cell.querySelectorAll(".candidate"),display.hide);
   }
-  cell.setAttribute("data-value", num);
-  digit.setAttribute("data-value", num);
+  utils.each([cell,digit],"setAttribute","data-value", num)
   digit.textContent = num;
 }
+
+function buildHighlightButtons() {
+  for (let value=1; value<=9; value++) {
+    const button = document.createElement("button");
+    utils.addClasses(button,"btn btn-primary highlighter");
+    button.setAttribute("data-value",value);
+    button.textContent = value;
+    highlighterBtnGrid.append(button);
+  }
+}
+
+function highlightCandidates(event) {
+  const value = event.target.getAttribute("data-value");
+  const candidateCells = sudokuGrid.querySelectorAll(`.cell .candidate.uneliminated[data-value="${value}"]`);
+
+}
+
