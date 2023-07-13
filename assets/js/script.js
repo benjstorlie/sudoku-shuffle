@@ -3,8 +3,23 @@ let multiSelectOn = false;
 let highlightedNum = "0";
 
 const sudokuGrid = document.getElementById("sudoku-grid");
+let lastSelected = {
+  list: [],
+  get() {
+
+  },
+  pop() {
+
+  },
+  push() {
+
+  }
+};
+
 const controls = document.getElementById("controls");
-const highlighterBtnGrid = document.getElementById("highlighter-btn-grid")
+const highlighterBtnGrid = document.getElementById("highlighter-btn-grid");
+const coloringBtnGrid = document.getElementById("coloring-btn-grid");
+
 const multiSelectBtn = document.getElementById("multi-select-btn");
 multiSelectBtn.addEventListener("click",toggleMultiSelect);
 
@@ -21,6 +36,7 @@ utils.each(allDigits,utils.addClass,"hide");
 utils.each(allCandidates,toggleElimination,true);  // 
 
 buildHighlightButtons();
+buildColoringButtons();
 
 document.addEventListener("keydown",keyDownHandler);
 
@@ -34,6 +50,11 @@ function selectCell(cell,force) {
     utils.each(allCells,"classList.remove","selected")
   }
   cell.classList.toggle("selected",force);
+  if (cell.classList.contains("selected")) {
+    pushLastSelected(cell);  // This function already checks for repeats.
+  } else {
+    popLastSelected();
+  }
 }
 
 function buildSudokuGrid() {
@@ -99,7 +120,7 @@ function toggleEliminationHandler(event) {
     toggleElimination(event.target);
   } else {
     const value = event.target.getAttribute("data-value");
-    const selectedCandidates = document.querySelectorAll(`.cell.selected .candidate[data-value="${value}"]`);
+    let selectedCandidates = document.querySelectorAll(`.cell.selected .candidate[data-value="${value}"]`);
     selectedCandidates=Array.from(selectedCandidates);
     if (selectedCandidates.some(isPossible) && selectedCandidates.some(x => !isPossible(x))) {
       utils.each(selectedCandidates,toggleElimination,true);
@@ -130,7 +151,7 @@ function isPossible(candidate) {
 }
 
 function keyDownHandler(event) {
-  const key = event.key;
+  const {key} = event;
   if (key >= '1' && key <= '9') {
     const selectedCells = sudokuGrid.querySelectorAll(".cell.selected");
     try {
@@ -142,6 +163,8 @@ function keyDownHandler(event) {
   } else if (key === "Backspace" || key === "Delete") {
     const selectedCells = sudokuGrid.querySelectorAll(".cell.selected");
     utils.each(selectedCells,deleteDigit);
+  } else if (["ArrowLeft","ArrowUp","ArrowRight","ArrowDown"].includes(key)) {
+    arrowSelect(key);
   }
 }
 
@@ -180,6 +203,22 @@ function buildHighlightButtons() {
   }
 }
 
+function buildColoringButtons() {
+  const colors = ["blue","purple","pink","red","orange","yellow","green","teal","cyan"];
+  
+  for (let c=0; c<colors.length; c++) {
+    const button = document.createElement("div");
+    utils.addClass(button,"btn coloring");
+    button.setAttribute("data-color",colors[c]);
+    coloringBtnGrid.append(button);
+    button.addEventListener("click",coloringHandler);
+  }
+}
+
+function coloringHandler(event) {
+  console.log(event.target.getAttribute("data-color"));
+}
+
 function highlightCandidatesHandler(event) {
   event.stopPropagation();
   utils.each(allCells,"classList.remove","highlighted");
@@ -201,7 +240,17 @@ function highlightCandidates(value=highlightedNum) {
   
 }
 
+function arrowSelect(key) {
+  console.log(key);
+  const {row, col} = getLastSelected;
+  switch (key) {
+    case "ArrowLeft":
 
+    case "ArrowRight":
+    case "ArrowDown":
+    case "ArrowDown":
+  }
+}
 
 function clearCandidates() {
   utils.each(allCandidates,utils.setDataAttributes,"status","eliminated");

@@ -41,7 +41,8 @@
 #sudoku-grid,
 .block,
 .cell,
-#highlighter-btn-grid {
+#highlighter-btn-grid,
+#coloring-btn-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
@@ -53,7 +54,8 @@
   gap: 3px;
 }
 
-#highlighter-btn-grid {
+#highlighter-btn-grid,
+#coloring-btn-grid {
   background-color: var(--dark);
   width: fit-content;
   padding: 3px;
@@ -114,12 +116,21 @@ button.highlighter {
   background-color: var(--active-candidate);
 }
 
-div[data-color="blue"] {
-  background-color: var(--color-blue);
+.coloring {
+  border: 2px solid transparent;
 }
 
-div[data-color="indigo"] {
-  background-color: var(--color-indigo);
+.coloring:hover {
+  border: 1px solid #fff;
+}
+
+.coloring:active,
+.coloring.active {
+  border: 2px solid #fff;
+}
+
+div[data-color="blue"] {
+  background-color: var(--color-blue);
 }
 
 div[data-color="purple"] {
@@ -141,6 +152,7 @@ div[data-color="orange"] {
 div[data-color="yellow"] {
   background-color: var(--color-yellow);
 }
+
 div[data-color="green"] {
   background-color: var(--color-green);
 }
