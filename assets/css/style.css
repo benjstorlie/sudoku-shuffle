@@ -3,10 +3,22 @@
   --sudoku-cell-border: gray;
   --sudoku-text-color: black;
   --sudoku-grid-border: black;
-  --hover-color: rgba(43, 126, 154,.5);
-  --active-color: rgba(13, 79, 100,.5);
+  --hover-candidate: rgba(43, 126, 154,.5);
+  --active-candidate: rgba(13, 79, 100,.5);
   --selected-color: red;
-  --highlight-color: yellow;
+  --highlight-color: var(--yellow);
+  --color-blue: var(--blue);
+  --color-indigo: var(--indigo);
+  --color-purple: var(--purple);
+  --color-pink: var(--pink);
+  --color-red: var(--red);
+  --color-orange: var(--orange);
+  --color-yellow: var(--yellow);
+  --color-green: var(--green);
+  --color-teal: var(--teal);
+  --color-cyan: var(--cyan);
+  --color-gray: var(--gray);
+  --color-gray-dark: var(--gray-dark);
 }
 
 * {
@@ -94,11 +106,49 @@ button.highlighter {
 }
 
 .candidate:hover {
-  background-color: var(--hover-color);
+  background-color: var(--hover-candidate);
   cursor: pointer;
 }
 
 .candidate:active {
-  background-color: var(--active-color);
+  background-color: var(--active-candidate);
+}
+
+div[data-color="blue"] {
+  background-color: var(--color-blue);
+}
+
+div[data-color="indigo"] {
+  background-color: var(--color-indigo);
+}
+
+div[data-color="purple"] {
+  background-color: var(--color-purple);
+}
+
+div[data-color="pink"] {
+  background-color: var(--color-pink);
+}
+
+div[data-color="red"] {
+  background-color: var(--color-red);
+}
+
+div[data-color="orange"] {
+  background-color: var(--color-orange);
+}
+
+div[data-color="yellow"] {
+  background-color: var(--color-yellow);
+}
+div[data-color="green"] {
+  background-color: var(--color-green);
+}
+div[data-color="teal"] {
+  background-color: var(--color-teal);
+}
+
+div[data-color="cyan"] {
+  background-color: var(--color-cyan);
 }
 
