@@ -41,6 +41,11 @@ const utils = {
   });
   },
 
+  addRemoveClass(el,class1,class2) {
+    el.classList.add(class1);
+    el.classList.remove(class2);
+  },
+
   /**
    * Set many attributes at once
    * @param {HTMLElement} el - element to set attributes on
@@ -65,5 +70,16 @@ const utils = {
       const [attr,val] = pair;
       el.setAttribute("data-"+attr,val);
     })
+  }
+}
+
+const display = { 
+  show(el) {
+    el.classList.add("show");
+    el.classList.remove("hide");
+  },
+  hide(el) {
+    el.classList.add("hide");
+    el.classList.remove("show");
   }
 }

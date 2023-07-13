@@ -14,6 +14,10 @@
   color: var(--sudoku-text-color);
 }
 
+.btn {
+  margin: 3px;
+}
+
 .show {
   z-index: 2;
 }
@@ -35,6 +39,17 @@
   background-color: var(--sudoku-grid-border);
   border: 3px solid var(--sudoku-grid-border);
   gap: 3px;
+}
+
+#highlighter-btn-grid {
+  background-color: var(--dark);
+  width: fit-content;
+  padding: 3px;
+}
+
+button.highlighter {
+  display: flex;
+  border-radius: 0;
 }
 
 .block {
@@ -70,8 +85,12 @@
   font-size: 16px;
 }
 
-.candidate.eliminated {
+.candidate[data-status="eliminated"] {
   color: var(--sudoku-bg-color);
+}
+
+.cell.highlighted .candidate[data-status="eliminated"] {
+  color: var(--highlight-color);
 }
 
 .candidate:hover {
@@ -83,6 +102,3 @@
   background-color: var(--active-color);
 }
 
-button.highlighter {
-  display: flex;
-}

@@ -1,5 +1,6 @@
 
 let multiSelectOn = false;
+let highlightedNum = "0";
 
 const sudokuGrid = document.getElementById("sudoku-grid");
 const controls = document.getElementById("controls");
@@ -10,18 +11,29 @@ multiSelectBtn.addEventListener("click",toggleMultiSelect);
 buildSudokuGrid();
 
 const allCells = sudokuGrid.querySelectorAll(".cell");
+const allCandidates = sudokuGrid.querySelectorAll(".candidate");
+const allDigits = sudokuGrid.querySelectorAll(".digit");
+
+// Initital status
+utils.each(allCells,utils.addClass,"show-candidates");
+utils.each(allCandidates,utils.addClass,"show");
+utils.each(allDigits,utils.addClass,"hide");
+utils.each(allCandidates,toggleElimination,true);  // 
 
 buildHighlightButtons();
 
 document.addEventListener("keydown",keyDownHandler);
 
-
-function selectCell(event) {
+function selectCellHandler(event) {
   event.preventDefault();
+  selectCell(event.target);
+}
+
+function selectCell(cell,force) {
   if (!multiSelectOn) {
     utils.each(allCells,"classList.remove","selected")
   }
-  event.currentTarget.classList.toggle("selected");
+  cell.classList.toggle("selected",force);
 }
 
 function buildSudokuGrid() {
@@ -37,11 +49,11 @@ function buildSudokuGrid() {
 
           const cell = document.createElement("div");
           utils.addClass(cell,"cell-"+(3*smRow + smCol),"cell");
-          cell.addEventListener("contextmenu",selectCell);
+          cell.addEventListener("contextmenu",selectCellHandler);
           block.append(cell);
 
           const digit = document.createElement("div");
-          utils.addClass(digit,"digit hide");
+          utils.addClass(digit,"digit");
           digit.textContent = (3*smRow + smCol);
           utils.each([digit,cell],
             utils.setDataAttributes,
@@ -56,7 +68,7 @@ function buildSudokuGrid() {
               const value = (3*candidateRow + candidateCol + 1);
               const candidate=document.createElement("div");
               candidate.textContent = value;
-              utils.addClass(candidate,"candidate show uneliminated");
+              utils.addClass(candidate,"candidate");
 
               utils.setDataAttributes(candidate,
                 ["block", (3*bigRow + smRow)],
@@ -77,89 +89,137 @@ function buildSudokuGrid() {
 }
 
 function toggleMultiSelect() {
-  utils.toggleClasses(multiSelectBtn,"btn-dark","btn-light");
+  utils.toggleClass(multiSelectBtn,"btn-dark","btn-light");
   multiSelectOn = !multiSelectOn;
 }
 
 function toggleEliminationHandler(event) {
+  selectCell(event.target.parentElement,true);
   if (!multiSelectOn) {
-    utils.toggleClasses(event.target,"eliminated","uneliminated");
+    toggleElimination(event.target);
   } else {
     const value = event.target.getAttribute("data-value");
     const selectedCandidates = document.querySelectorAll(`.cell.selected .candidate[data-value="${value}"]`);
-    utils.each(selectedCandidates,utils.toggleClasses,"eliminated","uneliminated");
+    selectedCandidates=Array.from(selectedCandidates);
+    if (selectedCandidates.some(isPossible) && selectedCandidates.some(x => !isPossible(x))) {
+      utils.each(selectedCandidates,toggleElimination,true);
+    } else {
+      utils.each(selectedCandidates,toggleElimination);
+    }
   }
 }
 
-const display = { 
-  show(el) {
-    el.classList.add("show");
-    el.classList.remove("hide");
-  },
-  hide(el) {
-    el.classList.add("hide");
-    el.classList.remove("show");
+function toggleElimination(candidate,force) {
+  let status = "data-status";
+  if (force === true) {
+    candidate.setAttribute(status,"possible");
+  } else if (force === false) {
+    candidate.setAttribute(status,"eliminated");
+  } else {
+    if (candidate.getAttribute(status)==="possible") {
+      candidate.setAttribute(status,"eliminated");
+    } else if (candidate.getAttribute(status)==="eliminated") {
+      candidate.setAttribute(status,"possible");
+    }
   }
+}
+
+function isPossible(candidate) {
+  const status = candidate.getAttribute("data-status");
+  return (status === "possible");
 }
 
 function keyDownHandler(event) {
   const key = event.key;
   if (key >= '1' && key <= '9') {
-    const selectedCells = document.querySelectorAll(".cell.selected");
+    const selectedCells = sudokuGrid.querySelectorAll(".cell.selected");
     try {
       utils.each(selectedCells,fillCell,key);
     } catch {
       console.log("error filling cells",selectedCells);
     }
+    highlightCandidates();
+  } else if (key === "Backspace" || key === "Delete") {
+    const selectedCells = sudokuGrid.querySelectorAll(".cell.selected");
+    utils.each(selectedCells,deleteDigit);
   }
 }
 
 function fillCell(cell,num) {
   const value = cell.getAttribute("data-value");
   const digit = cell.querySelector(".digit");
+  const candidates = cell.querySelectorAll(".candidate");
   if (!value) {
     display.show(digit);
-    utils.each(cell.querySelectorAll(".candidate"),display.hide);
+    utils.each(candidates,display.hide);
+    utils.addRemoveClass(cell,"show-digit","show-candidates");
   }
-  utils.each([cell,digit],"setAttribute","data-value", num)
+  cell.setAttribute("data-value",num);
+  digit.setAttribute("data-value",num);
+  eliminateConflicts(cell,num);
   digit.textContent = num;
+}
+
+function deleteDigit(cell) {
+  const digit = cell.querySelector(".digit");
+  const candidates = cell.querySelectorAll(".candidate");
+  digit.setAttribute("data-value","");
+  display.hide(digit);
+  utils.each(candidates,display.show);
+  utils.addRemoveClass(cell,"show-candidates","show-digit");
 }
 
 function buildHighlightButtons() {
   for (let value=1; value<=9; value++) {
     const button = document.createElement("button");
-    utils.addClass(button,"btn btn-primary highlighter");
+    utils.addClass(button,"btn btn-secondary highlighter");
     button.setAttribute("data-value",value);
     button.textContent = value;
     highlighterBtnGrid.append(button);
+    button.addEventListener("click",highlightCandidatesHandler);
   }
 }
 
-function highlightCandidates(event) {
+function highlightCandidatesHandler(event) {
+  event.stopPropagation();
+  utils.each(allCells,"classList.remove","highlighted");
+  utils.each(highlighterBtnGrid.querySelectorAll("button"),utils.addRemoveClass,"btn-secondary","btn-warning")
   const value = event.target.getAttribute("data-value");
-  const candidateCells = sudokuGrid.querySelectorAll(`.cell .candidate.uneliminated[data-value="${value}"]`);
-
+  utils.addRemoveClass(event.target,"btn-warning","btn-secondary");
+  highlightedNum = value;
+  highlightCandidates(value);
 }
 
-function highlightCandidates(value=highlightedNumber) {
-  allCells.removeClass("highlighted");
-  $(`.cell.show-candidates>.candidate.possible[data-value="${value}"]`).parent().addClass("highlighted")
+function highlightCandidates(value=highlightedNum) {
+  utils.each(allCells,"classList.remove","highlighted");
+  if (value != "0") {
+    const candidateCells = sudokuGrid.querySelectorAll(`.cell.show-candidates .candidate.possible[data-value="${value}"]`);
+    candidateCells.forEach((candidate) => {
+    candidate.parentElement.classList.add("highlighted");
+  })
+  }
+  
 }
+
+
 
 function clearCandidates() {
-  utils.each(allCandidates,utils.addRemoveClass,"eliminated","possible");
+  utils.each(allCandidates,utils.setDataAttributes,"status","eliminated");
 }
 
 function showCandidates() {
-  utils.each(allCandidates,utils.addRemoveClass,"eliminated","possible");
+  utils.each(allCandidates,utils.setDataAttributes,"status","possible");
 }
 
 function eliminateConflicts(cell, value) {
-  const block = cell.data("block");
-  const row = cell.data("row");
-  const col = cell.data("col");
+  const block = cell.getAttribute("data-block");
+  const row = cell.getAttribute("data-row");
+  const col = cell.getAttribute("data-col");
 
-  $(`.cell[data-block="${block}"] .candidate[data-value="${value}"]`).removeClass("eliminated").addClass("possible");
-  $(`.cell[data-row="${row}"] .candidate[data-value="${value}"]`).removeClass("eliminated").addClass("possible");
-  $(`.cell[data-col="${col}"] .candidate[data-value="${value}"]`).removeClass("eliminated").addClass("possible");
+  utils.each(sudokuGrid.querySelectorAll(`.cell[data-block="${block}"] .candidate[data-value="${value}"]`),
+    utils.setDataAttributes,"status","eliminated");
+  utils.each(sudokuGrid.querySelectorAll(`.cell[data-col="${col}"] .candidate[data-value="${value}"]`),
+    utils.setDataAttributes,"status","eliminated");
+  utils.each(sudokuGrid.querySelectorAll(`.cell[data-row="${row}"] .candidate[data-value="${value}"]`),
+    utils.setDataAttributes,"status","eliminated");
 }
