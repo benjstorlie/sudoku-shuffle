@@ -5,14 +5,41 @@ let highlightedNum = "0";
 const sudokuGrid = document.getElementById("sudoku-grid");
 let lastSelected = {
   list: [],
+  length: this.list.length,
+  labels: [0,1,2,"0","1","2"],
   get() {
-
+    return this.list[this.length - 1];
   },
   pop() {
-
+    if (!this.length) {
+      return {row:0,col:0,cell: sudokuGrid.querySelector(".cell[data-row='0'][data-col='0']")}
+    } else {
+      return this.list.pop();
+    }
   },
-  push() {
-
+  push({row, col, cell}) {
+    if (cell && (this.labels.includes(row) || this.labels.includes(col))) {
+      throw new Error("Only push {row, col} or {cell} to lastSelected")
+    } else if (cell) {
+      row = cell.getAttribute("data-row");
+      col = cell.getAttribute("data-col");
+      if (!multiSelectOn) {
+        this.list=[];
+        return this.list.push({row,col,cell});
+      } else {
+        return this.list.push({row,col,cell});
+      }
+    } else if (this.labels.includes(row) && this.labels.includes(col)) {
+      cell = sudokuGrid.querySelector(`.cell[data-row='${row}'][data-col='${col}']`);
+      if (!multiSelectOn) {
+        this.list=[];
+        return this.list.push({row,col,cell});
+      } else {
+        return this.list.push({row,col,cell});
+      }
+    } else {
+      throw new Error("Only push {row, col} or {cell} to lastSelected.");
+    }
   }
 };
 
