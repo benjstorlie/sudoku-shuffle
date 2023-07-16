@@ -42,6 +42,13 @@ $(document).on("keydown", keyDownHandler);
 
 // ********  define functions ********
 
+/** event listener function for the multiselect btn
+ */
+function toggleMultiSelect() {
+  $multiSelectBtn.toggleClass("btn-dark","btn-light");
+  state.multiSelect = !state.multiSelect;
+}
+
 /**
  * returns the event handler to attach to each cell.  Attach both $cell.on("click",clickHandler($cell,"click")) and $cell.on("contextmenu",clickHandler($cell),"contextmenu")
  * @param {JQuery} $cell - the cell being the event.target
@@ -105,33 +112,115 @@ function toggleElimination($candidate,$parentCell,force) {
   }
 }
 
+function keyDownHandler(event) {
+  const {key} = event;
 
-/** event listener function for the multiselect btn
- */
-function toggleMultiSelect() {
-  $multiSelectBtn.toggleClass("btn-dark","btn-light");
-  state.multiSelect = !state.multiSelect;
 }
+
+function fillDigit($cell,key) {
+  const $digit = $cell.find(".digit");
+  const $candidates = $cell.find(".candidate");
+  if ($cell.hasClass("show-candidates")) {
+    display.show($digit);
+    display.hide($candidates);
+    $cell.toggleClass("show-candidates","show-digit");
+  }
+  $cell.data("value",key);
+  $digit.data("value",key);
+  $digit.text(key);
+  eliminateConflicts($cell,key);
+}
+
+function deleteDigit($cell) {
+  $cell.data("value","")
+    .addClass("show-candidates")
+    .removeClass("show-digit")
+  display.hide($cell.find(".digit"));
+  display.show($cell.find(".candidate"))
+}
+
+function arrowSelect(key) {
+  
+}
+
+function highlightCandidatesHandler(event) {
+
+}
+
+function coloringHandler(event) {
+
+}
+
+function clearCandidates() {
+  $allCandidates.removeClass("possible")
+    .addClass("eliminated");
+  $allCells.data("possibles",['',0,0,0,0,0,0,0,0,0]);
+}
+
+function showCandidates() {
+  $allCandidates.addClass("possible")
+    .removeClass("eliminated");
+  $allCells.data("possibles",['',1,1,1,1,1,1,1,1,1]);
+}
+
+function eliminateConflicts($cell, value) {
+  value = Number(value);
+  const {block, row, col} = $cell.data();
+  const $conflictCells = $allCells.filter(filterData({col,row,block},"or"));
+  $conflictCells.each(function ($cell) {
+    let possibles = $cell.data("possibles");
+    possibles[value] = false;
+    $cell.data({possibles});
+    $cell.find(".candidate").filter({value})
+      .addClass("eliminated")
+      .removeClass("possible");
+  })
+}
+
+// ************ utilities **********
 
 /**
  * Used with the jQuery .filter() method, returns a filter function for elements with the matching data values
- * @param {Object} obj -An object of key-value pairs of data to filter for.
+ * @param {Object} obj - An object of key-value pairs of data to filter for.
+ * @param {String} opr - either "and" or "or".
  * @returns {Function} A function used as a test for each element in the set. this is the current DOM element.
  * 
  * Given a jQuery object that represents a set of DOM elements, the .filter() method constructs a new jQuery object from a subset of the matching elements. The supplied selector is tested against each element; all elements matching the selector will be included in the result.
  */
-function filterData(obj) {
-  return ( function() {
-    let match = true;
-    for (const [key, value] of Object.entries(obj)) {
-      match = match && $(this).data(key) === value;
-      if (!match) { return false }
-    }
-    return true;
-  })
+function filterData(obj,opr = "and") {
+  if (opr === "and") {
+    return ( function() {
+      let match = true;
+      for (const [key, value] of Object.entries(obj)) {
+        match = match && $(this).data(key) === value;
+        if (!match) { return false }
+      }
+      return true;
+    })
+  } else {
+    return ( function() {
+      let match = false;
+      for (const [key, value] of Object.entries(obj)) {
+        match = match || $(this).data(key) === value;
+        if (match) { return true }
+      }
+      return true;
+    })
+  }
 }
 
-// *** build functions ***
+const display = { 
+  show($el) {
+    $el.addClass("show");
+    $el.removeClass("hide");
+  },
+  hide($el) {
+    $el.addClass("hide");
+    $el.removeClass("show");
+  }
+}
+
+// *********** build functions *************
 
 /**
  * Attach the sudoku grid to div#sudoku-grid.
@@ -187,7 +276,15 @@ function buildSudokuGrid() {
   }
 }
 
-// ******** initial state functions *********
+function buildHighlightButtons() {
+
+}
+
+function buildColoringButtons() {
+
+}
+
+// ******** initial state functions/classes *********
 
 
 /**
