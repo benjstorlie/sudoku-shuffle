@@ -15,7 +15,7 @@ function loadjquery() {
     });
   } else {
     // Offline: Load jQuery locally
-    loadScript('path/to/jquery-3.6.0.min.js', function() {
+    loadScript('/assets/js/jquery-3.6.0.min.js', function() {
       // jQuery loaded, you can start using it
       console.log('jQuery loaded locally');
     });

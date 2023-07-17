@@ -1,6 +1,85 @@
-window.onload = init;
 
-function init() {
+function loadScript(url, callback) {
+  var script = document.createElement('script');
+  script.src = url;
+  script.onload = callback;
+  document.head.appendChild(script);
+}
+
+function loadjquery(callback) {
+  if (navigator.onLine) {
+    // Online: Load jQuery from CDN
+    loadScript('https://code.jquery.com/jquery-3.6.0.min.js', function() {
+      // jQuery loaded, you can start using it
+      console.log('jQuery loaded from CDN');
+      callback();
+    });
+  } else {
+    // Offline: Load jQuery locally
+    loadScript('/assets/js/jquery-3.6.0.min.js', function() {
+      // jQuery loaded, you can start using it
+      console.log('jQuery loaded locally');
+      callback();
+    });
+  }
+}
+
+loadjquery(init);
+
+/**
+ * Stack holding the last selected cells, with their respective rows and columns.  If multi-select is off, the stack just holds the last selected cell.
+ * I only need the one instance, but I understand better how classes are written, than objects with methods that act on itself.
+ */
+class LastSelected {
+  static labels = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, '0', '1', '2', '3', '4', '5', '6', '7', '8' ];
+  constructor() {
+    this.list = [];
+  }
+  get length() {
+    return this.list.length;
+  }
+  get() {
+    return this.list[this.length - 1];
+  }
+  pop() {
+    return this.list.pop();
+  }
+  push({row, col, $cell}) {
+    if ($cell && (LastSelected.labels.includes(row) || LastSelected.labels.includes(col))) {
+      if ($cell.data("row") == row && $cell.data("col") == col) {
+        if (!state.multiSelect) {
+          this.list=[];
+          return this.list.push({row,col,$cell});
+        } else {
+          return this.list.push({row,col,$cell});
+        }
+      } else {
+        console.log("Given row and col:", row, col,"cell row and col", $cell.data("row"),$cell.data("col"));
+        throw new Error("Given row and col do not match given cell.")
+      }
+    } else if ($cell) {
+      row = $cell.data("row");
+      col = $cell.data("col");
+      if (!state.multiSelect) {
+        this.list=[];
+        return this.list.push({row,col,$cell});
+      } else {
+        return this.list.push({row,col,$cell});
+      }
+    } else if (LastSelected.labels.includes(row) && LastSelected.labels.includes(col)) {
+      $cell = $( `#cell-row${row}-col${col}` );
+      if (!state.multiSelect) {
+        this.list=[];
+        return this.list.push({row,col,$cell});
+      } else {
+        return this.list.push({row,col,$cell});
+      }
+    } else {
+      console.log(arguments);
+      throw new Error("Only push {row, col} or {$cell} to lastSelected.");
+    }
+  } 
+}
 
 /**
  * @namespace
@@ -24,17 +103,26 @@ const initialConditions = {
 }
 const lastSelected = new LastSelected();
 
+function init() {
+
 const $sudokuGrid = $( "#sudoku-grid" );
 const $controls = $( "#controls" );
 const highlighterBtnGrid = $( "#highlighter-btn-grid" );
-const $multiSelectBtn = $("multi-select-btn");
+const $multiSelectBtn = $("#multi-select-btn");
+const $toggleMouseTypeSelectBtn = $("#toggle-mousetype-select-btn")
+const $clearCandidatesBtn = $("#clear-candidates-btn");
+const $showCandidatesBtn = $("#show-candidates-btn");
 
 $multiSelectBtn.addClass(state.multiSelect ? "btn-dark" : "btn-light");
 $multiSelectBtn.on("click", toggleMultiSelect);
+$toggleMouseTypeSelectBtn.addClass(state.selectCellsPrimary ? "btn-dark" : "btn-light");
+$toggleMouseTypeSelectBtn.on("click", toggleMouseTypeSelect);
+$clearCandidatesBtn.on("click",clearCandidates);
+$showCandidatesBtn.on("click",showCandidates);
 
 buildSudokuGrid();
-const $allCells = sudokuGrid.find(".cell");
-const $allCandidates = sudokuGrid.find(".cell .candidate");
+const $allCells = $sudokuGrid.find(".cell");
+const $allCandidates = $sudokuGrid.find(".cell .candidate");
 
 buildHighlightButtons();
 
@@ -58,13 +146,14 @@ function toggleMultiSelect() {
 function cellMouseEventHandler($cell,mouseType) {
   const click = (mouseType === "click");
   return (function (event) {
+    event.preventDefault();
     if (click ^ state.selectCellsPrimary) {
-      selectCell($cell)
-    } else {
       if ($(event.target).hasClass("candidate")) {
         toggleElimination($(event.target),$cell);
       }
       selectCell($cell,true);
+    } else {
+      selectCell($cell)
     }
   })
 }
@@ -151,22 +240,22 @@ function coloringHandler(event) {
 
 }
 
-/**
- * Called by the clear-candidates-btn with the onclick attribute
- */
 function clearCandidates() {
   $allCandidates.removeClass("possible")
     .addClass("eliminated");
   $allCells.data("possibles",['',0,0,0,0,0,0,0,0,0]);
 }
 
-/**
- * Called by the show-candidates-btn with the onclick attribute
- */
 function showCandidates() {
   $allCandidates.addClass("possible")
     .removeClass("eliminated");
   $allCells.data("possibles",['',1,1,1,1,1,1,1,1,1]);
+}
+
+function toggleMouseTypeSelect() {
+  state.selectCellsPrimary = !state.selectCellsPrimary;
+  $toggleMouseTypeSelectBtn.toggleClass("btn-dark" , "btn-light");
+  $toggleMouseTypeSelectBtn.text(state.selectCellsPrimary ? "Select Cells" : "Eliminate Candidates")
 }
 
 function eliminateConflicts($cell, value) {
@@ -290,62 +379,11 @@ function buildColoringButtons() {
 
 }
 
-// ******** initial state functions/classes *********
-
-
-/**
- * Stack holding the last selected cells, with their respective rows and columns.  If multi-select is off, the stack just holds the last selected cell.
- * I only need the one instance, but I understand better how classes are written, than objects with methods that act on itself.
- */
-class LastSelected {
-  static labels = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, '0', '1', '2', '3', '4', '5', '6', '7', '8' ];
-  constructor() {
-    this.list = [];
-  }
-  get length() {
-    return this.list.length;
-  }
-  get() {
-    return this.list[this.length - 1];
-  }
-  pop() {
-    return this.list.pop();
-  }
-  push({row, col, $cell}) {
-    if ($cell && (this.labels.includes(row) || this.labels.includes(col))) {
-      if ($cell.data("row") == row && $cell.data("col") == col) {
-        if (!state.multiSelect) {
-          this.list=[];
-          return this.list.push({row,col,$cell});
-        } else {
-          return this.list.push({row,col,$cell});
-        }
-      } else {
-        console.log("Given row and col:", row, col,"cell row and col", $cell.data("row"),$cell.data("col"));
-        throw new Error("Given row and col do not match given cell.")
-      }
-    } else if ($cell) {
-      row = $cell.data("row");
-      col = $cell.data("col");
-      if (!state.multiSelect) {
-        this.list=[];
-        return this.list.push({row,col,$cell});
-      } else {
-        return this.list.push({row,col,$cell});
-      }
-    } else if (this.labels.includes(row) && this.labels.includes(col)) {
-      $cell = $( `#cell-row${row}-col${col}` );
-      if (!state.multiSelect) {
-        this.list=[];
-        return this.list.push({row,col,$cell});
-      } else {
-        return this.list.push({row,col,$cell});
-      }
-    } else {
-      console.log(arguments);
-      throw new Error("Only push {row, col} or {$cell} to lastSelected.");
-    }
-  } 
-}
 
 }
+
+
+
+// // ********* Call function init ********
+
+// init();
