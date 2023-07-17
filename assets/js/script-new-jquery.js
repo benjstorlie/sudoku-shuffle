@@ -151,12 +151,18 @@ function coloringHandler(event) {
 
 }
 
+/**
+ * Called by the clear-candidates-btn with the onclick attribute
+ */
 function clearCandidates() {
   $allCandidates.removeClass("possible")
     .addClass("eliminated");
   $allCells.data("possibles",['',0,0,0,0,0,0,0,0,0]);
 }
 
+/**
+ * Called by the show-candidates-btn with the onclick attribute
+ */
 function showCandidates() {
   $allCandidates.addClass("possible")
     .removeClass("eliminated");
