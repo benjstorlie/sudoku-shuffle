@@ -33,25 +33,25 @@ function buildSudokuGrid() {
   for (let bigRow=0; bigRow <3 ; bigRow++ ) {
     for (let bigCol=0; bigCol <3 ; bigCol++ ) {
 
-      const block = $("div")
-        .addClass("block-"+ (3*bigRow+bigCol),"block");
-      block.appendTo(sudokuGrid);
+      const box = $("div")
+        .addClass("box-"+ (3*bigRow+bigCol),"box");
+      box.appendTo(sudokuGrid);
 
       for (let smRow=0; smRow <3 ; smRow++ ) {
         for (let smCol=0; smCol <3 ; smCol++ ) {
 
           const cell = $("div")
             .addClass("cell-"+(3*smRow + smCol),"cell","show-candidates")
-            .data("block", (3*bigRow + smRow))
+            .data("box", (3*bigRow + smRow))
             .data("row",(3*bigCol + smCol))
             .data("col",(3*bigRow + bigCol))
             .on("contextmenu",selectCell);
-          cell.appendTo(block);
+          cell.appendTo(box);
 
           const digit = $("div")
             .addClass("digit hide")
             .text(3*smRow + smCol)
-            .data("block", (3*bigRow + smRow))
+            .data("box", (3*bigRow + smRow))
             .data("row",(3*bigCol + smCol))
             .data("col",(3*bigRow + bigCol));
           
@@ -63,7 +63,7 @@ function buildSudokuGrid() {
               const candidate=$("div")
                 .text(value)
                 .addClass("candidate show possible")
-                .data("block", (3*bigRow + smRow))
+                .data("box", (3*bigRow + smRow))
                 .data("row",(3*bigCol + smCol))
                 .data("col",(3*bigRow + bigCol))
                 .data("value",value)
@@ -158,11 +158,11 @@ function showCandidates() {
 }
 
 function eliminateConflicts(cell, value) {
-  const block = cell.data("block");
+  const box = cell.data("box");
   const row = cell.data("row");
   const col = cell.data("col");
 
-  $(`.cell[data-block="${block}"] .candidate[data-value="${value}"]`).removeClass("eliminated").addClass("possible");
+  $(`.cell[data-box="${box}"] .candidate[data-value="${value}"]`).removeClass("eliminated").addClass("possible");
   $(`.cell[data-row="${row}"] .candidate[data-value="${value}"]`).removeClass("eliminated").addClass("possible");
   $(`.cell[data-col="${col}"] .candidate[data-value="${value}"]`).removeClass("eliminated").addClass("possible");
 }

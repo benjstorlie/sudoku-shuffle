@@ -88,9 +88,9 @@ function buildSudokuGrid() {
   for (let bigRow=0; bigRow <3 ; bigRow++ ) {
     for (let bigCol=0; bigCol <3 ; bigCol++ ) {
 
-      const block = document.createElement("div");
-      utils.addClass(block,"block-"+ (3*bigRow+bigCol),"block");
-      sudokuGrid.append(block)
+      const box = document.createElement("div");
+      utils.addClass(box,"box-"+ (3*bigRow+bigCol),"box");
+      sudokuGrid.append(box)
 
       for (let smRow=0; smRow <3 ; smRow++ ) {
         for (let smCol=0; smCol <3 ; smCol++ ) {
@@ -98,14 +98,14 @@ function buildSudokuGrid() {
           const cell = document.createElement("div");
           utils.addClass(cell,"cell-"+(3*smRow + smCol),"cell");
           cell.addEventListener("contextmenu",selectCellHandler);
-          block.append(cell);
+          box.append(cell);
 
           const digit = document.createElement("div");
           utils.addClass(digit,"digit");
           digit.textContent = (3*smRow + smCol);
           utils.each([digit,cell],
             utils.setDataAttributes,
-            ["block", (3*bigRow + smRow)],
+            ["box", (3*bigRow + smRow)],
             ["row",(3*bigCol + smCol)],
             ["col",(3*bigRow + bigCol)]
           );
@@ -119,7 +119,7 @@ function buildSudokuGrid() {
               utils.addClass(candidate,"candidate");
 
               utils.setDataAttributes(candidate,
-                ["block", (3*bigRow + smRow)],
+                ["box", (3*bigRow + smRow)],
                 ["row",(3*bigCol + smCol)],
                 ["col",(3*bigRow + bigCol)],
                 ["value",value]);
@@ -288,11 +288,11 @@ function showCandidates() {
 }
 
 function eliminateConflicts(cell, value) {
-  const block = cell.getAttribute("data-block");
+  const box = cell.getAttribute("data-box");
   const row = cell.getAttribute("data-row");
   const col = cell.getAttribute("data-col");
 
-  utils.each(sudokuGrid.querySelectorAll(`.cell[data-block="${block}"] .candidate[data-value="${value}"]`),
+  utils.each(sudokuGrid.querySelectorAll(`.cell[data-box="${box}"] .candidate[data-value="${value}"]`),
     utils.setDataAttributes,"status","eliminated");
   utils.each(sudokuGrid.querySelectorAll(`.cell[data-col="${col}"] .candidate[data-value="${value}"]`),
     utils.setDataAttributes,"status","eliminated");

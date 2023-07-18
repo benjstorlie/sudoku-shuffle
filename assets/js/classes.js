@@ -13,7 +13,7 @@ class Sudoku {
  * @prop {Boolean} highlighted - is highlighted
  * @prop {Number} row - from 0-8
  * @prop {Number} col - from 0-8
- * @prop {Number} block - from 0-8, calculated from row and col, cannot be set
+ * @prop {Number} box - from 0-8, calculated from row and col, cannot be set
  */
 class Cell {
   static keys=["row","col","color","selected","highlighted"];

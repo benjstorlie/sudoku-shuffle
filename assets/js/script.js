@@ -371,10 +371,10 @@ function mouseTypeEliminateCandidates(){
 function eliminateConflicts($cell, value) {
   value = Number(value);
 
-  const {row,block,col}=$cell.data();
+  const {row,box,col}=$cell.data();
 
-  // const $conflictCells = $allCells.filter(filterData({col,row,block},"or"));
-  const $conflictCells = $allCells.filter(".block"+block).add($allCells.filter(".row"+row).add($allCells.filter(".col"+col)));
+  // const $conflictCells = $allCells.filter(filterData({col,row,box},"or"));
+  const $conflictCells = $allCells.filter(".box"+box).add($allCells.filter(".row"+row).add($allCells.filter(".col"+col)));
 
     $conflictCells.data("possible-"+value,false)
     $conflictCells.find(".candidate.val"+value)
@@ -451,13 +451,13 @@ const display = {
 function buildSudokuGrid() {
   for (let bigRow=0; bigRow <3 ; bigRow++ ) {
     for (let bigCol=0; bigCol <3 ; bigCol++ ) {
-      const block = 3*bigRow + bigCol;
-      const $block = $("<div>")
-        .attr("id","block-"+ block)
-        .addClass("block","block"+block)
+      const box = 3*bigRow + bigCol;
+      const $box = $("<div>")
+        .attr("id","box-"+ box)
+        .addClass("box","box"+box)
             .css("gridColumn", bigCol + 1)  // correctly positions
             .css("gridRow",bigRow + 1);
-      $sudokuGrid.append($block);
+      $sudokuGrid.append($box);
 
       for (let smRow=0; smRow <3 ; smRow++ ) {
         for (let smCol=0; smCol <3 ; smCol++ ) {
@@ -467,8 +467,8 @@ function buildSudokuGrid() {
 
           const $cell = $("<div>")
             .attr("id", `cell-row${row}-col${col}`)
-            .data({row,col,block})
-            .addClass(["row"+row,"col"+col,"block"+block])
+            .data({row,col,box})
+            .addClass(["row"+row,"col"+col,"box"+box])
             .addClass(["cell",(initialConditions.showDigit ? "show-digit" : "show-candidates")]);
           if (initialConditions.candidatesPossible) {
             for (let i = 1; i<=9 ; i++) {
@@ -480,12 +480,12 @@ function buildSudokuGrid() {
             }
           }
           
-          $block.append($cell);
+          $box.append($cell);
 
           const $digit = $("<div>")
             .addClass("digit", (initialConditions.showDigit ? "show" : "hide"))
-            .data({row,col,block})
-            .addClass(["row"+row,"col"+col,"block"+block])
+            .data({row,col,box})
+            .addClass(["row"+row,"col"+col,"box"+box])
           
           $cell.append($digit)
 
@@ -497,8 +497,8 @@ function buildSudokuGrid() {
                 .attr("id",`candidate-row${row}-col${col}-val${value}`)
                 .addClass("candidate",(initialConditions.showDigit ? "hide" : "show"))
                 .addClass((initialConditions.candidatesPossible ? "possible" : "eliminated"))
-                .data({row,col,block,value})
-                .addClass(["val"+value,"row"+row,"col"+col,"block"+block])
+                .data({row,col,box,value})
+                .addClass(["val"+value,"row"+row,"col"+col,"box"+box])
                 .css("gridColumn", candidateCol + 1)  // correctly positions
                 .css("gridRow",candidateRow + 1)
 

@@ -35,7 +35,7 @@
 }
 
 #sudoku-grid,
-.block,
+.box,
 .cell,
 #highlighter-btn-grid,
 #coloring-btn-grid {
@@ -78,7 +78,7 @@ button.btn-mousetype {
   font-size: .7rem;
 }
 
-.block {
+.box {
   background-color: var(--sudoku-cell-border);
   gap: 2px;
 }
