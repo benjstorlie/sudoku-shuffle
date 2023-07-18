@@ -19,7 +19,7 @@ class Puzzle {
         for (let col = 0; col <9 ; col++) {
           newCopy[row][col] = {
             value: array[row][col].value,
-            possibles: array[row][col].possibles
+            possibles: new Set(array[row][col].possibles),
           }
         }
       }
@@ -29,7 +29,7 @@ class Puzzle {
         for (let col = 0; col <9 ; col++) {
           newCopy[row][col] = {
             value: array[row][col],
-            possibles: []
+            possibles: new Set(),
           }
         }
       }     
@@ -70,25 +70,78 @@ class Puzzle {
   setPuzzle() {
     let timestamp = new Date().getTime();
     this.stack.unshift(timestamp);
-    localStorage.setItem(`puzzle${id}-${timestamp}`,JSON.stringify(this.puzzle));
+    localStorage.setItem(
+      `puzzle${id}-${timestamp}`,
+      JSON.stringify(
+        this.puzzle,
+        (k,v)=>{
+          if (k==="possibles" && v instanceof Set){
+            return Array.from(v).map(x => Number(x))
+          }
+        }
+      )
+    );
   }
 
   getPuzzle() {
     let timestamp = this.stack.shift();
-    this.puzzle = JSON.parse(localStorage.getItem(`puzzle${id}-${timestamp}`))
+    this.puzzle = JSON.parse(
+      localStorage.getItem(`puzzle${id}-${timestamp}`),
+      (k,v)=>{
+        if (k==="possibles" && Array.isArray(v)){
+          return new Set(v)
+        }
+      }
+    );
+
   }
 
-  build() {
+  fill() {
+    $("#coverscreen").addClass(".disable")
+    $(".cell").removeClass("highlighted show-digit show-candidates");
+    $(".cell").children().removeClass("show hide possible eliminated");
     for (let row = 0; row < 9 ; row++) {
       for (let col = 0; col <9 ; col++) {
-        let $cell = $(`cell-row${row}-col${col}`);
-        let showDigit = !!this.puzzle[row][col].value;
+        let $cell = $(`#cell-row${row}-col${col}`);
+        let $digit = $cell.children(".digit");
+        let $candidates = $cell.children(".candidate");
+
+        let cellValue = this.puzzle[row][col].value;
+        if (cellValue) {
+          $cell.addClass('show-digit').attr("data-value",cellValue);
+          $digit.addClass("show").text(cellValue).attr("data-value",cellValue)
+          $candidates.addClass("hide")
+        } else {
+          $cell.addClass('show-candidates').attr("data-value","");
+          $digit.addClass("hide").text("").attr("data-value","")
+          $candidates.addClass("show")
+        }
+
+        /** * @type {Set<Number>} */
+        let possibles = this.puzzle[row][col].possibles;
+        let total = possibles.size;
+        if (total === 9) {
+          $candidates.addClass("possible");
+        } else if (total === 0) {
+          $candidates.addClass("eliminated")
+        } else {
+          for (let val = 1; val <=9; val++) {
+            const $candidate = $candidates.filter(`.val${val}`);
+            if (possibles.has(val)) {
+              $candidate.addClass("possible");
+            } else {
+              $candidate.addClass("eliminated")
+            }
+          }
+        }
+
       }
     }
+    $("#coverscreen").removeClass(".disable")
   }
 
   save() {
-
+    
   }
 
 }
