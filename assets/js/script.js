@@ -63,8 +63,8 @@ class LastSelected {
  * @prop {String} highlight.operator - one of "single", "and", ...
  */
 const state = {
-  multiSelect: false,
-  selectCellsPrimary: false,
+  multiSelect: true,
+  selectCellsPrimary: true,
   solve: true,
   highlightedNum: 0,
   highlight: {
@@ -323,19 +323,6 @@ function highlightCandidates(value) {
   }
 }
 
-function coloringHandler($button,color) {
-  return (function (event) {
-    const $selected = $allCells.filter(".selected");
-    if ($selected.length === $selected.filter(`.${color}`).length) {
-      $selected.removeClass(color);
-    } else {
-      $selected.addClass(color)
-    }
-    $coloringBtnGrid.children().removeClass("active");
-    $button.toggleClass("active");
-  })
-}
-
 function clearCandidates() {
   $allCandidates.removeClass("possible")
     .addClass("eliminated");
@@ -430,6 +417,8 @@ function buildSudokuGrid() {
           const $cell = $("<div>")
             .attr("id", `cell-row${row}-col${col}`)
             .data({row,col,box})
+            .css("gridColumn", smCol + 1)  // correctly positions
+            .css("gridRow",smRow + 1)
             .addClass(["row"+row,"col"+col,"box"+box])
             .addClass(["cell",(initialConditions.showDigit ? "show-digit" : "show-candidates")]);
           if (initialConditions.candidatesPossible) {
@@ -457,8 +446,11 @@ function buildSudokuGrid() {
               const $candidate=$("<div>")
                 .text(value)
                 .attr("id",`candidate-row${row}-col${col}-val${value}`)
-                .addClass("candidate",(initialConditions.showDigit ? "hide" : "show"))
-                .addClass((initialConditions.candidatesPossible ? "possible" : "eliminated"))
+                .addClass([
+                  "candidate",
+                  (initialConditions.showDigit ? "hide" : "show"),
+                  (initialConditions.candidatesPossible ? "possible" : "eliminated")
+                ])
                 .data({row,col,box,value})
                 .addClass(["val"+value,"row"+row,"col"+col,"box"+box])
                 .css("gridColumn", candidateCol + 1)  // correctly positions
@@ -490,23 +482,36 @@ function buildColoringButtons() {
   const colors = ["blue","purple","pink","red","orange","yellow","green","teal","cyan"];
   
   for (let c=0; c<colors.length; c++) {
-    const $button = $("<div role='button'>");
+    const $button = $("<button>");
     $button.addClass("btn coloring");
     $button.addClass(colors[c]);
-    $button.data("color",colors[c])
+    $button.data("color",colors[c]);
+    $button.css("background-color",`var(--color-${colors[c]})`)
     $button.append($("<div class='hide'>8</div>")) // to make the same size as highlight buttons. TODO: change to css height
     $coloringBtnGrid.append($button);
-    $button.on("click",coloringHandler($button,colors[c]));
+    $button.on("click",function (event) {
+      const $selected = $allCells.filter(".selected");
+      for (let x=0; x<colors.length; x++) {
+        if (x !== c) {$selected.removeClass(colors[x]).removeClass("colored");}
+      }
+      if ($selected.length === $selected.filter(`.${colors[c]}`).length) {
+        $selected.removeClass(colors[c]);
+      } else {
+        $selected.addClass(colors[c]).addClass("colored");
+      }
+      $coloringBtnGrid.children().removeClass("active");
+      $button.toggleClass("active");
+    });
   }
 
-  const $clear = $("<button class='btn btn-light coloring'>")
+  const $clear = $("<button id='clear-coloring' class='btn btn-light'>")
     .text("Clear")
     .css("grid-column-start","span 3")
-    .on("click",function () {
-      const $selected = $allCells.filter(".selected");
-      for (let c=0; c<colors.length; c++) {
-        $selected.removeClass(colors[c]);
+    .on("click",function (event) {
+      for (let x=0; x<colors.length; x++) {
+        $allCells.removeClass(colors[x]).removeClass("colored");
       }
+      $coloringBtnGrid.children().removeClass("active");
     })
   $coloringBtnGrid.append($clear);
 

@@ -37,11 +37,16 @@
 #sudoku-grid,
 .box,
 .cell,
-#highlighter-btn-grid,
-#coloring-btn-grid {
+#highlighter-btn-grid{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
+}
+
+#coloring-btn-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 1fr);
 }
 
 #sudoku-grid {
@@ -75,6 +80,13 @@
   border: 2px solid transparent;
 }
 
+#clear-coloring {
+  display:flex;
+  border-radius: 0;
+  margin: 3px;
+  grid-column-start: span 3;
+}
+
 .coloring:hover {
   border: 1px solid #fff;
 }
@@ -104,6 +116,7 @@ button.btn-mousetype {
 
 .highlighted {
   background-color: var(--highlight-color);
+  border: 2px solid var(--highlight-color);
 }
 
 .digit {
@@ -139,39 +152,39 @@ button.btn-mousetype {
 }
 
 
-div.blue {
+.colored.blue {
   background-color: var(--color-blue);
 }
 
-.cell.blue .candidate.eliminated{
+.cell.colored.blue .candidate.eliminated{
   color: var(--color-blue);
 }
 
-div.purple {
+.colored.purple {
   background-color: var(--color-purple);
 }
 
-.cell.purple .candidate.eliminated{
+.cell.colored.purple .candidate.eliminated{
   color: var(--color-purple);
 }
 
-div.pink {
+.colored.pink {
   background-color: var(--color-pink);
 }
 
-.cell.pink .candidate.eliminated{
+.cell.colored.pink .candidate.eliminated{
   color: var(--color-pink);
 }
 
-div.red {
+.colored.red {
   background-color: var(--color-red);
 }
 
-.cell.red .candidate.eliminated{
+.cell.colored.red .candidate.eliminated{
   color: var(--color-red);
 }
 
-div.orange {
+.colored.colored.orange {
   background-color: var(--color-orange);
 }
 
@@ -179,7 +192,7 @@ div.orange {
   color: var(--color-orange);
 }
 
-div.yellow {
+.colored.colored.yellow {
   background-color: var(--color-yellow);
 }
 
@@ -187,27 +200,27 @@ div.yellow {
   color: var(--color-yellow);
 }
 
-div.green {
+.colored.colored.green {
   background-color: var(--color-green);
 }
 
-.cell.green .candidate.eliminated{
+.cell.colored.green .candidate.eliminated{
   color: var(--color-green);
 }
 
-div.teal {
+.colored.teal {
   background-color: var(--color-teal);
 }
 
-.cell.teal .candidate.eliminated{
+.cell.colored.teal .candidate.eliminated{
   color: var(--color-teal);
 }
 
-div.cyan {
+.colored.cyan {
   background-color: var(--color-cyan);
 }
 
-.cell.cyan .candidate.eliminated{
+.cell.colored.cyan .candidate.eliminated{
   color: var(--color-cyan);
 }
 
