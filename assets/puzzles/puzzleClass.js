@@ -81,7 +81,8 @@ class Puzzle {
   build() {
     for (let row = 0; row < 9 ; row++) {
       for (let col = 0; col <9 ; col++) {
-        
+        let $cell = $(`cell-row${row}-col${col}`);
+        let showDigit = !!this.puzzle[row][col].value;
       }
     }
   }
