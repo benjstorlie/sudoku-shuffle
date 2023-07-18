@@ -254,8 +254,8 @@ function keyDownHandler(event) {
     highlightCandidates();
   } else if (key === "Backspace" || key === "Delete") {
     deleteDigit();
-  // } else if (["ArrowLeft","ArrowUp","ArrowRight","ArrowDown"].includes(key)) {
-  //   arrowSelect(key);
+  } else if (["ArrowLeft","ArrowUp","ArrowRight","ArrowDown"].includes(key)) {
+    arrowSelect(key);
   }
 }
 
@@ -298,7 +298,40 @@ function deleteDigit() {
 }
 
 function arrowSelect(key) {
+  // ["ArrowLeft","ArrowUp","ArrowRight","ArrowDown"]
   
+  if (!lastSelected.get()) {
+    $(`#cell-row0-col0`).addClass("selected");
+    lastSelected.push({row:0,col:0});
+    return
+  }
+  const {row,col} = lastSelected.get();
+  let d = [];
+  switch (key) {
+    case "ArrowLeft":
+      if (col == 0) {return}
+      d = [0,-1];
+      break;
+    case "ArrowUp": 
+      if (row == 0) {return}
+      d = [-1,0];
+      break;
+    case "ArrowRight":
+      if (col == 8) {return}
+      d = [0,1];
+      break;
+    case "ArrowDown":  
+      if (row == 8) {return} 
+      d = [1,0];
+      break;   
+  }
+  const newRow = row + d[0];
+  const newCol = col + d[1];
+  
+  $allCells.removeClass("selected");
+  const $newCell = $(`#cell-row${newRow}-col${newCol}`);
+  $newCell.addClass("selected")
+  lastSelected.push({row: newRow,col: newCol});
 }
 
 function highlightCandidatesHandler($button,value) {
@@ -358,7 +391,6 @@ function mouseTypeEliminateCandidates(){
   $mouseTypeSelectCellsBtn.toggleClass("btn-dark btn-light").attr("disabled",false);
   $mouseTypeEliminateCandidatesBtn.toggleClass("btn-dark btn-light").attr("disabled",true);
 }
-
 
 function eliminateConflicts($cell, value) {
   value = Number(value);
