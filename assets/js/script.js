@@ -454,7 +454,9 @@ function buildSudokuGrid() {
       const block = 3*bigRow + bigCol;
       const $block = $("<div>")
         .attr("id","block-"+ block)
-        .addClass("block","block"+block);
+        .addClass("block","block"+block)
+            .css("gridColumn", bigCol + 1)  // correctly positions
+            .css("gridRow",bigRow + 1);
       $sudokuGrid.append($block);
 
       for (let smRow=0; smRow <3 ; smRow++ ) {
