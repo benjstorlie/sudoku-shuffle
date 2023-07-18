@@ -485,7 +485,7 @@ function buildColoringButtons() {
   const colors = ["blue","purple","pink","red","orange","yellow","green","teal","cyan"];
   
   for (let c=0; c<colors.length; c++) {
-    const $button = $("<button>");
+    const $button = $("<div role='button'>");
     $button.addClass("btn coloring");
     $button.addClass(colors[c]);
     $button.data("color",colors[c])

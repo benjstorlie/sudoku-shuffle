@@ -67,11 +67,21 @@
   padding: 3px;
 }
 
-#highlighter-btn-grid button,
-#coloring-btn-grid button {
+.highlighter,
+.coloring {
   display:flex;
   border-radius: 0;
   margin: 3px;
+  border: 2px solid transparent;
+}
+
+.coloring:hover {
+  border: 1px solid #fff;
+}
+
+.coloring:active,
+.coloring.active {
+  border: 2px solid #fff;
 }
 
 button.btn-mousetype {
@@ -128,51 +138,76 @@ button.btn-mousetype {
   background-color: var(--active-candidate);
 }
 
-.coloring {
-  border: 2px solid transparent;
-}
 
-.coloring:hover {
-  border: 1px solid #fff;
-}
-
-.coloring:active,
-.coloring.active {
-  border: 2px solid #fff;
-}
-
-.blue {
+div.blue {
   background-color: var(--color-blue);
 }
 
-.purple {
+.cell.blue .candidate.eliminated{
+  color: var(--color-blue);
+}
+
+div.purple {
   background-color: var(--color-purple);
 }
 
-.pink {
+.cell.purple .candidate.eliminated{
+  color: var(--color-purple);
+}
+
+div.pink {
   background-color: var(--color-pink);
 }
 
-.red {
+.cell.pink .candidate.eliminated{
+  color: var(--color-pink);
+}
+
+div.red {
   background-color: var(--color-red);
 }
 
-.orange {
+.cell.red .candidate.eliminated{
+  color: var(--color-red);
+}
+
+div.orange {
   background-color: var(--color-orange);
 }
 
-.yellow {
+.cell.orange .candidate.eliminated{
+  color: var(--color-orange);
+}
+
+div.yellow {
   background-color: var(--color-yellow);
 }
 
-.green {
+.cell.yellow .candidate.eliminated{
+  color: var(--color-yellow);
+}
+
+div.green {
   background-color: var(--color-green);
 }
-.teal {
+
+.cell.green .candidate.eliminated{
+  color: var(--color-green);
+}
+
+div.teal {
   background-color: var(--color-teal);
 }
 
-.cyan {
+.cell.teal .candidate.eliminated{
+  color: var(--color-teal);
+}
+
+div.cyan {
   background-color: var(--color-cyan);
+}
+
+.cell.cyan .candidate.eliminated{
+  color: var(--color-cyan);
 }
 
