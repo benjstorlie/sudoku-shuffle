@@ -68,6 +68,7 @@ class Puzzle {
   }
 
   setPuzzle() {
+    $("#coverscreen").addClass(".disable")
     let timestamp = new Date().getTime();
     this.stack.unshift(timestamp);
     localStorage.setItem(
@@ -81,9 +82,11 @@ class Puzzle {
         }
       )
     );
+    $("#coverscreen").removeClass(".disable")
   }
 
   getPuzzle() {
+    $("#coverscreen").addClass(".disable")
     let timestamp = this.stack.shift();
     this.puzzle = JSON.parse(
       localStorage.getItem(`puzzle${id}-${timestamp}`),
@@ -93,6 +96,7 @@ class Puzzle {
         }
       }
     );
+    $("#coverscreen").removeClass(".disable")
 
   }
 
@@ -129,19 +133,37 @@ class Puzzle {
             const $candidate = $candidates.filter(`.val${val}`);
             if (possibles.has(val)) {
               $candidate.addClass("possible");
+              $cell.addclass(`possible-${val}`);
             } else {
-              $candidate.addClass("eliminated")
+              $candidate.addClass("eliminated");
+              $cell.removeclass(`possible-${val}`);
             }
           }
         }
-
       }
     }
     $("#coverscreen").removeClass(".disable")
   }
 
   save() {
-    
+    $("#coverscreen").addClass(".disable")
+    for (let row = 0; row < 9 ; row++) {
+      for (let col = 0; col <9 ; col++) {
+      }
+      let cellValue = $(`#cell-row${row}-col${col}`).attr("data-value");
+      this.puzzle[row][col].value = (cellValue ? cellValue : 0);
+      
+      let possibles = new Set()
+      for (let val = 1; val <=9; val++) {
+        let $candidate = $(`#candidate-row${row}-col${col}-val${val}`);
+        if ($candidate.hasClass("possible")) {
+          possibles.add(val);
+        }
+      }
+      this.puzzle[row][col].possibles = possibles;
+    }
+    this.setPuzzle();
+    $("#coverscreen").removeClass(".disable")
   }
 
 }
