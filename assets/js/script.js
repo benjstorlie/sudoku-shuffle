@@ -530,6 +530,7 @@ function buildColoringButtons() {
     $button.addClass("btn coloring");
     $button.addClass(colors[c]);
     $button.data("color",colors[c])
+    $button.append($("<div class='hide'>8</div>"))
     $coloringBtnGrid.append($button);
     $button.on("click",coloringHandler($button,colors[c]));
   }

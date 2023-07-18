@@ -26,10 +26,6 @@
   color: var(--sudoku-text-color);
 }
 
-.btn {
-  margin: 3px;
-}
-
 .show {
   z-index: 2;
 }
@@ -61,9 +57,11 @@
   padding: 3px;
 }
 
-button.highlighter {
-  display: flex;
+#highlighter-btn-grid button,
+#coloring-btn-grid button {
+  display:flex;
   border-radius: 0;
+  margin: 3px;
 }
 
 button.btn-mousetype {
