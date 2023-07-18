@@ -276,7 +276,9 @@ function fillDigit(key) {
     console.log("error filling cells",$cells)
   }
   try {
-  $cells.each((index,cell) => {eliminateConflicts($(cell),key)});
+    if (state.solve) {
+      $cells.each((index,cell) => {eliminateConflicts($(cell),key)})
+    };
   } catch {
     console.log("error eliminating candidates")
   }
@@ -348,7 +350,9 @@ function showCandidates() {
     // if any number is highlighted, all cells should be highlighted now.
     $(".cell.show-candidates").addClass("highlighted");
   }
-  $(".cell.show-digit").each((index,cell) => eliminateConflicts($(cell),$(cell).data("value")))
+  if (state.solve) {
+    $(".cell.show-digit").each((index,cell) => eliminateConflicts($(cell),$(cell).data("value")));
+  }
 }
 
 function mouseTypeSelectCells() {
