@@ -325,7 +325,12 @@ function highlightCandidates(value) {
 
 function coloringHandler($button,color) {
   return (function (event) {
-    console.log(color);
+    const $selected = $allCells.filter(".selected");
+    if ($selected.length === $selected.filter(`.${color}`).length) {
+      $selected.removeClass(color);
+    } else {
+      $selected.addClass(color)
+    }
     $coloringBtnGrid.children().removeClass("active");
     $button.toggleClass("active");
   })
@@ -489,10 +494,22 @@ function buildColoringButtons() {
     $button.addClass("btn coloring");
     $button.addClass(colors[c]);
     $button.data("color",colors[c])
-    $button.append($("<div class='hide'>8</div>"))
+    $button.append($("<div class='hide'>8</div>")) // to make the same size as highlight buttons. TODO: change to css height
     $coloringBtnGrid.append($button);
     $button.on("click",coloringHandler($button,colors[c]));
   }
+
+  const $clear = $("<button class='btn btn-light coloring'>")
+    .text("Clear")
+    .css("grid-column-start","span 3")
+    .on("click",function () {
+      const $selected = $allCells.filter(".selected");
+      for (let c=0; c<colors.length; c++) {
+        $selected.removeClass(colors[c]);
+      }
+    })
+  $coloringBtnGrid.append($clear);
+
 }
 
 
