@@ -388,49 +388,6 @@ function eliminateConflicts($cell, value) {
 
 // ************ utilities **********
 
-/**
- * Used with the jQuery .filter() method, returns a filter function for elements with the matching data values
- * @param {Object} obj - An object of key-value pairs of data to filter for.
- * @param {String} opr - either "and" or "or".
- * @returns {Function} A function used as a test for each element in the set. this is the current DOM element.
- * 
- * Given a jQuery object that represents a set of DOM elements, the .filter() method constructs a new jQuery object from a subset of the matching elements. The supplied selector is tested against each element; all elements matching the selector will be included in the result.
- */
-function filterData(obj,opr = "and") {
-  if (opr === "and") {
-    return ( function() {
-      let match = true;
-      for (const [key, value] of Object.entries(obj)) {
-        match = match && $(this).data(key) === value;
-        if (!match) { return false }
-      }
-      return true;
-    })
-  } else {
-    return ( function() {
-      let match = false;
-      for (const [key, value] of Object.entries(obj)) {
-        match = match || $(this).data(key) === value;
-        if (match) { return true }
-      }
-      return true;
-    })
-  }
-}
-
-/**
- * Used with the jQuery .filter() method, returns a filter function for cells with possible candidates of the given value.
- * @param {Number} value - the value to match the possible candidates against
- * @returns {Function} A function used as a test for each element in the set. this is the current DOM element.
- * 
- * Given a jQuery object that represents a set of DOM elements, the .filter() method constructs a new jQuery object from a subset of the matching elements. The supplied selector is tested against each element; all elements matching the selector will be included in the result.
- */
-function filterPossibles(value) {
-  return (function() {
-    return $( this ).data(`possible-${value}`)
-  })
-}
-
 const display = { 
   show($el) {
     $el.addClass("show");
@@ -455,8 +412,8 @@ function buildSudokuGrid() {
       const $box = $("<div>")
         .attr("id","box-"+ box)
         .addClass("box","box"+box)
-            .css("gridColumn", bigCol + 1)  // correctly positions
-            .css("gridRow",bigRow + 1);
+        .css("gridColumn", bigCol + 1)  // correctly positions
+        .css("gridRow",bigRow + 1);
       $sudokuGrid.append($box);
 
       for (let smRow=0; smRow <3 ; smRow++ ) {
