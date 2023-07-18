@@ -65,6 +65,7 @@ class LastSelected {
 const state = {
   multiSelect: false,
   selectCellsPrimary: false,
+  solve: true,
   highlightedNum: 0,
   highlight: {
     list: [],
@@ -119,6 +120,7 @@ const $mouseTypeEliminateCandidatesBtn = $("#mousetype-eliminate-candidates-btn"
 const $mouseTypeSelectCellsBtn = $("#mousetype-select-cells-btn");
 const $clearCandidatesBtn = $("#clear-candidates-btn");
 const $showCandidatesBtn = $("#show-candidates-btn");
+const $autoSolveBtn = $("#auto-solve-btn");
 
 $multiSelectBtn.addClass(state.multiSelect ? "btn-dark" : "btn-light");
 $multiSelectBtn.on("click", toggleMultiSelect);
@@ -134,6 +136,8 @@ if (state.selectCellsPrimary) {
   $mouseTypeSelectCellsBtn.addClass("btn-light").removeClass("btn-dark").attr("disabled",false);
   $mouseTypeEliminateCandidatesBtn.addClass("btn-dark").removeClass("btn-light").attr("disabled",true);
 }
+$autoSolveBtn.addClass(state.solve ? "btn-dark" : "btn-light");
+$autoSolveBtn.on("click",() => {state.solve=!state.solve; $autoSolveBtn.toggleClass("btn-light btn-dark")})
 
 buildSudokuGrid();
 const $allCells = $sudokuGrid.find(".cell");
@@ -230,6 +234,7 @@ function toggleElimination(value,$candidates,$cells,force) {
   } else {
     toggleElimination(value,$candidates,$cells,!$cells.data(`possible-${value}`))
   }
+  highlightCandidates();
 }
 
 function possiblesList($cell) {
@@ -244,29 +249,50 @@ function possiblesList($cell) {
 
 function keyDownHandler(event) {
   const {key} = event;
-
-}
-
-function fillDigit($cell,key) {
-  const $digit = $cell.find(".digit");
-  const $candidates = $cell.find(".candidate");
-  if ($cell.hasClass("show-candidates")) {
-    display.show($digit);
-    display.hide($candidates);
-    $cell.toggleClass("show-candidates","show-digit");
+  if (key >= '1' && key <= '9') {
+    fillDigit(key);
+    highlightCandidates();
+  } else if (key === "Backspace" || key === "Delete") {
+    deleteDigit();
+  // } else if (["ArrowLeft","ArrowUp","ArrowRight","ArrowDown"].includes(key)) {
+  //   arrowSelect(key);
   }
-  $cell.data("value",key);
-  $digit.data("value",key);
-  $digit.text(key);
-  eliminateConflicts($cell,key);
 }
 
-function deleteDigit($cell) {
-  $cell.data("value","")
+function fillDigit(key) {
+  const $cells = $(".cell.selected");
+  try {
+  const $cellsC = $(".cell.selected.show-candidates");
+  const $digits = $(".cell.selected .digit")
+
+  display.show($cellsC.find(".digit"));
+  display.hide($cellsC.find(".candidate"));
+  $cellsC.addClass("show-digit").removeClass("show-candidates");
+  $cells.attr("data-value",key)
+    .removeClass("highlighted");
+  $digits.attr("data-value",key);
+  $digits.text(key);
+  } catch {
+    console.log("error filling cells",$cells)
+  }
+  try {
+  $cells.each((index,cell) => {eliminateConflicts($(cell),key)});
+  } catch {
+    console.log("error eliminating candidates")
+  }
+}
+
+function deleteDigit() {
+  const $cells = $(".cell.selected");
+  try {
+  $cells.attr("data-value","")
     .addClass("show-candidates")
     .removeClass("show-digit")
-  display.hide($cell.find(".digit"));
-  display.show($cell.find(".candidate"))
+  display.hide($cells.find(".digit"));
+  display.show($cells.find(".candidate"));
+  } catch {
+    console.log("error deleting cells",$cells);
+  }
 }
 
 function arrowSelect(key) {
@@ -284,7 +310,6 @@ return (function (event) {
       highlightCandidates(value);
       $button.addClass("btn-warning");
     }
-    
   })
 }
 
@@ -292,8 +317,7 @@ function highlightCandidates(value) {
   value = (value ? value : state.highlightedNum);
   $allCells.removeClass("highlighted");
   if (value) {
-    console.log($allCells.filter(".show-candidates").filter(()=>$( this ).data(`possible-${value}`)))
-    $allCells.filter(".show-candidates").filter(()=>$( this ).data(`possible-${value}`)).addClass("highlighted");
+    $(".cell.show-candidates .candidate.possible.val"+value).parent().addClass("highlighted");
   }
 }
 
@@ -303,7 +327,6 @@ function coloringHandler($button,color) {
     $coloringBtnGrid.children().removeClass("active");
     $button.toggleClass("active");
   })
-  
 }
 
 function clearCandidates() {
@@ -323,8 +346,9 @@ function showCandidates() {
   }
   if (state.highlightedNum) {
     // if any number is highlighted, all cells should be highlighted now.
-    $allCells.addClass("highlighted");
+    $(".cell.show-candidates").addClass("highlighted");
   }
+  $(".cell.show-digit").each((index,cell) => eliminateConflicts($(cell),$(cell).data("value")))
 }
 
 function mouseTypeSelectCells() {
@@ -339,18 +363,20 @@ function mouseTypeEliminateCandidates(){
   $mouseTypeEliminateCandidatesBtn.toggleClass("btn-dark btn-light").attr("disabled",true);
 }
 
+
 function eliminateConflicts($cell, value) {
   value = Number(value);
-  const {block, row, col} = $cell.data();
-  const $conflictCells = $allCells.filter(filterData({col,row,block},"or"));
-  $conflictCells.each(function ($cell) {
-    let possibles = $cell.data("possibles");
-    possibles[value] = false;
-    $cell.data({possibles});
-    $cell.find(".candidate.val"+value)
+
+  const {row,block,col}=$cell.data();
+
+  // const $conflictCells = $allCells.filter(filterData({col,row,block},"or"));
+  const $conflictCells = $allCells.filter(".block"+block).add($allCells.filter(".row"+row).add($allCells.filter(".col"+col)));
+
+    $conflictCells.data("possible-"+value,false)
+    $conflictCells.find(".candidate.val"+value)
       .addClass("eliminated")
       .removeClass("possible");
-  })
+
   if (state.highlightedNum == value) {
     highlightCandidates(value);
   }
