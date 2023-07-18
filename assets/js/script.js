@@ -1,31 +1,3 @@
-
-function loadScript(url, callback) {
-  var script = document.createElement('script');
-  script.src = url;
-  script.onload = callback;
-  document.head.appendChild(script);
-}
-
-function loadjquery(callback) {
-  if (navigator.onLine) {
-    // Online: Load jQuery from CDN
-    loadScript('https://code.jquery.com/jquery-3.6.0.min.js', function() {
-      // jQuery loaded, you can start using it
-      console.log('jQuery loaded from CDN');
-      callback();
-    });
-  } else {
-    // Offline: Load jQuery locally
-    loadScript('/assets/js/jquery-3.6.0.min.js', function() {
-      // jQuery loaded, you can start using it
-      console.log('jQuery loaded locally');
-      callback();
-    });
-  }
-}
-
-loadjquery(init);
-
 /**
  * Stack holding the last selected cells, with their respective rows and columns.  If multi-select is off, the stack just holds the last selected cell.
  * I only need the one instance, but I understand better how classes are written, than objects with methods that act on itself.
@@ -85,13 +57,15 @@ class LastSelected {
  * @namespace
  * @prop {Boolean} multiSelect - If true, select many cells at once.  If false, select only one cell at a time; clicking a new cell will deselect the previous.
  * @prop {Boolean} selectCellsPrimary - If true, the primary mouse button will select and deselect cells, and eliminating candidates will be impossible with clicking.  If false, selecting cells is done with a secondary click.
+ * @prop {Number} highlightedNum - for use while multi-highlight is under development
  * @prop {Object} highlight - conditions about highlighting
  * @prop {String[] | Number[]} highlight.list - This value changes when different candidates are highlighted.
- * @prop {String} highlight.operator - one of "single", "and", ""
+ * @prop {String} highlight.operator - one of "single", "and", ...
  */
 const state = {
   multiSelect: false,
   selectCellsPrimary: false,
+  highlightedNum: 0,
   highlight: {
     list: [],
 
@@ -99,32 +73,74 @@ const state = {
 };
 const initialConditions = {
   showDigit: false,
-  candidatesPossible: true,
+  candidatesPossible: false,
 }
 const lastSelected = new LastSelected();
+
+
+loadjquery(init);
+
+// *************** define functions **********
+
+
+function loadScript(url, callback) {
+  var script = document.createElement('script');
+  script.src = url;
+  script.onload = callback;
+  document.head.appendChild(script);
+}
+
+function loadjquery(callback) {
+  if (navigator.onLine) {
+    // Online: Load jQuery from CDN
+    loadScript('https://code.jquery.com/jquery-3.6.0.min.js', function() {
+      // jQuery loaded, you can start using it
+      console.log('jQuery loaded from CDN');
+      callback();
+    });
+  } else {
+    // Offline: Load jQuery locally
+    loadScript('/assets/js/jquery-3.6.0.min.js', function() {
+      // jQuery loaded, you can start using it
+      console.log('jQuery loaded locally');
+      callback();
+    });
+  }
+}
 
 function init() {
 
 const $sudokuGrid = $( "#sudoku-grid" );
 const $controls = $( "#controls" );
-const highlighterBtnGrid = $( "#highlighter-btn-grid" );
+const $highlighterBtnGrid = $( "#highlighter-btn-grid" );
+const $coloringBtnGrid = $("#coloring-btn-grid");
 const $multiSelectBtn = $("#multi-select-btn");
-const $toggleMouseTypeSelectBtn = $("#toggle-mousetype-select-btn")
+const $mouseTypeEliminateCandidatesBtn = $("#mousetype-eliminate-candidates-btn");
+const $mouseTypeSelectCellsBtn = $("#mousetype-select-cells-btn");
 const $clearCandidatesBtn = $("#clear-candidates-btn");
 const $showCandidatesBtn = $("#show-candidates-btn");
 
 $multiSelectBtn.addClass(state.multiSelect ? "btn-dark" : "btn-light");
 $multiSelectBtn.on("click", toggleMultiSelect);
-$toggleMouseTypeSelectBtn.addClass(state.selectCellsPrimary ? "btn-dark" : "btn-light");
-$toggleMouseTypeSelectBtn.on("click", toggleMouseTypeSelect);
 $clearCandidatesBtn.on("click",clearCandidates);
 $showCandidatesBtn.on("click",showCandidates);
+
+$mouseTypeEliminateCandidatesBtn.on("click",mouseTypeEliminateCandidates);
+$mouseTypeSelectCellsBtn.on("click",mouseTypeSelectCells);
+if (state.selectCellsPrimary) {
+  $mouseTypeEliminateCandidatesBtn.addClass("btn-light").removeClass("btn-dark").attr("disabled",false);
+  $mouseTypeSelectCellsBtn.addClass("btn-dark").removeClass("btn-light").attr("disabled",true);
+} else {
+  $mouseTypeSelectCellsBtn.addClass("btn-light").removeClass("btn-dark").attr("disabled",false);
+  $mouseTypeEliminateCandidatesBtn.addClass("btn-dark").removeClass("btn-light").attr("disabled",true);
+}
 
 buildSudokuGrid();
 const $allCells = $sudokuGrid.find(".cell");
 const $allCandidates = $sudokuGrid.find(".cell .candidate");
 
 buildHighlightButtons();
+buildColoringButtons();
 
 $(document).on("keydown", keyDownHandler);
 
@@ -148,10 +164,14 @@ function cellMouseEventHandler($cell,mouseType) {
   return (function (event) {
     event.preventDefault();
     if (click ^ state.selectCellsPrimary) {
-      if ($(event.target).hasClass("candidate")) {
-        toggleElimination($(event.target),$cell);
-      }
       selectCell($cell,true);
+      if ($(event.target).hasClass("candidate")) {
+        if (state.multiSelect) {
+          toggleEliminationHandler($(event.target).data("value"),$allCells.filter(".selected"));
+        } else {
+          toggleEliminationHandler($(event.target).data("value"),$cell);
+        }
+      }
     } else {
       selectCell($cell)
     }
@@ -181,24 +201,45 @@ function selectCell($cell,force) {
   }
 }
 
+function toggleEliminationHandler(value,$cells) {
+  const $candidates = $cells.find(".candidate.val"+value);
+  if ($cells.length > 1) {
+    if ($candidates.filter(".eliminated").length) {
+      toggleElimination(value,$candidates,$cells,true);
+    } else {
+      toggleElimination(value,$candidates,$cells,false);
+    }
+  } else {
+    toggleElimination(value,$candidates,$cells);
+  }
+}
+
 /**
  * Toggles elimination on a candidate
  * @param {JQuery} $candidate - the candidate to toggle elimination on
  * @param {JQuery} $cell - the parent cell
  * @param {Boolean} [force] - a boolean (not just truthy/falsy) value to determine whether the candidate should be possible or eliminated.
  */
-function toggleElimination($candidate,$parentCell,force) {
-  const value = Number($candidate.data("value"));
-  $candidate.toggleClass("possible",force);
-  $candidate.toggleClass("eliminated",!force);
-  let possibles = $parentCell.data("possibles");
+function toggleElimination(value,$candidates,$cells,force) {
   if (force === true) {
-    possibles[value] = true;
+    $cells.data(`possible-${value}`,true);
+    $candidates.addClass("possible").removeClass("eliminated");
   } else if (force === false) {
-    possibles[value] = false;
+    $cells.data(`possible-${value}`,false);
+    $candidates.removeClass("possible").addClass("eliminated");
   } else {
-    possibles[value] = !possibles[value];
+    toggleElimination(value,$candidates,$cells,!$cells.data(`possible-${value}`))
   }
+}
+
+function possiblesList($cell) {
+  let list = [];
+  for (i=1;i<=9;i++) {
+    if ($cell.data(`possible-${i}`)) {
+      list.push(i)
+    }
+  }
+  return list
 }
 
 function keyDownHandler(event) {
@@ -232,30 +273,70 @@ function arrowSelect(key) {
   
 }
 
-function highlightCandidatesHandler(event) {
-
+function highlightCandidatesHandler($button,value) {
+return (function (event) {
+    $highlighterBtnGrid.children().removeClass("btn-warning").addClass("btn-secondary");
+    if (state.highlightedNum == value) {
+      state.highlightedNum = 0;
+      highlightCandidates(0);
+    } else {
+      state.highlightedNum = value;
+      highlightCandidates(value);
+      $button.addClass("btn-warning");
+    }
+    
+  })
 }
 
-function coloringHandler(event) {
+function highlightCandidates(value) {
+  value = (value ? value : state.highlightedNum);
+  $allCells.removeClass("highlighted");
+  if (value) {
+    console.log($allCells.filter(".show-candidates").filter(()=>$( this ).data(`possible-${value}`)))
+    $allCells.filter(".show-candidates").filter(()=>$( this ).data(`possible-${value}`)).addClass("highlighted");
+  }
+}
 
+function coloringHandler($button,color) {
+  return (function (event) {
+    console.log(color);
+    $coloringBtnGrid.children().removeClass("active");
+    $button.toggleClass("active");
+  })
+  
 }
 
 function clearCandidates() {
   $allCandidates.removeClass("possible")
     .addClass("eliminated");
-  $allCells.data("possibles",['',0,0,0,0,0,0,0,0,0]);
+  for (i=1;i<=9;i++) {
+    $allCells.data(`possible-${i}`,false);
+  }
+  $allCells.removeClass("highlighted"); // No candidates need to be highlighted
 }
 
 function showCandidates() {
   $allCandidates.addClass("possible")
     .removeClass("eliminated");
-  $allCells.data("possibles",['',1,1,1,1,1,1,1,1,1]);
+  for (i=1;i<=9;i++) {
+    $allCells.data(`possible-${i}`,true);
+  }
+  if (state.highlightedNum) {
+    // if any number is highlighted, all cells should be highlighted now.
+    $allCells.addClass("highlighted");
+  }
 }
 
-function toggleMouseTypeSelect() {
-  state.selectCellsPrimary = !state.selectCellsPrimary;
-  $toggleMouseTypeSelectBtn.toggleClass("btn-dark" , "btn-light");
-  $toggleMouseTypeSelectBtn.text(state.selectCellsPrimary ? "Select Cells" : "Eliminate Candidates")
+function mouseTypeSelectCells() {
+  state.selectCellsPrimary = true;
+  $mouseTypeEliminateCandidatesBtn.toggleClass("btn-dark btn-light").attr("disabled",false);
+  $mouseTypeSelectCellsBtn.toggleClass("btn-dark btn-light").attr("disabled",true);
+}
+
+function mouseTypeEliminateCandidates(){
+  state.selectCellsPrimary = false;
+  $mouseTypeSelectCellsBtn.toggleClass("btn-dark btn-light").attr("disabled",false);
+  $mouseTypeEliminateCandidatesBtn.toggleClass("btn-dark btn-light").attr("disabled",true);
 }
 
 function eliminateConflicts($cell, value) {
@@ -266,10 +347,13 @@ function eliminateConflicts($cell, value) {
     let possibles = $cell.data("possibles");
     possibles[value] = false;
     $cell.data({possibles});
-    $cell.find(".candidate").filter({value})
+    $cell.find(".candidate.val"+value)
       .addClass("eliminated")
       .removeClass("possible");
   })
+  if (state.highlightedNum == value) {
+    highlightCandidates(value);
+  }
 }
 
 // ************ utilities **********
@@ -304,6 +388,19 @@ function filterData(obj,opr = "and") {
   }
 }
 
+/**
+ * Used with the jQuery .filter() method, returns a filter function for cells with possible candidates of the given value.
+ * @param {Number} value - the value to match the possible candidates against
+ * @returns {Function} A function used as a test for each element in the set. this is the current DOM element.
+ * 
+ * Given a jQuery object that represents a set of DOM elements, the .filter() method constructs a new jQuery object from a subset of the matching elements. The supplied selector is tested against each element; all elements matching the selector will be included in the result.
+ */
+function filterPossibles(value) {
+  return (function() {
+    return $( this ).data(`possible-${value}`)
+  })
+}
+
 const display = { 
   show($el) {
     $el.addClass("show");
@@ -327,23 +424,36 @@ function buildSudokuGrid() {
       const block = 3*bigRow + bigCol;
       const $block = $("<div>")
         .attr("id","block-"+ block)
-        .addClass("block");
+        .addClass("block","block"+block);
       $sudokuGrid.append($block);
 
       for (let smRow=0; smRow <3 ; smRow++ ) {
         for (let smCol=0; smCol <3 ; smCol++ ) {
 
           const row = 3*bigRow+smRow;
-          const col = 3*bigRow + bigCol;
+          const col = 3*bigCol + smCol;
 
           const $cell = $("<div>")
             .attr("id", `cell-row${row}-col${col}`)
-            .addClass("cell",(initialConditions.showDigit ? "show-digit" : "show-candidates"))
-            .data("possibles", (initialConditions.candidatesPossible ? ['',1,1,1,1,1,1,1,1,1] : ['',0,0,0,0,0,0,0,0,0,0] ))
+            .data({row,col,block})
+            .addClass(["row"+row,"col"+col,"block"+block])
+            .addClass(["cell",(initialConditions.showDigit ? "show-digit" : "show-candidates")]);
+          if (initialConditions.candidatesPossible) {
+            for (let i = 1; i<=9 ; i++) {
+              $cell.data(`possible-${i}`,true);
+            }
+          } else {
+            for (let i = 1; i<=9 ; i++) {
+              $cell.data(`possible-${i}`,false);
+            }
+          }
+          
           $block.append($cell);
 
           const $digit = $("<div>")
             .addClass("digit", (initialConditions.showDigit ? "show" : "hide"))
+            .data({row,col,block})
+            .addClass(["row"+row,"col"+col,"block"+block])
           
           $cell.append($digit)
 
@@ -353,30 +463,46 @@ function buildSudokuGrid() {
               const $candidate=$("<div>")
                 .text(value)
                 .attr("id",`candidate-row${row}-col${col}-val${value}`)
-                .addClass("candidate",(initialConditions.showDigit ? "hide" : "show"), (initialConditions.candidatesPossible ? "possible" : "eliminated"))
-                .data({value})
+                .addClass("candidate",(initialConditions.showDigit ? "hide" : "show"))
+                .addClass((initialConditions.candidatesPossible ? "possible" : "eliminated"))
+                .data({row,col,block,value})
+                .addClass(["val"+value,"row"+row,"col"+col,"block"+block])
                 .css("gridColumn", candidateCol + 1)  // correctly positions
                 .css("gridRow",candidateRow + 1)
 
               $cell.append($candidate);
             }
           }
-          $cell.find("div").add($cell).data({row,col})
           $cell.on("click",cellMouseEventHandler($cell,"click"));
           $cell.on("contextmenu",cellMouseEventHandler($cell,"contextmenu"));
         }
       }
-      $block.find("div").add($block).data({block});
     }
   }
 }
 
 function buildHighlightButtons() {
-
+  for (let value=1; value<=9; value++) {
+    const $button = $("<button>");
+    $button.addClass("btn btn-secondary highlighter")
+      .data("value",value)
+      .text( value);
+    $highlighterBtnGrid.append($button);
+    $button.on("click",highlightCandidatesHandler($button,value));
+  }  
 }
 
 function buildColoringButtons() {
-
+  const colors = ["blue","purple","pink","red","orange","yellow","green","teal","cyan"];
+  
+  for (let c=0; c<colors.length; c++) {
+    const $button = $("<button>");
+    $button.addClass("btn coloring");
+    $button.addClass(colors[c]);
+    $button.data("color",colors[c])
+    $coloringBtnGrid.append($button);
+    $button.on("click",coloringHandler($button,colors[c]));
+  }
 }
 
 

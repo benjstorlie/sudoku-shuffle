@@ -21,9 +21,12 @@
           </div>
         </section>
         <section class="col-12 col-md-2">
-          <div id="controls">
-            <button type="button" id="multi-select-btn" class="btn btn-light">Multi-Select</button>
-            <button type="button" id="toggle-mousetype-select-btn" class="btn btn-light">Select Cells</button>
+          <div id="controls" class="btn-toolbar">
+            <button type="button" id="multi-select-btn" class="btn">Multi-Select</button>
+            <div class="btn-group-vertical" role="group">
+              <button type="button" id="mousetype-eliminate-candidates-btn" class="btn btn-mousetype">Eliminate Candidates</button>
+              <button type="button" id="mousetype-select-cells-btn" class="btn btn-mousetype">Select Cells</button>
+            </div>
             <button type="button" id="clear-candidates-btn" class="btn btn-light">Clear Candidates</button>
             <button type="button" id="show-candidates-btn" class="btn btn-light">Show Candidates</button>
             <div id="highlighter-btn-grid">

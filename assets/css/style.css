@@ -66,6 +66,10 @@ button.highlighter {
   border-radius: 0;
 }
 
+button.btn-mousetype {
+  font-size: .7rem;
+}
+
 .block {
   background-color: var(--sudoku-cell-border);
   gap: 2px;
@@ -80,7 +84,7 @@ button.highlighter {
   border-color: var(--selected-color);
 }
 
-.cell.highlighted {
+.highlighted {
   background-color: var(--highlight-color);
 }
 
@@ -129,38 +133,38 @@ button.highlighter {
   border: 2px solid #fff;
 }
 
-div[data-color="blue"] {
+.blue {
   background-color: var(--color-blue);
 }
 
-div[data-color="purple"] {
+.purple {
   background-color: var(--color-purple);
 }
 
-div[data-color="pink"] {
+.pink {
   background-color: var(--color-pink);
 }
 
-div[data-color="red"] {
+.red {
   background-color: var(--color-red);
 }
 
-div[data-color="orange"] {
+.orange {
   background-color: var(--color-orange);
 }
 
-div[data-color="yellow"] {
+.yellow {
   background-color: var(--color-yellow);
 }
 
-div[data-color="green"] {
+.green {
   background-color: var(--color-green);
 }
-div[data-color="teal"] {
+.teal {
   background-color: var(--color-teal);
 }
 
-div[data-color="cyan"] {
+.cyan {
   background-color: var(--color-cyan);
 }
 
