@@ -545,8 +545,6 @@ function buildColoringButtons() {
       } else {
         $selected.addClass(colors[c]).addClass("colored");
       }
-      $coloringBtnGrid.children().removeClass("active");
-      $button.toggleClass("active");
     });
   }
 
@@ -563,7 +561,6 @@ function buildColoringButtons() {
         for (let x=0; x<colors.length; x++) {
           $allCells.removeClass(colors[x]).removeClass("colored");
         }
-        $coloringBtnGrid.children().removeClass("active");
       }
     })
   $coloringBtnGrid.append($clear);
