@@ -10,7 +10,25 @@
   <body>
     <header>
       <div class= "h1">Sudoku</div>
-      <button class="btn">Start</button>
+      <form id="start-puzzle-form">
+        <button type="submit" class="btn">Start</button>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" name="puzzle-level" type="radio" id="easy" value="easy">
+          <label class="form-check-label" for="easy">Easy</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" name="puzzle-level" type="radio" id="medium" value="medium">
+          <label class="form-check-label" for="medium">Medium</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" name="puzzle-level" type="radio" id="hard" value="hard">
+          <label class="form-check-label" for="hard">Hard</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" name="puzzle-level" type="radio" id="extrahard" value="extrahard">
+          <label class="form-check-label" for="extrahard">Extra-Hard</label>
+        </div>
+      </form>
     </header>
 
     <main class="container-fluid">

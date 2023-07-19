@@ -13,7 +13,7 @@ class Puzzle {
 
   static copy(array) {
     let newCopy = [];
-    try {
+    if (array[0][0].hasOwnProperty("value")) {
       for (let row = 0; row < 9 ; row++) {
         newCopy[row] = [];
         for (let col = 0; col <9 ; col++) {
@@ -23,7 +23,7 @@ class Puzzle {
           }
         }
       }
-    } catch {
+    } else {
       for (let row = 0; row < 9 ; row++) {
         newCopy[row] = [];
         for (let col = 0; col <9 ; col++) {

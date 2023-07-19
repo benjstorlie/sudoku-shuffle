@@ -150,6 +150,15 @@ let puzzle = new Puzzle();
 buildHighlightButtons();
 buildColoringButtons();
 
+$("#start-puzzle-form").submit(function (e) { 
+  e.preventDefault();
+  let level = $("input[name='puzzle-level']:checked").val();
+  console.log(puzzles[level][0]);
+  puzzle = new Puzzle(puzzles[level][0]);
+  console.log(puzzle)
+  puzzle.fill();
+});
+
 $(document).on("keydown", keyDownHandler);
 
 // ********  define functions ********
