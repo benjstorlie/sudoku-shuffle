@@ -68,6 +68,8 @@ class Puzzle {
   }
 
   setPuzzle(singleMove) {
+    return new Promise((resolve,reject) => {
+      try {
     $("#coverscreen").addClass(".disable")
     let puzzle = singleMove || this.puzzle;
     let timestamp = new Date().getTime();
@@ -83,10 +85,16 @@ class Puzzle {
         }
       )
     );
-    $("#coverscreen").removeClass(".disable")
+    resolve();
+    } catch {
+      reject("Could not set puzzle.")
+    }
+    })
   }
 
   saveSingleMove($cells) {
+    return new Promise((resolve,reject) => {
+      try {
     $("#coverscreen").addClass(".disable")
     let saveCells = [];
     $cells.each((index,cell) => {
@@ -101,10 +109,16 @@ class Puzzle {
       saveCells[index] = {row,col,value:cellValue,possibles}
     })
     this.save({singleMove:saveCells});
-    $("#coverscreen").removeClass(".disable")
+    resolve();
+    } catch {
+      reject("Could not save puzzle.")
+    }
+    })
   }
 
   getPuzzle() {
+    return new Promise((resolve,reject) => {
+      try {
     $("#coverscreen").addClass(".disable")
     let timestamp = this.stack.shift();
     let puzzle = JSON.parse(
@@ -124,11 +138,17 @@ class Puzzle {
         this.puzzle[row][col]={value,possibles};
       });
     }
-    $("#coverscreen").removeClass(".disable")
+    resolve();
+    } catch {
+      reject("Could not get puzzle.")
+    }
+    })
 
   }
 
   fill(saveCells) {
+    return new Promise((resolve,reject) => {
+      try {
     $("#coverscreen").addClass(".disable")
     if (!saveCells) {
       $(".cell").removeClass("highlighted show-digit show-candidates");
@@ -208,10 +228,16 @@ class Puzzle {
         }
       });
     }
-    $("#coverscreen").removeClass(".disable")
+    resolve();
+    } catch {
+      reject("Could not fill grid.")
+    }
+    })
   }
 
   save() {
+    return new Promise((resolve,reject) => {
+      try {
     $("#coverscreen").addClass(".disable")
     for (let row = 0; row < 9 ; row++) {
       for (let col = 0; col <9 ; col++) {
@@ -228,8 +254,11 @@ class Puzzle {
       }
       this.puzzle[row][col].possibles = possibles;
     }
-    this.setPuzzle();
-    $("#coverscreen").removeClass(".disable")
+    this.setPuzzle().then(() =>resolve()).catch((err) => {throw new Error(err)})
+    } catch {
+      reject("Could not save grid.")
+    }
+    })
   }
 
 }
