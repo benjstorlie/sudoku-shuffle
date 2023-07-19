@@ -554,10 +554,17 @@ function buildColoringButtons() {
     .text("Clear")
     .css("grid-column-start","span 3")
     .on("click",function (event) {
-      for (let x=0; x<colors.length; x++) {
-        $allCells.removeClass(colors[x]).removeClass("colored");
+      const $selected = $allCells.filter(".selected");
+      if ($selected.filter(".colored").length) {
+        for (let x=0; x<colors.length; x++) {
+          $selected.removeClass(colors[x]).removeClass("colored");
+        }
+      } else {
+        for (let x=0; x<colors.length; x++) {
+          $allCells.removeClass(colors[x]).removeClass("colored");
+        }
+        $coloringBtnGrid.children().removeClass("active");
       }
-      $coloringBtnGrid.children().removeClass("active");
     })
   $coloringBtnGrid.append($clear);
 
