@@ -63,8 +63,8 @@ class LastSelected {
  * @prop {String} highlight.operator - one of "single", "and", ...
  */
 const state = {
-  multiSelect: true,
-  selectCellsPrimary: true,
+  multiSelect: false,
+  selectCellsPrimary: false,
   solve: true,
   highlightedNum: 0,
   highlight: {
