@@ -143,6 +143,10 @@ buildSudokuGrid();
 const $allCells = $sudokuGrid.find(".cell");
 const $allCandidates = $sudokuGrid.find(".cell .candidate");
 
+// Assume blank grid
+let puzzle = new Puzzle();
+
+
 buildHighlightButtons();
 buildColoringButtons();
 
@@ -170,11 +174,7 @@ function cellMouseEventHandler($cell,mouseType) {
     if (click ^ state.selectCellsPrimary) {
       selectCell($cell,true);
       if ($(event.target).hasClass("candidate")) {
-        if (state.multiSelect) {
-          toggleEliminationHandler($(event.target).data("value"),$allCells.filter(".selected"));
-        } else {
-          toggleEliminationHandler($(event.target).data("value"),$cell);
-        }
+        toggleEliminationHandler($(event.target).data("value"),$allCells.filter(".selected"));
       }
     } else {
       selectCell($cell)
@@ -225,14 +225,19 @@ function toggleEliminationHandler(value,$cells) {
  * @param {Boolean} [force] - a boolean (not just truthy/falsy) value to determine whether the candidate should be possible or eliminated.
  */
 function toggleElimination(value,$candidates,$cells,force) {
+  if (force === undefined) {
+    if ($cells.length > 1) {
+      force = true;
+    } else {
+      force = !$cells.data(`possible-${value}`);
+    }
+  }
   if (force === true) {
     $cells.data(`possible-${value}`,true);
     $candidates.addClass("possible").removeClass("eliminated");
   } else if (force === false) {
     $cells.data(`possible-${value}`,false);
     $candidates.removeClass("possible").addClass("eliminated");
-  } else {
-    toggleElimination(value,$candidates,$cells,!$cells.data(`possible-${value}`))
   }
   highlightCandidates();
 }
@@ -327,7 +332,7 @@ function arrowSelect(key) {
   }
   const newRow = row + d[0];
   const newCol = col + d[1];
-  
+
   $allCells.removeClass("selected");
   const $newCell = $(`#cell-row${newRow}-col${newCol}`);
   $newCell.addClass("selected")
