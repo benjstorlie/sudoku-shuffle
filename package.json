@@ -1,0 +1,20 @@
+{
+  "name": "collaborative-sudoku-app",
+  "version": "1.0.0",
+  "description": "A collaborative MERN-stack Sudoku app.",
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/collaborative-sudoku-app.git"
+  },
+  "keywords": ["sudoku", "MERN", "collaborative", "game"],
+  "scripts": {
+    "start": "npm run start-server && npm run start-client",
+    "start-server": "cd server && npm start",
+    "start-client": "cd client && npm start",
+    "install-all": "cd server && npm install && cd ../client && npm install"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
