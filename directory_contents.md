@@ -1,0 +1,48 @@
+# Directory Contents
+
+## Files
+
+- [client/](client/): This directory contains the React front end code.
+	- [public/](client/public/): Static assets and the main HTML file.
+	- [src/](client/src/): React application source code.
+		- [components/](client/src/components/)
+			- [auth/](client/src/components/auth/): Authentication-related components.
+				- [Login.js](client/src/components/auth/Login.js)
+				- [Register.js](client/src/components/auth/Register.js)
+			- [game/](client/src/components/game/): Components related to rendering the Sudoku game.
+				- [Cell.js](client/src/components/game/Cell.js)
+				- [SudokuGrid.js](client/src/components/game/SudokuGrid.js)
+			- [nav/](client/src/components/nav/)
+				- [Footer.js](client/src/components/nav/Footer.js)
+				- [Header.js](client/src/components/nav/Header.js)
+				- [Nav.js](client/src/components/nav/Nav.js)
+			- [profile/](client/src/components/profile/): Components related to user profiles and statistics.
+				- [Profile.js](client/src/components/profile/Profile.js)
+		- [contexts/](client/src/contexts/)
+			- [GameContext.js](client/src/contexts/GameContext.js): This is where the components get all the game data.
+		- [utils/](client/src/utils/)
+			- [api.js](client/src/utils/api.js)
+			- [gameUtils.js](client/src/utils/gameUtils.js): Handles functions that change the game data, imported into [GameContext.js](./client/src/contexts/GameContext.js).
+		- [App.css](client/src/App.css)
+		- [App.js](client/src/App.js): Main React component.
+		- [App.test.js](client/src/App.test.js)
+		- [index.css](client/src/index.css)
+		- [index.js](client/src/index.js): Entry point for the React app.
+		- [logo.svg](client/src/logo.svg)
+		- [reportWebVitals.js](client/src/reportWebVitals.js)
+		- [setupTests.js](client/src/setupTests.js)
+	- [.gitignore](client/.gitignore)
+	- [package.json](client/package.json)
+- [server/](server/): This directory contains the Node.js back end code.
+	- [models/](server/models/): MongoDB schema definitions.
+	- [resolvers/](server/resolvers/)
+	- [routes/](server/routes/): Express routes for different parts of the application.
+	- [utils/](server/utils/): Utility functions (e.g., JWT handling).
+	- [package.json](server/package.json)
+	- [server.js](server/server.js): Entry point for the Express server.
+- [.gitignore](.gitignore)
+- [development-guide.md](development-guide.md)
+- [dir.js](dir.js)
+- [directory_contents.md](directory_contents.md)
+- [package.json](package.json)
+- [README.md](README.md)
