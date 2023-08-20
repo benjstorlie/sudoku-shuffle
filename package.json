@@ -1,14 +1,14 @@
 {
-  "name": "collaborative-sudoku-app",
+  "name": "sudoku-shuffle",
   "version": "1.0.0",
-  "description": "A collaborative MERN-stack Sudoku app.",
+  "description": "Play Sudoku.",
   "author": "Your Name",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/collaborative-sudoku-app.git"
+    "url": "https://github.com/benjstorlie/sudoku-shuffle.git"
   },
-  "keywords": ["sudoku", "MERN", "collaborative", "game"],
+  "keywords": ["sudoku", "MERN", "game"],
   "scripts": {
     "start": "npm run start-server && npm run start-client",
     "start-server": "cd server && npm start",
