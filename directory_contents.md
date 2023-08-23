@@ -2,6 +2,8 @@
 
 ## Files
 
+- [archive/](archive/)
+	- [puzzles/](archive/puzzles/)
 - [client/](client/): This directory contains the React front end code.
 	- [public/](client/public/): Static assets and the main HTML file.
 	- [src/](client/src/): React application source code.
@@ -32,17 +34,27 @@
 		- [reportWebVitals.js](client/src/reportWebVitals.js)
 		- [setupTests.js](client/src/setupTests.js)
 	- [.gitignore](client/.gitignore)
+	- [package-lock.json](client/package-lock.json)
 	- [package.json](client/package.json)
 - [server/](server/): This directory contains the Node.js back end code.
+	- [config/](server/config/)
+		- [connection.js](server/config/connection.js)
 	- [models/](server/models/): MongoDB schema definitions.
-	- [resolvers/](server/resolvers/)
-	- [routes/](server/routes/): Express routes for different parts of the application.
+		- [Game.js](server/models/Game.js)
+		- [User.js](server/models/User.js)
+		- [index.js](server/models/index.js)
+	- [schemas/](server/schemas/): GraphQL resolvers, mutations, typedefs
+		- [index.js](server/schemas/index.js)
+		- [resolvers.js](server/schemas/resolvers.js)
+		- [typeDefs.js](server/schemas/typeDefs.js)
 	- [utils/](server/utils/): Utility functions (e.g., JWT handling).
+		- [auth.js](server/utils/auth.js)
+	- [package-lock.json](server/package-lock.json)
 	- [package.json](server/package.json)
 	- [server.js](server/server.js): Entry point for the Express server.
 - [.gitignore](.gitignore)
+- [README.md](README.md)
 - [development-guide.md](development-guide.md)
 - [dir.js](dir.js)
 - [directory_contents.md](directory_contents.md)
 - [package.json](package.json)
-- [README.md](README.md)
