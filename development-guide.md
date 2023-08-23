@@ -111,3 +111,118 @@ This is to be able to add an undo function
 2. Deploy the app to Heroku
 3. **??? Something with the Procfile?**
 4. **??? Something with running commands on the Heroku terminal?**
+
+## Some Starter Code
+
+Since it's only the front-end that is reading the game data, maybe it can be just saved as a json, and not bother with saving the data specifically with graphql.
+
+graphQL Schema
+```
+type Cell {
+  row: Int!
+  col: Int!
+  value: Int
+  candidates: [Int]
+}
+
+type Query {
+  getCell(row: Int!, col: Int!): Cell
+}
+
+type Mutation {
+  updateCellValue(row: Int!, col: Int!, value: Int, candidates: [Int]): Cell
+}
+```
+
+Mongoose Model
+```
+const mongoose = require('mongoose');
+
+const cellSchema = new mongoose.Schema({
+  row: Number,
+  col: Number,
+  value: Number,
+  candidates: { type: Set, default: new Set() } // Using a Set for candidates
+});
+
+const Cell = mongoose.model('Cell', cellSchema);
+
+module.exports = Cell;
+```
+
+Resolvers
+```
+const Cell = require('./path-to-cell-model');
+
+const resolvers = {
+  Mutation: {
+    updateCellValue: async (_, { row, col, value, candidates }) => {
+      const cell = await Cell.findOneAndUpdate(
+        { row, col },
+        { value, candidates: new Set(candidates) },
+        { new: true }
+      );
+
+      return cell;
+    }
+  }
+};
+
+module.exports = resolvers;
+```
+
+React Context for Game State
+```
+import React, { createContext, useContext, useState } from 'react';
+
+const SudokuContext = createContext();
+
+export const SudokuProvider = ({ children }) => {
+  const [gameState, setGameState] = useState(/* Your initial game state here */);
+
+  return (
+    <SudokuContext.Provider value={{ gameState, setGameState }}>
+      {children}
+    </SudokuContext.Provider>
+  );
+};
+
+export const useSudokuContext = () => useContext(SudokuContext);
+```
+
+Wrap SudokuProvider around Components
+```
+import React from 'react';
+import { SudokuProvider } from './SudokuContext';
+import SudokuGrid from './SudokuGrid';
+
+const App = () => {
+  return (
+    <SudokuProvider>
+      <SudokuGrid />
+    </SudokuProvider>
+  );
+};
+
+export default App;
+```
+
+Use Context in Cell Component
+```
+import React from 'react';
+import { useSudokuContext } from './SudokuContext';
+
+const Cell = () => {
+  const { gameState, setGameState } = useSudokuContext();
+
+  // Access and update gameState as needed
+
+  return (
+    <div className="cell">
+      {/* Render cell content */}
+    </div>
+  );
+};
+
+export default Cell;
+```
