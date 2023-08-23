@@ -2,7 +2,9 @@
   "name": "sudoku-shuffle",
   "version": "1.0.0",
   "description": "Play Sudoku.",
-  "author": "Your Name",
+  "contributors": [
+    "Ben Storlie <benjstorlie@gmail.com> (https://benjstorlie.github.io/)"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
