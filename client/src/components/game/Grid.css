@@ -1,0 +1,44 @@
+
+
+.show {
+  z-index: 2;
+}
+
+.hide {
+  z-index: -1;
+}
+
+#sudoku-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+  gap: 3px;
+  border: '3px solid';
+  border-color: var( --sudoku-grid-border-color);
+  background-color: var(--sudoku-grid-bg);
+}
+
+.cell {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  border-color: var(--sudoku-grid-border-color);
+}
+
+.digit {
+  grid-area: 1 / 1 / 4 / 4;
+  color: var(--digit-color);
+}
+
+.digit.given {
+  color: var(--given-color);
+}
+
+.candidate.eliminated {
+  color: var(--sudoku-grid-bg);
+}
+
+.candidate:hover {
+  background-color: var(--candidate-hover);
+  cursor: pointer;
+}
