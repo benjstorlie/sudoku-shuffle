@@ -1,3 +1,16 @@
+:root {
+  --sudoku-grid-bg: #fae7c1;
+  --sudoku-grid-border-color: #000;
+  --candidate-color: #000;
+  --candidate-hover: #556ecf;
+  --cell-highlight: #ebd421f3;
+  --cell-selected: #ff0000;
+  --digit-color: #000;
+  --given-color: #1414bd;
+  --cell-border-width: 2px;
+  --box-border-width: 3px;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
