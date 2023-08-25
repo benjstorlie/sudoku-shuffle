@@ -1,9 +1,19 @@
-var apiUrl = "https://sudoku-api.vercel.app/api/dosuku?query={newboard(limit:5){grids{value,solution,difficulty},results,message}}"
 
-/**This function returns an object containing a temporary template board for easy, medium, and hard difficulties.
-It is a one-to-one representation of the object returned by using the /sudoku-api.vercel.app/ api.
+/** This function returns an object containing a temporary template board for easy, medium, and hard difficulties.
+* It is a one-to-one representation of the object returned by using the /sudoku-api.vercel.app/ api.
 
-This function is temporary and will be replaced by a function which actually gets data directly from the api**/
+* This function is temporary and will be replaced by a function which actually gets data directly from the api 
+* 
+
+* Example:
+
+* board = temporaryGetBoard("hard")
+
+* board values are at: board.newboard.grids[0].value 
+* as list of list of 9 numbers. 
+
+* solution values are at: board.newboard.grids[0].solution 
+* as list of list of 9 numbers. **/
 function temporaryGetBoard(difficulty){
     var board = {};
     if (difficulty == "easy"){
@@ -115,3 +125,11 @@ function temporaryGetBoard(difficulty){
     return board;
 }
 
+var apiUrl = "https://sudoku-api.vercel.app/api/dosuku?query={newboard(limit:5){grids{value,solution,difficulty},results,message}}"
+
+/** This function calls the api at 
+ * https://sudoku-api.vercel.app/api/dosuku?query={newboard(limit:5){grids{value,solution,difficulty},results,message}} 
+ * **/
+function getBoard(difficulty){
+
+}
