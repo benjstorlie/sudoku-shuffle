@@ -1,11 +1,46 @@
-//Client
-
 var apiUrl = "https://sudoku-api.vercel.app/api/dosuku?query={newboard(limit:5){grids{value,solution,difficulty},results,message}}"
 
-//
+/**This function returns an object containing a temporary template board for easy, medium, and hard difficulties.
+It is a one-to-one representation of the object returned by using the /sudoku-api.vercel.app/ api.
+
+This function is temporary and will be replaced by a function which actually gets data directly from the api**/
 function temporaryGetBoard(difficulty){
     var board = {};
-
+    if (difficulty == "easy"){
+        board = {
+            "newboard": {
+                "grids": [
+                    {
+                        "value": [
+                            [ 2, 0, 0, 0, 1, 0, 0, 6, 0 ], 
+                            [ 0, 0, 0, 0, 2, 0, 0, 0, 8 ], 
+                            [ 0, 0, 0, 3, 0, 7, 2, 0, 5 ], 
+                            [ 0, 1, 8, 0, 5, 0, 0, 2, 7 ], 
+                            [ 0, 2, 0, 7, 8, 6, 9, 3, 0 ], 
+                            [ 3, 0, 7, 0, 0, 0, 0, 0, 4 ], 
+                            [ 0, 0, 0, 9, 0, 0, 5, 7, 6 ], 
+                            [ 6, 0, 0, 2, 7, 5, 1, 8, 3 ], 
+                            [ 0, 5, 3, 8, 6, 1, 4, 0, 0 ]
+                        ],
+                        "solution": [
+                            [ 2, 3, 4, 5, 1, 8, 7, 6, 9 ], 
+                            [ 5, 7, 1, 6, 2, 9, 3, 4, 8 ], 
+                            [ 8, 9, 6, 3, 4, 7, 2, 1, 5 ], 
+                            [ 9, 1, 8, 4, 5, 3, 6, 2, 7 ], 
+                            [ 4, 2, 5, 7, 8, 6, 9, 3, 1 ], 
+                            [ 3, 6, 7, 1, 9, 2, 8, 5, 4 ], 
+                            [ 1, 8, 2, 9, 3, 4, 5, 7, 6 ], 
+                            [ 6, 4, 9, 2, 7, 5, 1, 8, 3 ], 
+                            [ 7, 5, 3, 8, 6, 1, 4, 9, 2 ]
+                        ],
+                        "difficulty": "Easy"
+                    }
+                ],
+                "results": 1,
+                "message": "All Ok"
+            }
+        }
+    }
     if (difficulty == "medium"){
         board = {
             "newboard": {
@@ -40,8 +75,43 @@ function temporaryGetBoard(difficulty){
                 "message": "All Ok"
             }
         }
-        console.log(board.newboard.grids[0].solution )
     }
+    if (difficulty == "hard"){
+        board = {
+            "newboard": {
+                "grids": [
+                    {
+                        "value": [
+                            [ 6, 0, 0, 0, 0, 0, 0, 0, 0 ], 
+                            [ 0, 1, 0, 0, 0, 0, 0, 8, 0 ], 
+                            [ 4, 0, 8, 0, 0, 0, 6, 5, 0 ], 
+                            [ 0, 3, 0, 0, 0, 0, 0, 0, 0 ], 
+                            [ 0, 0, 0, 0, 0, 0, 0, 7, 0 ], 
+                            [ 1, 0, 0, 7, 0, 0, 0, 0, 6 ], 
+                            [ 3, 0, 0, 0, 0, 0, 0, 0, 8 ], 
+                            [ 0, 0, 0, 1, 0, 8, 0, 0, 0 ], 
+                            [ 8, 0, 0, 5, 0, 0, 1, 0, 0 ]
+                        ],
+                        "solution": [
+                            [ 6, 5, 3, 4, 8, 1, 9, 2, 7 ], 
+                            [ 7, 1, 9, 2, 5, 6, 3, 8, 4 ], 
+                            [ 4, 2, 8, 3, 7, 9, 6, 5, 1 ], 
+                            [ 5, 3, 7, 8, 6, 4, 2, 1, 9 ], 
+                            [ 2, 8, 6, 9, 1, 3, 4, 7, 5 ], 
+                            [ 1, 9, 4, 7, 2, 5, 8, 3, 6 ], 
+                            [ 3, 7, 1, 6, 4, 2, 5, 9, 8 ], 
+                            [ 9, 4, 5, 1, 3, 8, 7, 6, 2 ], 
+                            [ 8, 6, 2, 5, 9, 7, 1, 4, 3 ]
+                        ],
+                        "difficulty": "Hard"
+                    }
+                ],
+                "results": 1,
+                "message": "All Ok"
+            }
+        }
+    }
+    
+    return board;
 }
 
-temporaryGetBoard("medium");
