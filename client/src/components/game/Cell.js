@@ -5,18 +5,19 @@ import { iter, possibleCandidatesArr } from '../../utils/gameUtils'
 
 export default function Cell({row, col}) {
 
+  // *TODO* use useContext to set these values
   const [value, setValue] = useState(0);
+  const [possibleSet, setPossibleSet] = useState(new Set([1,2,3]));
+  const [highlighted, setHighlighted] = useState(false);
   const [color, setColor] = useState('var(--sudoku-grid-bg)');
-  // *TODO* use useContext to set this value
-  const possibleSet = new Set([1,2,3])
   const isPossibleArr = possibleCandidatesArr(possibleSet);
 
   setColor(color === '' ? 'var(--sudoku-grid-bg)' : color);
 
-  const box = 3*row + col;
+  const box = 3*row + col; // maybe this won't be used here
 
   return (
-    <div className="cell">
+    <div className={`cell ${highlighted ? 'highlighted' : ''}`}>
       {value ? (
         <Digit value={value} />
       ) : (
