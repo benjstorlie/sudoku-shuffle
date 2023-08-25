@@ -1,0 +1,1 @@
+var apiUrl = "https://sudoku-api.vercel.app/api/dosuku?query={newboard(limit:5){grids{value,solution,difficulty},results,message}}"
