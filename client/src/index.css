@@ -7,6 +7,8 @@
   --cell-selected: #ff0000;
   --digit-color: #000;
   --given-color: #1414bd;
+  --cell-border-width: 2px;
+  --box-border-width: 3px;
 }
 
 body {
