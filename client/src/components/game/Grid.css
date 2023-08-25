@@ -1,5 +1,12 @@
 
 
+.show {
+  z-index: 2;
+}
+
+.hide {
+  z-index: -1;
+}
 
 #sudoku-grid,
 .box,
@@ -11,7 +18,7 @@
 
 #sudoku-grid {
   gap: var(--box-border-width);
-  border: '3px solid';
+  border: 3px solid;
   border-color: var( --sudoku-grid-border-color);
   background-color: var( --sudoku-grid-border-color);
 }
@@ -20,17 +27,38 @@
   gap: var(--cell-border-width)
 }
 
+.cell {
+  background-color: var(--sudoku-bg-color);
+  border: 2px solid var(--sudoku-bg-color);
+}
+
+.cell.selected {
+  border-color: var(--selected-color);
+}
+
+.highlighted {
+  background-color: var(--highlight-color);
+  border: 2px solid var(--highlight-color);
+}
+
 .digit {
+  display: flex;
   grid-area: 1 / 1 / 4 / 4;
   color: var(--digit-color);
+  justify-content: center;
+  align-items: center;
+  font-size: 48px;
 }
 
 .digit.given {
   color: var(--given-color);
 }
 
-.candidate.eliminated {
-  color: var(--sudoku-grid-bg);
+.candidate {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
 }
 
 .candidate:hover {

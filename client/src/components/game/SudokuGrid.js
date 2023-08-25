@@ -10,11 +10,11 @@ export default function SudokuGrid() {
   return (
     <div id="sudoku-grid">
       {
-        iter(3).map((band) => {
-          iter(3).map((stack) => {
+        iter(3).map((band) => (
+          iter(3).map((stack) => (
             <Box key={3*band+stack} band={band} stack={stack}/>
-          })
-        })
+          ))
+        ))
       }
     </div>
   )
@@ -28,11 +28,11 @@ function Box({band, stack}) {
   return (
     <div style={style} className="box">
       {
-        iter(3,3*band).map((row) => {
-          iter(3,3*stack).map((col) => {
+        iter(3,3*band).map((row) => (
+          iter(3,3*stack).map((col) => (
             <Cell key={`R${row}C${col}`} row={row} col={col}/>
-          })
-        })
+          ))
+        ))
       }
     </div>
   )

@@ -1,62 +1,69 @@
 import React, {useState} from 'react';
-import './Grid.css';
 import { iter, possibleCandidatesArr } from '../../utils/gameUtils'
 
 
 export default function Cell({row, col}) {
 
   // *TODO* use useContext to set these values
+  // eslint-disable-next-line
   const [value, setValue] = useState(0);
+  // eslint-disable-next-line
   const [possibleSet, setPossibleSet] = useState(new Set([1,2,3]));
+  // eslint-disable-next-line
   const [highlighted, setHighlighted] = useState(false);
+  // eslint-disable-next-line
   const [color, setColor] = useState('var(--sudoku-grid-bg)');
+  // eslint-disable-next-line
   const isPossibleArr = possibleCandidatesArr(possibleSet);
-
-  setColor(color === '' ? 'var(--sudoku-grid-bg)' : color);
-
+  // eslint-disable-next-line
   const box = 3*row + col; // maybe this won't be used here
 
+  const styles = {
+    cell: {
+      backgroundColor: color
+    },
+    /** 
+     * Style object for candidates
+     * @param {number} num - 0-indexed candidate number
+     * @returns {{}}
+     */
+    candidate: (num) => ({
+      gridRow: (Math.floor(num/3) + 1) + ' / span 1',
+      gridColumn: (num % 3 + 1) + ' / span 1',
+      color: isPossibleArr[num] ? 'var(--candidate-color)' : color,
+    })
+  }
+
   return (
-    <div className={`cell ${highlighted ? 'highlighted' : ''}`}>
-      {value ? (
-        <Digit value={value} />
-      ) : (
+    <div className={`cell ${highlighted ? 'highlighted' : ''}`} style={styles.cell}>
+        <Digit value={value} show={!!value}/>
+      {
         iter(9).map((num) => (
           <Candidate 
             key={num} 
             num={num} 
-            possible={isPossibleArr[num]}
-            color={color} 
+            style={styles.candidate(num)}
+            show={!value}
           />
         ))
-      )}
+      }
     </div>
   );
 }
 
-function Digit({value}) {
+function Digit({value, show}) {
 
   // in css, grid-area: 1 / 1 / 4 / 4, to fill the cell
   
   return (
-    <div>{value ? value : ''}</div>
+    <div className={`digit ${show ? 'show' : 'hide'}`}>{value}</div>
   )
 }
 
-function Candidate({num, color, possible}) {
-
-  const row = (num-1) % 3;
-  const col = (num-1 - 3*row);
-
-  // Grid positioning
-  const style = {
-    gridRow: (row + 1) + ' span 1',
-    gridColumn: (col + 1) + ' span 1',
-    color: possible ? 'var(--candidate-color)' : color
-  }
-
+function Candidate({num, style, show}) {
   return (
-    <div style={style} >
+    <div  className={`candidate ${show ? 'show' : 'hide'}`} style={style} >
+      {num+1}
     </div>
   )
 }
