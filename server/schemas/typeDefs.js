@@ -1,31 +1,30 @@
-const { gql } = require('apollo-server-express');
+const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
-  type Game {
-    _id: ID!
-    userId: ID!
-    boardData: JSON!
-    difficulty: String!
-    givens: [[Int!]!]!  # Array of arrays containing two integers
-    elapsedTime: Float!
+  type Profile {
+    _id: ID
+    name: String
+    email: String
+    password: String
   }
 
   type Auth {
     token: ID!
-    user: User
-  }
-  
-  type User {
-    _id: ID!
-    # other fields
+    profile: Profile
   }
 
   type Query {
-    # the queries defined in ./resolvers.js
+    profiles: [Profile]!
+    profile(profileId: ID!): Profile
+    # Because we have the context functionality in place to check a JWT and decode its data, we can use a query that will always find and return the logged in user's data
+    me: Profile
   }
 
   type Mutation {
-    # the mutations defined in ./resolvers.js
+    addProfile(name: String!, email: String!, password: String!): Auth
+    login(email: String!, password: String!): Auth
+
+    removeProfile: Profile
   }
 `;
 
