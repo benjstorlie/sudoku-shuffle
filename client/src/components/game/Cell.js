@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
-import { iter, possibleCandidatesArr } from '../../utils/gameUtils'
+import { iter } from '../../utils/gameUtils';
+import { useGameContext, GameContextProps } from '../../utils/GameContext';
+
 
 
 export default function Cell({row, col}) {
@@ -13,24 +15,30 @@ export default function Cell({row, col}) {
   const [highlighted, setHighlighted] = useState(false);
   // eslint-disable-next-line
   const [color, setColor] = useState('var(--sudoku-grid-bg)');
-  // eslint-disable-next-line
-  const isPossibleArr = possibleCandidatesArr(possibleSet);
-  // eslint-disable-next-line
-  const box = 3*row + col; // maybe this won't be used here
+
+  /** @type {GameContextProps} */
+  const { 
+    gameArray,
+    colorArray, 
+    highlightedDigit, 
+  } = useGameContext();
+
+
 
   const styles = {
+    /** @type {React.CSSProperties} */
     cell: {
       backgroundColor: color
     },
     /** 
      * Style object for candidates
      * @param {number} num - 0-indexed candidate number
-     * @returns {{}}
+     * @returns {React.CSSProperties}
      */
     candidate: (num) => ({
       gridRow: (Math.floor(num/3) + 1) + ' / span 1',
       gridColumn: (num % 3 + 1) + ' / span 1',
-      color: isPossibleArr[num] ? 'var(--candidate-color)' : color,
+      color: possibleSet.has(num) ? 'var(--candidate-color)' : color,
     })
   }
 
@@ -60,6 +68,11 @@ function Digit({value, show}) {
   )
 }
 
+/**
+ * Candidate Element
+ * @param {{num:number,style: React.CSSProperties, show: boolean}} CandidateProps
+ * @returns {React.JSX.Element}
+ */
 function Candidate({num, style, show}) {
   return (
     <div  className={`candidate ${show ? 'show' : 'hide'}`} style={style} >
