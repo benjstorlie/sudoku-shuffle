@@ -1,34 +1,34 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { iter } from '../../utils/gameUtils';
-import { useGameContext, GameContextProps } from '../../utils/GameContext';
+import { useGameContext,
+  // eslint-disable-next-line
+   GameContextProps 
+  } from '../../utils/GameContext';
 
 
 
 export default function Cell({row, col}) {
-
-  // *TODO* use useContext to set these values
-  // eslint-disable-next-line
-  const [value, setValue] = useState(0);
-  // eslint-disable-next-line
-  const [possibleSet, setPossibleSet] = useState(new Set([1,2,3]));
-  // eslint-disable-next-line
-  const [highlighted, setHighlighted] = useState(false);
-  // eslint-disable-next-line
-  const [color, setColor] = useState('var(--sudoku-grid-bg)');
 
   /** @type {GameContextProps} */
   const { 
     gameArray,
     colorArray, 
     highlightedDigit, 
+    selected,
+    toggleSelected,
+    toggleCandidate,
   } = useGameContext();
 
-
+  const {value, candidates} = gameArray[row][col];
+  const color = colorArray[row][col] ? colorArray[row][col] :  'var(--sudoku-grid-bg)';
+  const isHighlighted = (!value && candidates.has(highlightedDigit));
+  const isSelected = selected.includes(`R${row}C${col}`);
 
   const styles = {
     /** @type {React.CSSProperties} */
     cell: {
-      backgroundColor: color
+      backgroundColor: color,
+      borderColor: isSelected ? 'red' : 'transparent',
     },
     /** 
      * Style object for candidates
@@ -36,47 +36,35 @@ export default function Cell({row, col}) {
      * @returns {React.CSSProperties}
      */
     candidate: (num) => ({
-      gridRow: (Math.floor(num/3) + 1) + ' / span 1',
-      gridColumn: (num % 3 + 1) + ' / span 1',
-      color: possibleSet.has(num) ? 'var(--candidate-color)' : color,
+      gridRow: (Math.floor((num-1)/3) + 1) + ' / span 1',
+      gridColumn: ((num-1) % 3 + 1) + ' / span 1',
+      color: candidates.has(num) ? 'var(--candidate-color)' : color,
     })
   }
 
+  function onCellClick() {
+    return (() => toggleSelected(`R${row}C${col}`));
+  }
+
+  function onCandidateClick(num) {
+    return (() => toggleCandidate(num));
+  }
+
   return (
-    <div className={`cell ${highlighted ? 'highlighted' : ''}`} style={styles.cell}>
-        <Digit value={value} show={!!value}/>
+    <div className={`cell ${isHighlighted ? 'highlighted' : ''}`} style={styles.cell} onClick={onCellClick}>
+        <div className={`digit ${value ? 'show' : 'hide'}`}>{value}</div>
       {
-        iter(9).map((num) => (
-          <Candidate 
-            key={num} 
-            num={num} 
-            style={styles.candidate(num)}
-            show={!value}
-          />
+        iter(9,1).map((num) => (
+          <div 
+            key={num}
+            className={`candidate ${value ? 'hide' : 'show'}`} 
+            style={styles.candidate(num)} 
+            onClick={onCandidateClick(num)}
+          >
+            {num}
+          </div>
         ))
       }
     </div>
   );
-}
-
-function Digit({value, show}) {
-
-  // in css, grid-area: 1 / 1 / 4 / 4, to fill the cell
-  
-  return (
-    <div className={`digit ${show ? 'show' : 'hide'}`}>{value}</div>
-  )
-}
-
-/**
- * Candidate Element
- * @param {{num:number,style: React.CSSProperties, show: boolean}} CandidateProps
- * @returns {React.JSX.Element}
- */
-function Candidate({num, style, show}) {
-  return (
-    <div  className={`candidate ${show ? 'show' : 'hide'}`} style={style} >
-      {num+1}
-    </div>
-  )
 }

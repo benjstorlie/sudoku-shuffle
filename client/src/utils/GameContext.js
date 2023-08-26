@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState } from 'react';
 
 // import game actions from game utils, to be able to pass them along as game context props.
 import { 
+  // eslint-disable-next-line
   Cell, 
   gridArr,
   enterDigitHandler, 
@@ -85,7 +86,7 @@ export default function GameProvider( {children}) {
 
   /** the last selected cell is the first cell in the list of selected cells, or, if there are no cells selected, it will just give an empty string
    * @type {string} */
-  const lastSelected = selected[0] ?? '';
+  const lastSelected = selected[0] || '';
 
   const enterDigit = enterDigitHandler(setGameArray,selected);
 
