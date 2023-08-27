@@ -5,6 +5,30 @@
 */
 
 /**
+ * *TODO* Make sure everything being included in the game context is included here, and add a description
+ * - it's confusing, because it would be nice if the descriptions from where they originally got defined got passed along
+ * - but this is at least a short description that can be read in the other files that use {@linkcode useGameContext}
+ * @typedef GameContextProps
+ * @prop {Cell[][]} gameArray
+ * @prop {React.Dispatch<React.SetStateAction<Cell[][]>>} setGameArray
+ * @prop {string[]} selected - selected cells, written as `R${row}C${col}` strings
+ * @prop {React.Dispatch<React.SetStateAction<string[]>>} setSelected
+ * @prop {string[][]} colorArray
+ * @prop {React.Dispatch<React.SetStateAction<string[][]>>} setColorArray
+ * @prop {number} highlightedDigit
+ * @prop {React.Dispatch<React.SetStateAction<number>>} setHighlightedDigit
+ * @prop {boolean} modeMultiselect
+ * @prop {React.Dispatch<React.SetStateAction<boolean>>} setModeMultiselect
+ * @prop {boolean} modeAuto
+ * @prop {React.Dispatch<React.SetStateAction<boolean>>} setModeAuto
+ * @prop {string} lastSelected
+ * @prop {(digit: number) => void} enterDigit
+ * @prop {(color: string) => void} enterColor
+ * @prop {(candidate: number) => void} toggleCandidate
+ * @prop {(cell: string, force?: boolean) => void} toggleSelected
+*/
+
+/**
  * Gives an array of integers to be able to map over to make repeated elements
  * @param {number} length - length of array
  * @param {number} start - first number

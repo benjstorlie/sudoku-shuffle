@@ -1,15 +1,23 @@
 import React from 'react';
 import { iter } from '../../utils/gameUtils';
-import { useGameContext,
-  // eslint-disable-next-line
-   GameContextProps 
-  } from '../../utils/GameContext';
+// eslint-disable-next-line
+import { GameContextProps } from '../../utils/GameContext';
 
+/**
+ * @typedef CellProps
+ * @prop {string} cellRef - string cell reference like, `R${row}C${col}`
+ * @prop {number} row - 0-indexed cell row
+ * @prop {number} col - 0-indexed cell column
+ * @prop {GameContextProps} context - functions and variables passed along from Game component defined in '../../utils/GameContext'
+ */
 
+/**
+ * Sudoku Cell component
+ * @param {CellProps} props 
+ * @returns {React.JSX.Element}
+ */
+export default function Cell({cellRef, row, col, context}) {
 
-export default function Cell({row, col}) {
-
-  /** @type {GameContextProps} */
   const { 
     gameArray,
     colorArray, 
@@ -17,11 +25,11 @@ export default function Cell({row, col}) {
     selected,
     toggleSelected,
     toggleCandidate,
-  } = useGameContext();
+  } = context;
 
   const {value, candidates} = gameArray[row][col];
   const isHighlighted = (!value && candidates.has(highlightedDigit));
-  const isSelected = selected.includes(`R${row}C${col}`);
+  const isSelected = selected.includes(cellRef);
 
   const styles = {
     /** @type {React.CSSProperties} */
@@ -43,7 +51,7 @@ export default function Cell({row, col}) {
   }
 
   function onCellClick() {
-    return (() => toggleSelected(`R${row}C${col}`));
+    return (() => toggleSelected(cellRef));
   }
 
   function onCandidateClick(num) {
@@ -51,7 +59,7 @@ export default function Cell({row, col}) {
   }
 
   return (
-    <div className={`cell ${isHighlighted ? 'highlighted' : ''} ${isSelected ? 'selected' : ''}`} style={styles.cell} onClick={onCellClick}>
+    <div id={cellRef} className={`cell ${isHighlighted ? 'highlighted' : ''} ${isSelected ? 'selected' : ''}`} style={styles.cell} onClick={onCellClick}>
         <div className={`digit ${value ? 'show' : 'hide'}`}>{value}</div>
       {
         iter(9,1).map((num) => (

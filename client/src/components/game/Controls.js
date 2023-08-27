@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { iter } from '../../utils/gameUtils';
-import { useGameContext,
-  // eslint-disable-next-line
-   GameContextProps 
-  } from '../../utils/GameContext';
+// eslint-disable-next-line
+import { GameContextProps } from '../../utils/gameUtils';
 
 // Of course, it would be super fun to allow the user to modify these colors
 // This current list is just random, so it can be changed to something better
 // Have to make sure that colorList[0] is empty, because then that can be assigned to the 'clear' button
 const colorList = ['','#FF5733', '#33FF57', '#3366FF', '#FF33C8', '#33C8FF', '#FF9433', '#33FFC8', '#3394FF', '#FF3394'];
 
-
-export default function Controls() {
+/**
+ * Controls component: change settings, highlight cells, do coloring, etc.
+ * @param {{context: GameContextProps}} props 
+ * @returns {React.JSX.Element}
+ */
+export default function Controls({context}) {
 
   /** @type {GameContextProps} */
   const { 
@@ -20,7 +22,7 @@ export default function Controls() {
     toggleCandidate,
     setHighlightedDigit,
     // highlightedDigit, 
-  } = useGameContext();
+  } = context;
 
   const [ actionName, setActionName ] = useState('setHighlightedDigit');
 

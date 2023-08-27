@@ -1,9 +1,11 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { useState } from 'react';
+import SudokuGrid from '../components/game/SudokuGrid'
+import Controls from '../components/game/Controls';
 
 // import game actions from game utils, to be able to pass them along as game context props.
 import { 
   // eslint-disable-next-line
-  Cell, 
+  Cell, GameContextProps,
   gridArr,
   enterDigitHandler, 
   toggleCandidateHandler,
@@ -11,50 +13,7 @@ import {
   enterColorHandler,
 } from './gameUtils'
 
-/**
- * *TODO* Make sure everything being included in the game context is included here, and add a description
- * - it's confusing, because it would be nice if the descriptions from where they originally got defined got passed along
- * - but this is at least a short description that can be read in the other files that use {@linkcode useGameContext}
- * @typedef GameContextProps
- * @prop {Cell[][]} gameArray
- * @prop {React.Dispatch<React.SetStateAction<Cell[][]>>} setGameArray
- * @prop {string[]} selected - selected cells, written as `R${row}C${col}` strings
- * @prop {React.Dispatch<React.SetStateAction<string[]>>} setSelected
- * @prop {string[][]} colorArray
- * @prop {React.Dispatch<React.SetStateAction<string[][]>>} setColorArray
- * @prop {number} highlightedDigit
- * @prop {React.Dispatch<React.SetStateAction<number>>} setHighlightedDigit
- * @prop {boolean} modeMultiselect
- * @prop {React.Dispatch<React.SetStateAction<boolean>>} setModeMultiselect
- * @prop {boolean} modeAuto
- * @prop {React.Dispatch<React.SetStateAction<boolean>>} setModeAuto
- * @prop {string} lastSelected
- * @prop {(digit: number) => void} enterDigit
- * @prop {(color: string) => void} enterColor
- * @prop {(candidate: number) => void} toggleCandidate
- * @prop {(cell: string, force?: boolean) => void} toggleSelected
-*/
-
-/**
- * @typedef GameProviderProps
- * @prop {React.ReactElement} children
-*/
-
-// Initialize new context for game
-const GameContext = createContext();
-
-/**
- * A custom hook to provide immediate usages of the game context in other components
- * @returns {GameContextProps}
-*/ 
-export const useGameContext = () => useContext(GameContext)
-
-/**
- * GameProvider component that holds initial state, returns provider component
- * @param {GameProviderProps} props
- * @returns {React.JSX.Element}
- */
-export default function GameProvider( {children}) {
+export default function Game() {
   
   // ****** define useState hooks ********
 
@@ -97,7 +56,8 @@ export default function GameProvider( {children}) {
   const toggleSelected = toggleSelectedHandler(setSelected, modeMultiselect);
 
   return (
-    <GameContext.Provider value = {{
+    <>
+      <SudokuGrid context = {{
       gameArray,
       setGameArray,
       selected,
@@ -115,8 +75,28 @@ export default function GameProvider( {children}) {
       toggleSelected,
       lastSelected,
       enterColor,
-    }}>
-      { children }
-    </GameContext.Provider>
+    }}
+      />
+      <Controls context = {{
+      gameArray,
+      setGameArray,
+      selected,
+      setSelected,
+      colorArray,
+      setColorArray,
+      highlightedDigit,
+      setHighlightedDigit,
+      modeMultiselect,
+      setModeMultiselect,
+      modeAuto,
+      setModeAuto,
+      toggleCandidate,
+      enterDigit,
+      toggleSelected,
+      lastSelected,
+      enterColor,
+    }}
+      />
+    </>
   )
 }
