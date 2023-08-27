@@ -46,9 +46,9 @@ export default function Cell({row, col}) {
     return (() => toggleSelected(`R${row}C${col}`));
   }
 
-  function onCandidateClick(num) {
-    return (() => toggleCandidate(num));
-  }
+  // function onCandidateClick(num) {
+  //   return (() => toggleCandidate(num));
+  // }
 
   return (
     <div className={`cell ${isHighlighted ? 'highlighted' : ''} ${isSelected ? 'selected' : ''}`} style={styles.cell} onClick={onCellClick}>
@@ -59,7 +59,7 @@ export default function Cell({row, col}) {
             key={num}
             className={`candidate ${value ? 'hide' : 'show'}`} 
             style={styles.candidate(num)} 
-            onClick={onCandidateClick(num)}
+            // onClick={onCandidateClick(num)}
           >
             {num}
           </div>

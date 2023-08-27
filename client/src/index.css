@@ -13,7 +13,7 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -28,4 +28,12 @@ code {
 .logo {
   height: 128px;
   width: 128px;
+}
+
+button.action {
+  font-size: 1.1em;
+}
+
+button.action.active {
+  background-color: #ebd421f3;
 }

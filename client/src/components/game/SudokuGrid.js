@@ -1,6 +1,6 @@
 import React from 'react';
 import Cell from './Cell';
-import './Grid.css';
+import './Game.css';
 import { iter } from '../../utils/gameUtils'
 
 export default function SudokuGrid() {

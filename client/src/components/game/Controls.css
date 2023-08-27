@@ -1,0 +1,15 @@
+.controls-grid {
+  display:grid;
+  position: relative;
+  grid-template-rows: repeat(3,1.8rem);
+  grid-template-columns: repeat(3,1.8rem);
+}
+
+.controls-grid-btn {
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 2px;
+  place-content: center;
+}

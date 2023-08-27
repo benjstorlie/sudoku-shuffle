@@ -123,15 +123,15 @@ export function toggleCandidateHandler(setGameArray, selected) {
         const row = cell[1];
         const col = cell[3];
         console.log('row',row,'col',col);
-        const updatedCell = { ...updatedArray[row][col] };
+        const updatedCandidates = updatedArray[row][col].candidates ;
   
         if (force) {
-          updatedCell.candidates.add(candidate);
+          updatedCandidates.add(candidate);
         } else {
-          updatedCell.candidates.delete(candidate);
+          updatedCandidates.delete(candidate);
         }
   
-        updatedArray[row][col] = updatedCell;
+        updatedArray[row][col].candidates = updatedCandidates;
       }
   
       return updatedArray;
