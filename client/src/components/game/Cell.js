@@ -20,16 +20,12 @@ export default function Cell({row, col}) {
   } = useGameContext();
 
   const {value, candidates} = gameArray[row][col];
-  const color = colorArray[row][col] ? colorArray[row][col] :  'var(--sudoku-grid-bg)';
   const isHighlighted = (!value && candidates.has(highlightedDigit));
   const isSelected = selected.includes(`R${row}C${col}`);
 
   const styles = {
     /** @type {React.CSSProperties} */
-    cell: {
-      backgroundColor: color,
-      borderColor: isSelected ? 'red' : 'transparent',
-    },
+    cell: {},
     /** 
      * Style object for candidates
      * @param {number} num - 0-indexed candidate number
@@ -38,8 +34,12 @@ export default function Cell({row, col}) {
     candidate: (num) => ({
       gridRow: (Math.floor((num-1)/3) + 1) + ' / span 1',
       gridColumn: ((num-1) % 3 + 1) + ' / span 1',
-      color: candidates.has(num) ? 'var(--candidate-color)' : color,
+      color: candidates.has(num) ? 'var(--candidate-color)' : 'transparent',
     })
+  }
+
+  if (colorArray[row][col]) {
+    styles.cell.backgroundColor = colorArray[row][col]
   }
 
   function onCellClick() {
@@ -51,7 +51,7 @@ export default function Cell({row, col}) {
   }
 
   return (
-    <div className={`cell ${isHighlighted ? 'highlighted' : ''}`} style={styles.cell} onClick={onCellClick}>
+    <div className={`cell ${isHighlighted ? 'highlighted' : ''} ${isSelected ? 'selected' : ''}`} style={styles.cell} onClick={onCellClick}>
         <div className={`digit ${value ? 'show' : 'hide'}`}>{value}</div>
       {
         iter(9,1).map((num) => (

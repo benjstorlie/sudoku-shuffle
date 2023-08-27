@@ -3,8 +3,8 @@
   --sudoku-grid-border-color: #000;
   --candidate-color: #000;
   --candidate-hover: #556ecf;
-  --cell-highlight: #ebd421f3;
-  --cell-selected: #ff0000;
+  --highlight-color: #ebd421f3;
+  --selected-color: #ff0000;
   --digit-color: #000;
   --given-color: #1414bd;
   --cell-border-width: 2px;

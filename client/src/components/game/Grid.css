@@ -28,17 +28,19 @@
 }
 
 .cell {
-  background-color: var(--sudoku-bg-color);
-  border: 2px solid var(--sudoku-bg-color);
+  background-color: var(--sudoku-grid-bg);
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--sudoku-grid-bg);
 }
 
 .cell.selected {
   border-color: var(--selected-color);
 }
 
-.highlighted {
+.cell.highlighted {
   background-color: var(--highlight-color);
-  border: 2px solid var(--highlight-color);
+  border-color: var(--highlight-color);
 }
 
 .digit {

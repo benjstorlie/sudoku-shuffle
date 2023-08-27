@@ -26,7 +26,14 @@ export function iter(length, start=0) {
  * console.log( gridArr({},3,6) ) // Expected output: 3 rows of 6 filled with empty objects
  */
 export function gridArr(item,rows=9,cols=rows) {
-  return Array(rows).fill(Array(cols).fill(item));
+  const arr = [];
+  for (let r=0 ; r < rows; r++) {
+    arr[r] = [];
+    for (let c=0 ; c < cols; c++) {
+      arr[r][c] = item;
+    }
+  }
+  return arr;
 }
 
 /**
@@ -112,10 +119,10 @@ export function toggleCandidateHandler(setGameArray, selected) {
       const force = !selected.some((cell) =>
         prevGameArray[cell[1]][cell[3]].candidates.has(candidate)
       );
-  
       for (const cell of selected) {
         const row = cell[1];
         const col = cell[3];
+        console.log('row',row,'col',col);
         const updatedCell = { ...updatedArray[row][col] };
   
         if (force) {

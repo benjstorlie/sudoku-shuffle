@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { iter } from '../../utils/gameUtils';
-import { useGameContext, GameContextProps } from '../../utils/GameContext';
+import { useGameContext,
+  // eslint-disable-next-line
+   GameContextProps 
+  } from '../../utils/GameContext';
 
 // Of course, it would be super fun to allow the user to modify these colors
 // This current list is just random, so it can be changed to something better
@@ -16,7 +19,7 @@ export default function Controls() {
     enterColor,
     toggleCandidate,
     setHighlightedDigit,
-    highlightedDigit, 
+    // highlightedDigit, 
   } = useGameContext();
 
   const [ actionName, setActionName ] = useState('setHighlightedDigit');
@@ -35,6 +38,8 @@ export default function Controls() {
       case 'toggleCandidate':
         toggleCandidate(index);
         break;
+      default:
+        return;
     }
   }
 
