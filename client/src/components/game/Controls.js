@@ -89,7 +89,7 @@ export default function Controls() {
   }
 
   return (
-    <>
+    <div id='controls'>
     <button onClick={()=> setModeMultiselect((prev) => !prev)}>multi-select: {modeMultiselect ? 'on' : 'off'}</button>
     <button onClick={()=> setModeAuto((prev) => !prev)}>auto-solve: {modeAuto ? 'on' : 'off'}</button>
       <button className={`action ${actionName === HIGHLIGHT ? 'active' : ''}`} onClick={() => setActionName(HIGHLIGHT)}>highlight</button>
@@ -111,7 +111,7 @@ export default function Controls() {
         }
       </div>
       <button id='btn-clear' onClick={() => actionFunction(0)}>0</button>
-    </>
+    </div>
   )
 }
 
