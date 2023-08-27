@@ -7,13 +7,10 @@ import {
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
 import Profile from "./pages/Profile";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
-import logo from "./logo.svg";
-import "./App.css";
-import Header1 from './components/nav/Header';
+import Header from './components/nav/Header';
 import Footer from './components/nav/Footer';
 import SudokuGrid from './components/game/SudokuGrid';
 import GameProvider from './utils/GameContext'
@@ -46,7 +43,6 @@ function App() {
       <Router>
         <div className="flex-column justify-flex-start min-100-vh">
           <Header />
-          <Header1 />
           <div className="container">
             <Routes>
               <Route path="/" element={

@@ -16,14 +16,15 @@
     "game"
   ],
   "scripts": {
-    "start": "npm run start-server && npm run start-client",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"npm run start-client\" \"npm run start-server\"",
     "start-server": "cd server && npm start",
     "install": "cd server && npm i && cd ../client && npm i",
     "start-client": "cd client && npm start",
     "seed": "cd server && npm run seed",
     "build": "cd client && npm run build"
   },
-  "dependencies": {
-    "react-router-dom": "^6.15.0"
+  "devDependencies": {
+    "concurrently": "^8.2.1"
   }
 }
