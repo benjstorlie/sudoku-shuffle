@@ -11,7 +11,8 @@ export default function Cell({row, col}) {
 
   /** @type {GameContextProps} */
   const { 
-    gameArray,
+    valueArray,
+    candidatesArray,
     colorArray, 
     highlightedDigit, 
     selected,
@@ -19,7 +20,8 @@ export default function Cell({row, col}) {
     toggleCandidate,
   } = useGameContext();
 
-  const {value, candidates} = gameArray[row][col];
+  const value = valueArray[row][col];
+  const candidates = candidatesArray[row][col];
   const isHighlighted = (!value && candidates.has(highlightedDigit));
   const isSelected = selected.includes(`R${row}C${col}`);
 

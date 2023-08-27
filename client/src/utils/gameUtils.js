@@ -1,10 +1,4 @@
 /**
- * @typedef Cell
- * @prop {Set<number>} candidates
- * @prop {number} value
-*/
-
-/**
  * Gives an array of integers to be able to map over to make repeated elements
  * @param {number} length - length of array
  * @param {number} start - first number
@@ -38,8 +32,8 @@ export function gridArr(item,rows=9,cols=rows) {
 
 /**
  * Compares two cells and returns a Boolean for if they are in the same box.
- * @param {{row: number, col: number}} param0 - first cell
- * @param {{row: number, col: number}} param1 - second cell
+ * @param {{row: number, col: number}} cell1 - first cell
+ * @param {{row: number, col: number}} cell2 - second cell
  * @returns {boolean}
  */
 export function isSameBox({row: row1, col: col1}, {row: row2, col: col2}) {
@@ -50,24 +44,18 @@ export function isSameBox({row: row1, col: col1}, {row: row2, col: col2}) {
  * Change the value for every cell that is selected.  
  * - Goes through the selected cells and changes their value to the given digit
  * - digit could be 0, which would just empty the cells
- * @param {React.Dispatch<React.SetStateAction<Cell[][]>>} setGameArray - set state function for the gameArray
+ * @param {React.Dispatch<React.SetStateAction<number[][]>>} setValueArray - set state function for the gameArray
  * @param {string[]} selected - currently selected cells
  * @returns {(digit: number) => void}
  */
-export function enterDigitHandler(setGameArray,selected) {
+export function enterDigitHandler(setValueArray,selected) {
   return ( (digit) => {
-    setGameArray((prevGameArray) => {
+    setValueArray((prevValueArray) => {
       // Create shallow copy of previous gameArray
-      const updatedArray = prevGameArray.map((rows) => [...rows]);
+      const updatedArray = prevValueArray.map((rows) => [...rows]);
 
       for (const cell of selected) {
-        const row = cell[1];
-        const col = cell[3];
-        const updatedCell = { ...updatedArray[row][col] };
-
-        updatedCell.value = digit;
-
-        updatedArray[row][col] = updatedCell;
+        updatedArray[cell[1]][cell[3]] = digit;
       }
 
       return updatedArray;
@@ -101,15 +89,15 @@ export function enterColorHandler(setColorArray,selected) {
 /**
  * Goes through the selected cells and toggles the inclusion of the given candidate.
  * - If any of the cells includes the candidate, then it will be removed, otherwise added.
- * @param {React.Dispatch<React.SetStateAction<Cell[][]>>} setGameArray - set state function for the gameArray
+ * @param {React.Dispatch<React.SetStateAction<Set[][]>>} setGameArray - set state function for the gameArray
  * @param {string[]} selected - currently selected cells
  * @returns {(candidate: number) => void}
 */
-export function toggleCandidateHandler(setGameArray, selected) {
+export function toggleCandidateHandler(setCandidatesArray, selected) {
   return ( (candidate) => {
-    setGameArray((prevGameArray) => {
+    setCandidatesArray((prevCandidatesArray) => {
       // Create shallow copy of previous gameArray
-      const updatedArray = prevGameArray.map((rows) => [...rows]);
+      const updatedArray = prevCandidatesArray.map((rows) => [...rows]);
   
       /**
        * A boolean for whether the candidates should be removed or added in all cells
@@ -117,13 +105,12 @@ export function toggleCandidateHandler(setGameArray, selected) {
        * @type {boolean}
        */
       const force = !selected.some((cell) =>
-        prevGameArray[cell[1]][cell[3]].candidates.has(candidate)
+        prevCandidatesArray[cell[1]][cell[3]].has(candidate)
       );
       for (const cell of selected) {
         const row = cell[1];
         const col = cell[3];
-        console.log('row',row,'col',col);
-        const updatedCandidates = updatedArray[row][col].candidates ;
+        const updatedCandidates = new Set(updatedArray[row][col]) ;
   
         if (force) {
           updatedCandidates.add(candidate);
@@ -131,7 +118,7 @@ export function toggleCandidateHandler(setGameArray, selected) {
           updatedCandidates.delete(candidate);
         }
   
-        updatedArray[row][col].candidates = updatedCandidates;
+        updatedArray[row][col] = updatedCandidates;
       }
   
       return updatedArray;

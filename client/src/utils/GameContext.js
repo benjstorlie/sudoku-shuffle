@@ -2,8 +2,6 @@ import React, { createContext, useContext, useState } from 'react';
 
 // import game actions from game utils, to be able to pass them along as game context props.
 import { 
-  // eslint-disable-next-line
-  Cell, 
   gridArr,
   enterDigitHandler, 
   toggleCandidateHandler,
@@ -16,8 +14,10 @@ import {
  * - it's confusing, because it would be nice if the descriptions from where they originally got defined got passed along
  * - but this is at least a short description that can be read in the other files that use {@linkcode useGameContext}
  * @typedef GameContextProps
- * @prop {Cell[][]} gameArray
- * @prop {React.Dispatch<React.SetStateAction<Cell[][]>>} setGameArray
+ * @prop {number[][]} valueArray
+ * @prop {React.Dispatch<React.SetStateAction<number[][]>>} setValueArray
+ * @prop {Set[][]} candidatesArray
+ * @prop {React.Dispatch<React.SetStateAction<Set[][]>>} setCandidatesArray
  * @prop {string[]} selected - selected cells, written as `R${row}C${col}` strings
  * @prop {React.Dispatch<React.SetStateAction<string[]>>} setSelected
  * @prop {string[][]} colorArray
@@ -58,12 +58,14 @@ export default function GameProvider( {children}) {
   
   // ****** define useState hooks ********
 
-  /** @type {[Cell[][], React.Dispatch<React.SetStateAction<Cell[][]>>]} */
-  const [gameArray , setGameArray] = useState(
-    gridArr({
-      candidates: new Set([]),
-      value: 0,
-    })
+  /** @type {[number[][], React.Dispatch<React.SetStateAction<number[][]>>]} */
+  const [valueArray , setValueArray] = useState(
+    gridArr(0)
+  );
+
+  /** @type {[Set[][], React.Dispatch<React.SetStateAction<Set[][]>>]} */
+  const [candidatesArray , setCandidatesArray] = useState(
+    gridArr(new Set([]))
   );
   
   /** @type {[string[], React.Dispatch<React.SetStateAction<string[]>>]} */
@@ -88,18 +90,20 @@ export default function GameProvider( {children}) {
    * @type {string} */
   const lastSelected = selected[0] || '';
 
-  const enterDigit = enterDigitHandler(setGameArray,selected);
+  const enterDigit = enterDigitHandler(setValueArray,selected);
 
   const enterColor = enterColorHandler(setColorArray,selected);
 
-  const toggleCandidate = toggleCandidateHandler(setGameArray, selected);
+  const toggleCandidate = toggleCandidateHandler(setCandidatesArray, selected);
   
   const toggleSelected = toggleSelectedHandler(setSelected, modeMultiselect);
 
   return (
     <GameContext.Provider value = {{
-      gameArray,
-      setGameArray,
+      valueArray,
+      setValueArray,
+      candidatesArray,
+      setCandidatesArray,
       selected,
       setSelected,
       colorArray,
