@@ -34,6 +34,10 @@
   border-color: var(--sudoku-grid-bg);
 }
 
+.cell:hover {
+  cursor: pointer;
+}
+
 .cell.selected {
   border-color: var(--selected-color);
 }
@@ -61,9 +65,11 @@
   justify-content: center;
   align-items: center;
   font-size: 16px;
+  color: transparent;
 }
 
-.candidate:hover {
+.candidate.hover:hover {
+  color: #e2e0f1;
   background-color: var(--candidate-hover);
   cursor: pointer;
 }

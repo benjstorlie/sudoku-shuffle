@@ -30,7 +30,7 @@ function Box({band, stack}) {
       {
         iter(3,3*band).map((row) => (
           iter(3,3*stack).map((col) => (
-            <Cell key={`R${row}C${col}`} row={row} col={col}/>
+            <Cell key={`R${row}C${col}`} cellRef={`R${row}C${col}`} row={row} col={col}/>
           ))
         ))
       }

@@ -91,38 +91,56 @@ export function enterColorHandler(setColorArray,selected) {
  * - If any of the cells includes the candidate, then it will be removed, otherwise added.
  * @param {React.Dispatch<React.SetStateAction<Set[][]>>} setGameArray - set state function for the gameArray
  * @param {string[]} selected - currently selected cells
- * @returns {(candidate: number) => void}
+ * @param {boolean} modeMultiselect - if true, multi-select on, if false, single-select
+ * @returns {(candidate: number, cellRef?:string) => void} - The optional cellRef parameter is so you don't have to wait for a cell to be added to the selected list.
 */
-export function toggleCandidateHandler(setCandidatesArray, selected) {
-  return ( (candidate) => {
-    setCandidatesArray((prevCandidatesArray) => {
-      // Create shallow copy of previous gameArray
-      const updatedArray = prevCandidatesArray.map((rows) => [...rows]);
-  
-      /**
-       * A boolean for whether the candidates should be removed or added in all cells
-       * - If any of the cells includes the candidate, then it will be removed.
-       * @type {boolean}
-       */
-      const force = !selected.some((cell) =>
-        prevCandidatesArray[cell[1]][cell[3]].has(candidate)
-      );
-      for (const cell of selected) {
-        const row = cell[1];
-        const col = cell[3];
-        const updatedCandidates = new Set(updatedArray[row][col]) ;
-  
-        if (force) {
-          updatedCandidates.add(candidate);
+export function toggleCandidateHandler(setCandidatesArray, selected,modeMultiselect) {
+  return ( (candidate, cellRef) => {
+    if (cellRef && !modeMultiselect) {
+      setCandidatesArray((prevCandidatesArray) => {
+        // Create shallow copy of previous gameArray
+        const updatedArray = prevCandidatesArray.map((rows) => [...rows]);
+        if (prevCandidatesArray[cellRef[1]][cellRef[3]].has(candidate)) {
+          updatedArray[cellRef[1]][cellRef[3]].delete(candidate)
         } else {
-          updatedCandidates.delete(candidate);
+          updatedArray[cellRef[1]][cellRef[3]].add(candidate)
         }
-  
-        updatedArray[row][col] = updatedCandidates;
-      }
-  
-      return updatedArray;
-    });
+        console.log('cellRef && !modeMultiSelect',cellRef,updatedArray[cellRef[1]][cellRef[3]])
+        return updatedArray;
+      });
+    } else {
+      setCandidatesArray((prevCandidatesArray) => {
+        // Create shallow copy of previous gameArray
+        const updatedArray = prevCandidatesArray.map((rows) => [...rows]);
+        if (cellRef && !selected.includes(cellRef)) {
+          selected = [cellRef, ...selected];
+        }
+        /**
+         * A boolean for whether the candidates should be removed or added in all cells
+         * - If any of the cells includes the candidate, then it will be removed.
+         * @type {boolean}
+         */
+        const force = !selected.some((cell) =>
+          prevCandidatesArray[cell[1]][cell[3]].has(candidate)
+        );
+        for (const cell of selected) {
+          const row = cell[1];
+          const col = cell[3];
+          const updatedCandidates = new Set(updatedArray[row][col]) ;
+    
+          if (force) {
+            updatedCandidates.add(candidate);
+          } else {
+            updatedCandidates.delete(candidate);
+          }
+    
+          updatedArray[row][col] = updatedCandidates;
+        }
+        console.log('else',selected)
+        if (cellRef) {console.log(updatedArray[cellRef[1]][cellRef[3]])}
+        return updatedArray;
+      });
+    }
   });
 }
 
@@ -137,7 +155,7 @@ export function toggleSelectedHandler(setSelected, modeMultiselect) {
     return (cell, force) => {
       // Multi-select mode behavior
       setSelected((prevSelected) => {
-        if (force === false || prevSelected.includes(cell)) {
+        if (force === false || (force !== true && prevSelected.includes(cell))) {
           return prevSelected.filter((selectedCell) => selectedCell !== cell);
         } else if (force === true) {
           return [cell, ...prevSelected.filter((selectedCell) => selectedCell !== cell)];
@@ -150,7 +168,7 @@ export function toggleSelectedHandler(setSelected, modeMultiselect) {
     return (cell, force) => {
       // single-select mode behavior
       setSelected((prevSelected) => {
-        if (force === false || prevSelected.includes(cell)) {
+        if (force === false || (force !== true && prevSelected.includes(cell))) {
           return prevSelected.filter((selectedCell) => selectedCell !== cell);
         } else {
           return [cell];

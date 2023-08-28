@@ -18,7 +18,8 @@
   height: 1.5rem;
   display: flex;
   flex-wrap: wrap;
-  padding: 2px;
+  /* This keeps the numbers nicely positioned in when in candidate mode */
+  padding: 0px 1px 0px 1px;
   place-content: center;
 }
 

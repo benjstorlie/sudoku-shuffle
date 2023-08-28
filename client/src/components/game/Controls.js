@@ -27,6 +27,8 @@ export default function Controls() {
     highlightedDigit, 
     modeAuto,
     setModeAuto,
+    modeMouse,
+    setModeMouse,
     modeMultiselect,
     setModeMultiselect,
   } = useGameContext();
@@ -92,6 +94,7 @@ export default function Controls() {
     <div id='controls'>
     <button onClick={()=> setModeMultiselect((prev) => !prev)}>multi-select: {modeMultiselect ? 'on' : 'off'}</button>
     <button onClick={()=> setModeAuto((prev) => !prev)}>auto-solve: {modeAuto ? 'on' : 'off'}</button>
+    <button onClick={()=> setModeMouse((prev) => !prev)}>click: {modeMouse ? 'toggle candidates' : 'select cells'}</button>
       <button className={`action ${actionName === HIGHLIGHT ? 'active' : ''}`} onClick={() => setActionName(HIGHLIGHT)}>highlight</button>
       <button className={`action ${actionName === ENTER_DIGIT ? 'active' : ''}`} onClick={() => setActionName(ENTER_DIGIT)}>digits</button>
       <button className={`action ${actionName === CANDIDATE ? 'active' : ''}`} onClick={() => setActionName(CANDIDATE)}>candidates</button>

@@ -28,11 +28,13 @@ import {
  * @prop {React.Dispatch<React.SetStateAction<boolean>>} setModeMultiselect
  * @prop {boolean} modeAuto
  * @prop {React.Dispatch<React.SetStateAction<boolean>>} setModeAuto
+ * @prop {boolean} modeMouse - if false, primary click selects cells, if true, primary click toggles candidates
+ * @prop {React.Dispatch<React.SetStateAction<boolean>>} setModeMouse - if false, primary click selects cells, if true, primary click toggles candidates
  * @prop {string} lastSelected
  * @prop {(digit: number) => void} enterDigit
  * @prop {(color: string) => void} enterColor
- * @prop {(candidate: number) => void} toggleCandidate
- * @prop {(cell: string, force?: boolean) => void} toggleSelected
+ * @prop {(candidate: number, cellRef?:string) => void} toggleCandidate - The optional cellRef parameter is so you don't have to wait for a cell to be added to the selected list.
+ * @prop {(cell: string, force?: boolean) => void} toggleSelected - if included, if force is true, this cell will be selected, if force is false, it will not
 */
 
 /**
@@ -83,6 +85,9 @@ export default function GameProvider( {children}) {
   /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
   const [modeAuto, setModeAuto] = useState(false);
 
+  /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
+  const [modeMouse, setModeMouse] = useState(false)
+
   // ***** end useState definitions
   // ***** start definition of functions or anything else to pass as game context props
 
@@ -94,7 +99,7 @@ export default function GameProvider( {children}) {
 
   const enterColor = enterColorHandler(setColorArray,selected);
 
-  const toggleCandidate = toggleCandidateHandler(setCandidatesArray, selected);
+  const toggleCandidate = toggleCandidateHandler(setCandidatesArray, selected, modeMultiselect);
   
   const toggleSelected = toggleSelectedHandler(setSelected, modeMultiselect);
 
@@ -114,6 +119,8 @@ export default function GameProvider( {children}) {
       setModeMultiselect,
       modeAuto,
       setModeAuto,
+      modeMouse,
+      setModeMouse,
       toggleCandidate,
       enterDigit,
       toggleSelected,
