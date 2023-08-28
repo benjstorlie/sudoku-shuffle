@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { iter } from '../../utils/gameUtils';
 import './Controls.css';
 import { useGameContext,
@@ -69,7 +69,7 @@ export default function Controls() {
       }
   }
 
-  function actionFunction(index) {
+  const actionFunction = useCallback(function(index) {
     switch (actionName) {
       case HIGHLIGHT:
         setHighlightedDigit(index);
@@ -88,7 +88,39 @@ export default function Controls() {
       default:
         return;
     }
-  }
+  },[actionName,enterColor,enterDigit,setHighlightedDigit,toggleCandidate])
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const key = e.key;
+      if (['1','2','3','4','5','6','7','8','9'].includes(key)) {
+        actionFunction(parseInt(key));
+      } else if (["Backspace","Clear","Delete",'0'].includes(key)) {
+        actionFunction(0);
+      } else if (key === 'z') {
+        setActionName(ENTER_DIGIT)
+      } else if (key === 'x') {
+        setActionName(CANDIDATE)
+      } else if (key === 'c') {
+        setActionName(COLOR) 
+      } else if (key === 'v') {
+        setActionName(HIGHLIGHT)
+      } else if (key === 'q') {
+        setModeMultiselect((prev) => !prev)
+      } else if (key === 'w') {
+        setModeAuto((prev) => !prev)
+      } else if (key === 'e') {
+        setModeMouse((prev) => !prev)
+      }
+    };
+    // adds event listener to the whole window
+    window.addEventListener('keydown', handleKeyDown);
+
+    // Don't forget to remove the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [actionFunction,setModeAuto,setModeMouse,setModeMultiselect]); // Empty dependency array means this effect runs once after the initial render
 
   return (
     <div id='controls'>

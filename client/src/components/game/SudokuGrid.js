@@ -5,8 +5,6 @@ import { iter } from '../../utils/gameUtils'
 
 export default function SudokuGrid() {
 
-// 
-
   return (
     <div id="sudoku-grid">
       {

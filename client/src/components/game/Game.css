@@ -38,15 +38,16 @@
   cursor: pointer;
 }
 
-.cell.selected {
-  border-color: var(--selected-color);
-}
 
 .cell.highlighted {
   background-color: var(--highlight-color);
   border-color: var(--highlight-color);
 }
 
+/* This comes after .cell.highlighted so that the selected border supercedes the highlight border */
+.cell.selected {
+  border-color: var(--selected-color);
+}
 .digit {
   display: flex;
   grid-area: 1 / 1 / 4 / 4;
