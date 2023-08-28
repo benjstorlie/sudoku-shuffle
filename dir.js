@@ -29,6 +29,7 @@ const mdName = 'directory_contents';
  */
 const ignore = [
   '.git',
+  'package-lock.json',
   'node_modules',
   'client/build',
   'LICENSE'
