@@ -158,12 +158,12 @@ function getBoardHard(){
     return board;
 }
 
-function getBoardByDifficulty(difficulty){
+async function  getBoardByDifficulty(difficulty){
     fetch(apiUrl)
         .then((data) => data.json())
         .then((board) =>{
             if (board.grids[0].difficulty === difficulty){
-                
+
             }
         })
 }
