@@ -1,0 +1,76 @@
+
+
+.show {
+  z-index: 2;
+}
+
+.hide {
+  z-index: -1;
+}
+
+#sudoku-grid,
+.box,
+.cell {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+#sudoku-grid {
+  gap: var(--box-border-width);
+  border: 3px solid;
+  border-color: var( --sudoku-grid-border-color);
+  background-color: var( --sudoku-grid-border-color);
+}
+
+.box {
+  gap: var(--cell-border-width)
+}
+
+.cell {
+  background-color: var(--sudoku-grid-bg);
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--sudoku-grid-bg);
+}
+
+.cell:hover {
+  cursor: pointer;
+}
+
+
+.cell.highlighted {
+  background-color: var(--highlight-color);
+  border-color: var(--highlight-color);
+}
+
+/* This comes after .cell.highlighted so that the selected border supercedes the highlight border */
+.cell.selected {
+  border-color: var(--selected-color);
+}
+.digit {
+  display: flex;
+  grid-area: 1 / 1 / 4 / 4;
+  color: var(--digit-color);
+  justify-content: center;
+  align-items: center;
+  font-size: 48px;
+}
+
+.digit.given {
+  color: var(--given-color);
+}
+
+.candidate {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  color: transparent;
+}
+
+.candidate.hover:hover {
+  color: #e2e0f1;
+  background-color: var(--candidate-hover);
+  cursor: pointer;
+}

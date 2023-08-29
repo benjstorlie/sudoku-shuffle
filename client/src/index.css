@@ -1,6 +1,19 @@
+:root {
+  --sudoku-grid-bg: #fae7c1;
+  --sudoku-grid-border-color: #000;
+  --candidate-color: #000;
+  --candidate-hover: #556ecf;
+  --highlight-color: #ebd421f3;
+  --selected-color: #ff0000;
+  --digit-color: #000;
+  --given-color: #1414bd;
+  --cell-border-width: 2px;
+  --box-border-width: 3px;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -10,4 +23,17 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.logo {
+  height: 128px;
+  width: 128px;
+}
+
+button.action {
+  font-size: 1.1em;
+}
+
+button.action.active {
+  background-color: #ebd421f3;
 }

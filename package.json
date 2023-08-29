@@ -10,13 +10,21 @@
     "type": "git",
     "url": "https://github.com/benjstorlie/sudoku-shuffle.git"
   },
-  "keywords": ["sudoku", "MERN", "game"],
+  "keywords": [
+    "sudoku",
+    "MERN",
+    "game"
+  ],
   "scripts": {
-    "start": "npm run start-server && npm run start-client",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"npm run start-client\" \"npm run start-server\"",
     "start-server": "cd server && npm start",
+    "install": "cd server && npm i && cd ../client && npm i",
     "start-client": "cd client && npm start",
-    "install-all": "cd server && npm install && cd ../client && npm install"
+    "seed": "cd server && npm run seed",
+    "build": "cd client && npm run build"
   },
-  "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "concurrently": "^8.2.1"
+  }
 }

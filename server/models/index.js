@@ -1,4 +1,4 @@
-const Game = require('./Game');
-const User = require('./User');
+const Game = require("./Game");
+const Profile = require("./Profile");
 
-module.exports = { Game, User };
+module.exports = { Game, Profile };

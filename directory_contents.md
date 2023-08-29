@@ -2,46 +2,47 @@
 
 ## Files
 
-- [archive/](archive/)
-	- [puzzles/](archive/puzzles/)
 - [client/](client/): This directory contains the React front end code.
 	- [public/](client/public/): Static assets and the main HTML file.
 	- [src/](client/src/): React application source code.
 		- [components/](client/src/components/)
-			- [auth/](client/src/components/auth/): Authentication-related components.
-				- [Login.js](client/src/components/auth/Login.js)
-				- [Register.js](client/src/components/auth/Register.js)
-			- [game/](client/src/components/game/): Components related to rendering the Sudoku game.
+			- [game/](client/src/components/game/): Components related to rendering the Sudoku game. Also, these are currently the components that have access to GameContext.
 				- [Cell.js](client/src/components/game/Cell.js)
-				- [SudokuGrid.js](client/src/components/game/SudokuGrid.js)
-			- [nav/](client/src/components/nav/)
+				- [Controls.css](client/src/components/game/Controls.css): Styling for Controls element
+				- [Controls.js](client/src/components/game/Controls.js): Controls component -- includes settings, digits buttons, highlight tool, etc.
+				- [Game.css](client/src/components/game/Game.css): Styling imported to SudokuGrid.js, so it also applies to Cell.js.
+				- [SudokuGrid.js](client/src/components/game/SudokuGrid.js): Component that displays the grid -- Cells are sub-components
+			- [nav/](client/src/components/nav/): *TODO* These components apply to every page
 				- [Footer.js](client/src/components/nav/Footer.js)
 				- [Header.js](client/src/components/nav/Header.js)
 				- [Nav.js](client/src/components/nav/Nav.js)
-			- [profile/](client/src/components/profile/): Components related to user profiles and statistics.
-				- [Profile.js](client/src/components/profile/Profile.js)
-		- [contexts/](client/src/contexts/)
-			- [GameContext.js](client/src/contexts/GameContext.js): This is where the components get all the game data.
+		- [pages/](client/src/pages/)
+			- [Login.js](client/src/pages/Login.js)
+			- [Profile.js](client/src/pages/Profile.js)
+			- [Signup.js](client/src/pages/Signup.js)
 		- [utils/](client/src/utils/)
+			- [GameContext.js](client/src/utils/GameContext.js): This is where the components get all the game data.
 			- [api.js](client/src/utils/api.js)
+			- [auth.js](client/src/utils/auth.js)
 			- [gameUtils.js](client/src/utils/gameUtils.js): Handles functions that change the game data, imported into [GameContext.js](./client/src/contexts/GameContext.js).
-		- [App.css](client/src/App.css)
+			- [mutations.js](client/src/utils/mutations.js)
+			- [queries.js](client/src/utils/queries.js)
+		- [.DS_Store](client/src/.DS_Store)
 		- [App.js](client/src/App.js): Main React component.
 		- [App.test.js](client/src/App.test.js)
-		- [index.css](client/src/index.css)
+		- [index.css](client/src/index.css): Styling every component has access to. Includes :root variables, like colors.
 		- [index.js](client/src/index.js): Entry point for the React app.
-		- [logo.svg](client/src/logo.svg)
+		- [logo.svg](client/src/logo.svg): Shuffle logo. This is also copied into the public folder
 		- [reportWebVitals.js](client/src/reportWebVitals.js)
 		- [setupTests.js](client/src/setupTests.js)
-	- [.gitignore](client/.gitignore)
-	- [package-lock.json](client/package-lock.json)
+	- [.DS_Store](client/.DS_Store)
 	- [package.json](client/package.json)
 - [server/](server/): This directory contains the Node.js back end code.
 	- [config/](server/config/)
 		- [connection.js](server/config/connection.js)
 	- [models/](server/models/): MongoDB schema definitions.
 		- [Game.js](server/models/Game.js)
-		- [User.js](server/models/User.js)
+		- [Profile.js](server/models/Profile.js)
 		- [index.js](server/models/index.js)
 	- [schemas/](server/schemas/): GraphQL resolvers, mutations, typedefs
 		- [index.js](server/schemas/index.js)
@@ -49,9 +50,9 @@
 		- [typeDefs.js](server/schemas/typeDefs.js)
 	- [utils/](server/utils/): Utility functions (e.g., JWT handling).
 		- [auth.js](server/utils/auth.js)
-	- [package-lock.json](server/package-lock.json)
 	- [package.json](server/package.json)
 	- [server.js](server/server.js): Entry point for the Express server.
+- [.DS_Store](.DS_Store)
 - [.gitignore](.gitignore)
 - [README.md](README.md)
 - [development-guide.md](development-guide.md)
