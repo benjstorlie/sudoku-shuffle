@@ -7,57 +7,72 @@ import { useGameContext,
 
 
 
-export default function Cell({row, col}) {
+export default function Cell({cellRef, row, col}) {
 
   /** @type {GameContextProps} */
   const { 
-    gameArray,
+    valueArray,
+    candidatesArray,
     colorArray, 
     highlightedDigit, 
     selected,
+    modeMouse, // if false, primary click selects cells, if true, primary click toggles candidates
     toggleSelected,
     toggleCandidate,
   } = useGameContext();
 
-  const {value, candidates} = gameArray[row][col];
-  const color = colorArray[row][col] ? colorArray[row][col] :  'var(--sudoku-grid-bg)';
+  const value = valueArray[row][col];
+  const candidates = candidatesArray[row][col];
   const isHighlighted = (!value && candidates.has(highlightedDigit));
-  const isSelected = selected.includes(`R${row}C${col}`);
+  const isSelected = selected.includes(cellRef);
 
   const styles = {
     /** @type {React.CSSProperties} */
-    cell: {
-      backgroundColor: color,
-      borderColor: isSelected ? 'red' : 'transparent',
-    },
+    cell: {},
     /** 
      * Style object for candidates
      * @param {number} num - 0-indexed candidate number
      * @returns {React.CSSProperties}
      */
-    candidate: (num) => ({
-      gridRow: (Math.floor((num-1)/3) + 1) + ' / span 1',
-      gridColumn: ((num-1) % 3 + 1) + ' / span 1',
-      color: candidates.has(num) ? 'var(--candidate-color)' : color,
-    })
+    candidate: (num) => {
+      const style = {
+        gridRow: (Math.floor((num-1)/3) + 1) + ' / span 1',
+        gridColumn: ((num-1) % 3 + 1) + ' / span 1',
+      }
+      if (candidates.has(num)) {
+        style.color = 'var(--candidate-color)'
+      }
+      return style;
+    }
+  }
+
+  if (colorArray[row][col]) {
+    styles.cell.backgroundColor = colorArray[row][col]
   }
 
   function onCellClick() {
-    return (() => toggleSelected(`R${row}C${col}`));
+    if (!modeMouse  || value) {
+      toggleSelected(cellRef);
+    }
   }
 
   function onCandidateClick(num) {
-    return (() => toggleCandidate(num));
+    return (() => {
+      if (modeMouse && !value) {
+        toggleSelected(cellRef,true);
+        toggleCandidate(num,cellRef);
+      }
+    });
   }
 
   return (
-    <div className={`cell ${isHighlighted ? 'highlighted' : ''}`} style={styles.cell} onClick={onCellClick}>
+    <div id={cellRef} className={`cell ${isHighlighted ? 'highlighted' : ''} ${isSelected ? 'selected' : ''}`} style={styles.cell} onClick={onCellClick}>
         <div className={`digit ${value ? 'show' : 'hide'}`}>{value}</div>
       {
         iter(9,1).map((num) => (
           <div 
             key={num}
-            className={`candidate ${value ? 'hide' : 'show'}`} 
+            className={`candidate ${value ? 'hide' : 'show'} ${modeMouse ? 'hover' : ''}`} 
             style={styles.candidate(num)} 
             onClick={onCandidateClick(num)}
           >

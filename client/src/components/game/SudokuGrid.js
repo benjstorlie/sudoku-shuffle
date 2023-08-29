@@ -1,11 +1,9 @@
 import React from 'react';
 import Cell from './Cell';
-import './Grid.css';
+import './Game.css';
 import { iter } from '../../utils/gameUtils'
 
 export default function SudokuGrid() {
-
-// 
 
   return (
     <div id="sudoku-grid">
@@ -30,7 +28,7 @@ function Box({band, stack}) {
       {
         iter(3,3*band).map((row) => (
           iter(3,3*stack).map((col) => (
-            <Cell key={`R${row}C${col}`} row={row} col={col}/>
+            <Cell key={`R${row}C${col}`} cellRef={`R${row}C${col}`} row={row} col={col}/>
           ))
         ))
       }

@@ -6,13 +6,13 @@
 	- [public/](client/public/): Static assets and the main HTML file.
 	- [src/](client/src/): React application source code.
 		- [components/](client/src/components/)
-			- [Header/](client/src/components/Header/)
-			- [game/](client/src/components/game/): Components related to rendering the Sudoku game.
+			- [game/](client/src/components/game/): Components related to rendering the Sudoku game. Also, these are currently the components that have access to GameContext.
 				- [Cell.js](client/src/components/game/Cell.js)
-				- [Controls.js](client/src/components/game/Controls.js)
-				- [Grid.css](client/src/components/game/Grid.css)
-				- [SudokuGrid.js](client/src/components/game/SudokuGrid.js)
-			- [nav/](client/src/components/nav/)
+				- [Controls.css](client/src/components/game/Controls.css): Styling for Controls element
+				- [Controls.js](client/src/components/game/Controls.js): Controls component -- includes settings, digits buttons, highlight tool, etc.
+				- [Game.css](client/src/components/game/Game.css): Styling imported to SudokuGrid.js, so it also applies to Cell.js.
+				- [SudokuGrid.js](client/src/components/game/SudokuGrid.js): Component that displays the grid -- Cells are sub-components
+			- [nav/](client/src/components/nav/): *TODO* These components apply to every page
 				- [Footer.js](client/src/components/nav/Footer.js)
 				- [Header.js](client/src/components/nav/Header.js)
 				- [Nav.js](client/src/components/nav/Nav.js)
@@ -30,14 +30,12 @@
 		- [.DS_Store](client/src/.DS_Store)
 		- [App.js](client/src/App.js): Main React component.
 		- [App.test.js](client/src/App.test.js)
-		- [index.css](client/src/index.css)
+		- [index.css](client/src/index.css): Styling every component has access to. Includes :root variables, like colors.
 		- [index.js](client/src/index.js): Entry point for the React app.
-		- [logo.svg](client/src/logo.svg)
+		- [logo.svg](client/src/logo.svg): Shuffle logo. This is also copied into the public folder
 		- [reportWebVitals.js](client/src/reportWebVitals.js)
 		- [setupTests.js](client/src/setupTests.js)
 	- [.DS_Store](client/.DS_Store)
-	- [.gitignore](client/.gitignore)
-	- [package-lock.json](client/package-lock.json)
 	- [package.json](client/package.json)
 - [server/](server/): This directory contains the Node.js back end code.
 	- [config/](server/config/)
@@ -52,7 +50,6 @@
 		- [typeDefs.js](server/schemas/typeDefs.js)
 	- [utils/](server/utils/): Utility functions (e.g., JWT handling).
 		- [auth.js](server/utils/auth.js)
-	- [package-lock.json](server/package-lock.json)
 	- [package.json](server/package.json)
 	- [server.js](server/server.js): Entry point for the Express server.
 - [.DS_Store](.DS_Store)
@@ -61,5 +58,4 @@
 - [development-guide.md](development-guide.md)
 - [dir.js](dir.js)
 - [directory_contents.md](directory_contents.md)
-- [package-lock.json](package-lock.json)
 - [package.json](package.json)

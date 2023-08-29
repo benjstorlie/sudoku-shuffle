@@ -28,19 +28,26 @@
 }
 
 .cell {
-  background-color: var(--sudoku-bg-color);
-  border: 2px solid var(--sudoku-bg-color);
+  background-color: var(--sudoku-grid-bg);
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--sudoku-grid-bg);
 }
 
+.cell:hover {
+  cursor: pointer;
+}
+
+
+.cell.highlighted {
+  background-color: var(--highlight-color);
+  border-color: var(--highlight-color);
+}
+
+/* This comes after .cell.highlighted so that the selected border supercedes the highlight border */
 .cell.selected {
   border-color: var(--selected-color);
 }
-
-.highlighted {
-  background-color: var(--highlight-color);
-  border: 2px solid var(--highlight-color);
-}
-
 .digit {
   display: flex;
   grid-area: 1 / 1 / 4 / 4;
@@ -59,9 +66,11 @@
   justify-content: center;
   align-items: center;
   font-size: 16px;
+  color: transparent;
 }
 
-.candidate:hover {
+.candidate.hover:hover {
+  color: #e2e0f1;
   background-color: var(--candidate-hover);
   cursor: pointer;
 }
