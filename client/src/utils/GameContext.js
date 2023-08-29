@@ -7,6 +7,7 @@ import {
   toggleCandidateHandler,
   toggleSelectedHandler,
   enterColorHandler,
+  blankCandidatesArray,
 } from './gameUtils'
 
 /**
@@ -67,7 +68,7 @@ export default function GameProvider( {children}) {
 
   /** @type {[Set[][], React.Dispatch<React.SetStateAction<Set[][]>>]} */
   const [candidatesArray , setCandidatesArray] = useState(
-    gridArr(new Set([]))
+    blankCandidatesArray()
   );
   
   /** @type {[string[], React.Dispatch<React.SetStateAction<string[]>>]} */
