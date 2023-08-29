@@ -178,3 +178,17 @@ export function toggleSelectedHandler(setSelected, modeMultiselect) {
   }
 }
 
+/**
+ * 
+ * @param {*} setCandidatesArray 
+ * @param {*} setGameArray 
+ */
+export function newGameHandler(setCandidatesArray, setGameArray){
+  const newgrid = getGrid
+
+  setGameArray(
+
+  )
+
+  
+}

@@ -130,6 +130,40 @@ var apiUrl = "https://sudoku-api.vercel.app/api/dosuku?query={newboard(limit:5){
 /** This function calls the api at 
  * https://sudoku-api.vercel.app/api/dosuku?query={newboard(limit:5){grids{value,solution,difficulty},results,message}} 
  * **/
-function getBoard(difficulty){
+export function getBoard(difficulty){
+    if (difficulty === "easy"){
+        return getBoardEasy();
+    }
+    if (difficulty === "medium"){
+        return getBoardMedium();
+    }
+    if (difficulty === "hard"){
+        return getBoardHard();
+    }
+}
 
+function getBoardEasy(){
+    board = temporaryGetBoard("easy");
+    return board;
+}
+
+function getBoardMedium(){
+    board = temporaryGetBoard("medium");
+    return board;
+}
+
+function getBoardHard(){
+
+    board = temporaryGetBoard("hard");
+    return board;
+}
+
+function getBoardByDifficulty(difficulty){
+    fetch(apiUrl)
+        .then((data) => data.json())
+        .then((board) =>{
+            if (board.grids[0].difficulty === difficulty){
+                
+            }
+        })
 }
