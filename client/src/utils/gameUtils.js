@@ -30,6 +30,17 @@ export function gridArr(item,rows=9,cols=rows) {
   return arr;
 }
 
+export function blankCandidatesArray() {
+  const arr = [];
+  for (let r=0 ; r < 9; r++) {
+    arr[r] = [];
+    for (let c=0 ; c < 9; c++) {
+      arr[r][c] = new Set([]);
+    }
+  }
+  return arr;
+}
+
 /**
  * Compares two cells and returns a Boolean for if they are in the same box.
  * @param {{row: number, col: number}} cell1 - first cell

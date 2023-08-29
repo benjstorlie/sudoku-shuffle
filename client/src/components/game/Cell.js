@@ -57,8 +57,10 @@ export default function Cell({cellRef, row, col}) {
   }
 
   function onCandidateClick(num) {
-    return (() => {
+
+    return ((e) => {
       if (modeMouse && !value) {
+        console.log('candidate click')
         toggleSelected(cellRef,true);
         toggleCandidate(num,cellRef);
       }
