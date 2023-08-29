@@ -5,6 +5,7 @@ import { useGameContext,
   // eslint-disable-next-line
    GameContextProps 
   } from '../../utils/GameContext';
+import shuffleSvg from './shuffle.svg'
 
 // Of course, it would be super fun to allow the user to modify these colors
 // This current list is just random, so it can be changed to something better
@@ -31,6 +32,7 @@ export default function Controls() {
     setModeMouse,
     modeMultiselect,
     setModeMultiselect,
+    shuffle
   } = useGameContext();
 
   /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
@@ -148,6 +150,7 @@ export default function Controls() {
         }
       </div>
       <button id='btn-clear' onClick={() => actionFunction(0)}>clear</button>
+      <button id='shuffle' onClick={() => shuffle()}><img src={shuffleSvg}/></button>
     </div>
   )
 }
