@@ -1,4 +1,7 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState,
+  // eslint-disable-next-line
+  Dispatch, SetStateAction
+ } from 'react';
 
 // import game actions from game utils, to be able to pass them along as game context props.
 import { 
@@ -9,6 +12,7 @@ import {
   toggleCandidateHandler,
   toggleSelectedHandler,
   enterColorHandler,
+  shuffleHandler
 } from './gameUtils'
 
 /**
@@ -17,17 +21,17 @@ import {
  * - but this is at least a short description that can be read in the other files that use {@linkcode useGameContext}
  * @typedef GameContextProps
  * @prop {Cell[][]} gameArray
- * @prop {React.Dispatch<React.SetStateAction<Cell[][]>>} setGameArray
+ * @prop {Dispatch<SetStateAction<Cell[][]>>} setGameArray
  * @prop {string[]} selected - selected cells, written as `R${row}C${col}` strings
- * @prop {React.Dispatch<React.SetStateAction<string[]>>} setSelected
+ * @prop {Dispatch<SetStateAction<string[]>>} setSelected
  * @prop {number} highlightedDigit
- * @prop {React.Dispatch<React.SetStateAction<number>>} setHighlightedDigit
+ * @prop {Dispatch<SetStateAction<number>>} setHighlightedDigit
  * @prop {boolean} modeMultiselect
- * @prop {React.Dispatch<React.SetStateAction<boolean>>} setModeMultiselect
+ * @prop {Dispatch<SetStateAction<boolean>>} setModeMultiselect
  * @prop {boolean} modeAuto
- * @prop {React.Dispatch<React.SetStateAction<boolean>>} setModeAuto
+ * @prop {Dispatch<SetStateAction<boolean>>} setModeAuto
  * @prop {boolean} modeMouse - if false, primary click selects cells, if true, primary click toggles candidates
- * @prop {React.Dispatch<React.SetStateAction<boolean>>} setModeMouse - if false, primary click selects cells, if true, primary click toggles candidates
+ * @prop {Dispatch<SetStateAction<boolean>>} setModeMouse - if false, primary click selects cells, if true, primary click toggles candidates
  * @prop {string} lastSelected
  * @prop {(digit: number) => void} enterDigit
  * @prop {(color: string) => void} enterColor
@@ -58,22 +62,22 @@ export default function GameProvider( {children}) {
   
   // ****** define useState hooks ********
 
-  /** @type {[Cell[][], React.Dispatch<React.SetStateAction<Cell[][]>>]} */
+  /** @type {[Cell[][], Dispatch<SetStateAction<Cell[][]>>]} */
   const [gameArray , setGameArray] = useState(blankGameArray());
   
-  /** @type {[string[], React.Dispatch<React.SetStateAction<string[]>>]} */
+  /** @type {[string[], Dispatch<SetStateAction<string[]>>]} */
   const [selected, setSelected] = useState(['R0C0']);
 
-  /** @type {[number, React.Dispatch<React.SetStateAction<number>>]} */
+  /** @type {[number, Dispatch<SetStateAction<number>>]} */
   const [highlightedDigit, setHighlightedDigit] = useState(0);
 
-  /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
+  /** @type {[boolean, Dispatch<SetStateAction<boolean>>]} */
   const [modeMultiselect, setModeMultiselect] = useState(false);
 
-  /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
+  /** @type {[boolean, Dispatch<SetStateAction<boolean>>]} */
   const [modeAuto, setModeAuto] = useState(false);
 
-  /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
+  /** @type {[boolean, Dispatch<SetStateAction<boolean>>]} */
   const [modeMouse, setModeMouse] = useState(false)
 
   // ***** end useState definitions
@@ -90,6 +94,8 @@ export default function GameProvider( {children}) {
   const toggleCandidate = toggleCandidateHandler(setGameArray, selected, modeMultiselect);
   
   const toggleSelected = toggleSelectedHandler(setSelected, modeMultiselect);
+
+  const shuffle = shuffleHandler(setGameArray);
 
   return (
     <GameContext.Provider value = {{
@@ -110,6 +116,7 @@ export default function GameProvider( {children}) {
       toggleSelected,
       lastSelected,
       enterColor,
+      shuffle
     }}>
       { children }
     </GameContext.Provider>
