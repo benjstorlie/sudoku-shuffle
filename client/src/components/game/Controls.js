@@ -33,6 +33,7 @@ export default function Controls() {
     setModeMultiselect,
   } = useGameContext();
 
+  /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
   const [ actionName, setActionName ] = useState(HIGHLIGHT);
 
   /**
@@ -91,6 +92,7 @@ export default function Controls() {
   },[actionName,enterColor,enterDigit,setHighlightedDigit,toggleCandidate])
 
   useEffect(() => {
+    /** @type {(e:KeyboardEvent) => void} */
     const handleKeyDown = (e) => {
       const key = e.key;
       if (['1','2','3','4','5','6','7','8','9'].includes(key)) {
@@ -145,7 +147,7 @@ export default function Controls() {
           ))
         }
       </div>
-      <button id='btn-clear' onClick={() => actionFunction(0)}>0</button>
+      <button id='btn-clear' onClick={() => actionFunction(0)}>clear</button>
     </div>
   )
 }

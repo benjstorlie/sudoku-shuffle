@@ -2,12 +2,13 @@ import React, { createContext, useContext, useState } from 'react';
 
 // import game actions from game utils, to be able to pass them along as game context props.
 import { 
-  gridArr,
+  // eslint-disable-next-line
+  Cell,
+  blankGameArray,
   enterDigitHandler, 
   toggleCandidateHandler,
   toggleSelectedHandler,
   enterColorHandler,
-  blankCandidatesArray,
 } from './gameUtils'
 
 /**
@@ -15,14 +16,10 @@ import {
  * - it's confusing, because it would be nice if the descriptions from where they originally got defined got passed along
  * - but this is at least a short description that can be read in the other files that use {@linkcode useGameContext}
  * @typedef GameContextProps
- * @prop {number[][]} valueArray
- * @prop {React.Dispatch<React.SetStateAction<number[][]>>} setValueArray
- * @prop {Set[][]} candidatesArray
- * @prop {React.Dispatch<React.SetStateAction<Set[][]>>} setCandidatesArray
+ * @prop {Cell[][]} gameArray
+ * @prop {React.Dispatch<React.SetStateAction<Cell[][]>>} setGameArray
  * @prop {string[]} selected - selected cells, written as `R${row}C${col}` strings
  * @prop {React.Dispatch<React.SetStateAction<string[]>>} setSelected
- * @prop {string[][]} colorArray
- * @prop {React.Dispatch<React.SetStateAction<string[][]>>} setColorArray
  * @prop {number} highlightedDigit
  * @prop {React.Dispatch<React.SetStateAction<number>>} setHighlightedDigit
  * @prop {boolean} modeMultiselect
@@ -61,21 +58,11 @@ export default function GameProvider( {children}) {
   
   // ****** define useState hooks ********
 
-  /** @type {[number[][], React.Dispatch<React.SetStateAction<number[][]>>]} */
-  const [valueArray , setValueArray] = useState(
-    gridArr(0)
-  );
-
-  /** @type {[Set[][], React.Dispatch<React.SetStateAction<Set[][]>>]} */
-  const [candidatesArray , setCandidatesArray] = useState(
-    blankCandidatesArray()
-  );
+  /** @type {[Cell[][], React.Dispatch<React.SetStateAction<Cell[][]>>]} */
+  const [gameArray , setGameArray] = useState(blankGameArray());
   
   /** @type {[string[], React.Dispatch<React.SetStateAction<string[]>>]} */
   const [selected, setSelected] = useState(['R0C0']);
-
-  /** @type {[string[][], React.Dispatch<React.SetStateAction<string[][]>>]} */
-  const [colorArray, setColorArray] = useState(gridArr(''));
 
   /** @type {[number, React.Dispatch<React.SetStateAction<number>>]} */
   const [highlightedDigit, setHighlightedDigit] = useState(0);
@@ -96,24 +83,20 @@ export default function GameProvider( {children}) {
    * @type {string} */
   const lastSelected = selected[0] || '';
 
-  const enterDigit = enterDigitHandler(setValueArray,selected);
+  const enterDigit = enterDigitHandler(setGameArray,selected);
 
-  const enterColor = enterColorHandler(setColorArray,selected);
+  const enterColor = enterColorHandler(setGameArray,selected);
 
-  const toggleCandidate = toggleCandidateHandler(setCandidatesArray, selected, modeMultiselect);
+  const toggleCandidate = toggleCandidateHandler(setGameArray, selected, modeMultiselect);
   
   const toggleSelected = toggleSelectedHandler(setSelected, modeMultiselect);
 
   return (
     <GameContext.Provider value = {{
-      valueArray,
-      setValueArray,
-      candidatesArray,
-      setCandidatesArray,
+      gameArray,
+      setGameArray,
       selected,
       setSelected,
-      colorArray,
-      setColorArray,
       highlightedDigit,
       setHighlightedDigit,
       modeMultiselect,
