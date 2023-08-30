@@ -4,7 +4,9 @@
   "description": "Express.js server for the collaborative Sudoku app.",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "watch": "nodemon",
+    "seed": "node seeders/seed.js"
   },
   "dependencies": {
     "apollo-server-express": "^3.5.0",

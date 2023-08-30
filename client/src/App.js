@@ -8,6 +8,12 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+
+
 import Container from 'react-bootstrap/Container'
 
 import Profile from "./pages/Profile";
@@ -17,14 +23,14 @@ import Game from "./pages/Game"
 import Header from './components/nav/Header';
 import Footer from './components/nav/Footer';
 
+
 const httpLink = createHttpLink({
   uri: "/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {
-  // get the authentication token from local storage if it exists
   const token = localStorage.getItem("id_token");
-  // return the headers to the context so httpLink can read them
+
   return {
     headers: {
       ...headers,

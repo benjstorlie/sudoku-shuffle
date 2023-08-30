@@ -17,12 +17,12 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"npm run start-client\" \"npm run start-server\"",
-    "start-server": "cd server && npm start",
+    "start": "node server --ignore client",
+    "develop": "concurrently \"cd server && npm run start\" \"cd client && npm start\"",
     "install": "cd server && npm i && cd ../client && npm i",
-    "start-client": "cd client && npm start",
     "seed": "cd server && npm run seed",
-    "build": "cd client && npm run build"
+    "build": "cd client && npm run build",
+    "start-client": "cd client && npm start"
   },
   "devDependencies": {
     "concurrently": "^8.2.1"

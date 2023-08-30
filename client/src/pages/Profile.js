@@ -42,8 +42,11 @@ const Profile = () => {
   return (
     <div>
       <h2 className="card-header">
-        {profileId ? `${profile.name}'s` : "Your"} blah blah blah...
+        {profileId ? `${profile.name}'s` : "Your"} friends have endorsed these
+        skills...
       </h2>
+
+      <div className="my-4 p-4" style={{ border: "1px dotted #1a1a1a" }}></div>
     </div>
   );
 };

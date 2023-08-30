@@ -1,6 +1,3 @@
-// *TODO* Actually check this
-// copied from 21-MERN/01-Activities/Day3/24-Stu_Decode-JWT/Solved/server/server.js
-
 const express = require("express");
 const { ApolloServer } = require("apollo-server-express");
 const path = require("path");
