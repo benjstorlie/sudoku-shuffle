@@ -1,12 +1,10 @@
 const mongoose = require("mongoose");
 
 const gameSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "Profile" },
-  boardData: Object,
+  gameData: String,
   difficulty: String,
-  givens: [[Number]],
   elapsedTime: Number,
-  // Other game properties...
+  isSolved: Boolean
 });
 
 const Game = mongoose.model("Game", gameSchema);
