@@ -273,10 +273,9 @@ export function shuffleHandler(setGameArray) {
  * - Goes through the selected cells and changes their value to the given digit
  * - digit could be 0, which would just empty the cells
  * @param {Dispatch<SetStateAction<Cell[][]>>} setGameArray - set state function for the gameArray
- * @param {string[]} selected - currently selected cells
- * @returns {(digit: number) => void}
+ * @returns {(difficulty: string) => void}
  */
-export function loadDifficultyHandler(setGameArray,getBoardByDifficulty) {
+export function loadDifficultyHandler(setGameArray) {
   return ( (difficulty) => {
     setGameArray((prevArray) => {
       // Create shallow copy of previous gameArray
@@ -284,14 +283,16 @@ export function loadDifficultyHandler(setGameArray,getBoardByDifficulty) {
       const board = getBoardByDifficulty(difficulty);
       for (const cell of updatedArray) {
         let newValue = board.newboard.grids[0].value[cell[1]][cell[3]];
+        let newSolution = board.newboard.grids[0].solution[cell[1]][cell[3]];
         const newCell = {
           ...cell,
           value: newValue,
-          candidates: new Set()
+          candidates: new Set(),
+          given: !!newValue,
+          solution: newSolution,
         }
         updatedArray[cell[1]][cell[3]] = newCell;
       }
-      
       return updatedArray;
     })
   })
