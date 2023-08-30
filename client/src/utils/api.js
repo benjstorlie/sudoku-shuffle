@@ -16,7 +16,7 @@
 * as list of list of 9 numbers. **/
 function temporaryGetBoard(difficulty){
     var board = {};
-    if (difficulty == "easy"){
+    if (difficulty === "easy"){
         board = {
             "newboard": {
                 "grids": [
@@ -51,7 +51,7 @@ function temporaryGetBoard(difficulty){
             }
         }
     }
-    if (difficulty == "medium"){
+    if (difficulty === "medium"){
         board = {
             "newboard": {
                 "grids": [
@@ -86,7 +86,7 @@ function temporaryGetBoard(difficulty){
             }
         }
     }
-    if (difficulty == "hard"){
+    if (difficulty === "hard"){
         board = {
             "newboard": {
                 "grids": [
@@ -130,7 +130,7 @@ var apiUrl = "https://sudoku-api.vercel.app/api/dosuku?query={newboard(limit:5){
 /** This function calls the api at 
  * https://sudoku-api.vercel.app/api/dosuku?query={newboard(limit:5){grids{value,solution,difficulty},results,message}} 
  * **/
-export function getBoard(difficulty){
+/*export function getBoardByDifficulty(difficulty){
     if (difficulty === "easy"){
         return getBoardEasy();
     }
@@ -140,30 +140,56 @@ export function getBoard(difficulty){
     if (difficulty === "hard"){
         return getBoardHard();
     }
-}
+}*/
 
 function getBoardEasy(){
-    board = temporaryGetBoard("easy");
+    let board = temporaryGetBoard("easy");
     return board;
 }
 
 function getBoardMedium(){
-    board = temporaryGetBoard("medium");
+    let board = temporaryGetBoard("medium");
     return board;
 }
 
 function getBoardHard(){
-
-    board = temporaryGetBoard("hard");
+    let board = temporaryGetBoard("hard");
     return board;
 }
 
-async function  getBoardByDifficulty(difficulty){
-    fetch(apiUrl)
-        .then((data) => data.json())
-        .then((board) =>{
-            if (board.grids[0].difficulty === difficulty){
+async function getBoard(){
+    const response = await fetch(apiUrl);
+    try{
+        return await response.json();
+    }
+    catch{
+        return null;
 
-            }
-        })
+    }
 }
+
+async function getBoardByDifficulty(difficulty){
+    for( let i = 0; i < 10; i++){
+        let board = await getBoard();
+        if (board && board.newboard.grids[0].difficulty === difficulty){
+            console.log("Found board with difficulty "+ board.newboard.grids[0].difficulty + difficulty)
+            return board;
+        }
+    }
+    if (difficulty === "easy"){
+        console.log("fetching from template");
+        return getBoardEasy();
+    }
+    if (difficulty === "medium"){
+        console.log("fetching from template");
+        return getBoardMedium();
+    }
+    if (difficulty === "hard"){
+        console.log("fetching from template");
+        return getBoardHard();
+    }
+}
+
+getBoardByDifficulty("hard").then((data)=>{
+    console.log(data.newboard.grids[0].difficulty);
+});
