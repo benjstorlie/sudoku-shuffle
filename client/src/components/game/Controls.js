@@ -150,7 +150,7 @@ export default function Controls() {
         }
       </div>
       <button id='btn-clear' onClick={() => actionFunction(0)}>clear</button>
-      <button id='shuffle' onClick={() => shuffle()}><img src={shuffleSvg}/></button>
+      <button id='shuffle' onClick={() => shuffle()}><img src={shuffleSvg} alt=""/></button>
     </div>
   )
 }

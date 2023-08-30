@@ -14,7 +14,10 @@ const Signup = () => {
   });
   const [addProfile, { error, data }] = useMutation(ADD_PROFILE);
 
-  // update state based on form input changes
+  /**
+   * keyboard event update state based on form input changes
+   * @param {KeyboardEvent} event 
+   */
   const handleChange = (event) => {
     const { name, value } = event.target;
 
