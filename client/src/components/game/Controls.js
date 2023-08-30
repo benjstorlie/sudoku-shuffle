@@ -8,6 +8,8 @@ import { useGameContext,
   } from '../../utils/GameContext';
 import shuffleSvg from './shuffle.svg'
 
+import GameSvg from '../GameSvg'
+
 // Of course, it would be super fun to allow the user to modify these colors
 // This current list is just random, so it can be changed to something better
 // Have to make sure that colorList[0] is empty, because then that can be assigned to the 'clear' button
@@ -22,6 +24,7 @@ export default function Controls() {
 
   /** @type {GameContextProps} */
   const { 
+    gameArray,
     enterDigit,
     enterColor,
     toggleCandidate,
@@ -37,8 +40,9 @@ export default function Controls() {
   } = useGameContext();
 
   /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
-  const [ actionName, setActionName ] = useState(HIGHLIGHT);
+  const [ actionName, setActionName ] = useState(COLOR);
 
+  const [colorIndex , setColorIndex ] = useState(1);
   /**
    * Conditonal styling object for controls grid buttons
    * @param {number} index 
@@ -83,6 +87,7 @@ export default function Controls() {
         break;
       case COLOR:
         enterColor(colorList[index]);
+        setColorIndex(index)
         break;
       case CANDIDATE:
         if (index) {
@@ -128,6 +133,7 @@ export default function Controls() {
   }, [actionFunction,setModeAuto,setModeMouse,setModeMultiselect]); // Empty dependency array means this effect runs once after the initial render
 
   return (
+    <>
     <div id='controls'>
     <button onClick={()=> setModeMultiselect((prev) => !prev)}>multi-select: {modeMultiselect ? 'on' : 'off'}</button>
     <button onClick={()=> setModeAuto((prev) => !prev)}>auto-solve: {modeAuto ? 'on' : 'off'}</button>
@@ -154,6 +160,8 @@ export default function Controls() {
       <button id='shuffle' onClick={() => shuffle()}><img src={shuffleSvg} alt=""/></button>
       <Timer />
     </div>
+      <GameSvg gameData={JSON.stringify(gameArray)} color={colorList[colorIndex]}/>
+    </>
   )
 }
 
