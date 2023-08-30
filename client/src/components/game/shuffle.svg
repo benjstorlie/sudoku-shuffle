@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-103 -103 718 718">
+  <defs>
+    <linearGradient id="rainbow" >
+      <!-- Some great ideas!  https://stackoverflow.com/questions/56418763/creating-the-perfect-rainbow-gradient-in-css -->
+      <stop offset="0%" stop-color="rgb(255, 0, 0)" />
+      <stop offset="25%" stop-color="rgb(255, 255, 0)" />
+      <stop offset="50%" stop-color="rgb(0, 192, 255)" />
+      <stop offset="75%" stop-color="rgb(192, 0, 255)" />
+      <stop offset="100%" stop-color="rgb(255, 0, 0)" />
+    </linearGradient>
+  </defs>
+  <style>
+    line {
+      stroke: black;
+      stroke-width: 4px;
+    }
+    line.bold {
+      stroke: black;
+      stroke-width: 8px;
+    }
+    path {
+      stroke: black;
+      stroke-width: 10px;
+      fill: url(#rainbow)
+    }
+  </style>
+  <!-- fill background to see what it looks like -->
+  <!-- <rect x="-58" y="-58" width="628" height="628" fill="beige" /> -->
+
+  <rect x="-68" y="-68" height="648" width="648" fill="white" stroke="black" stroke-width="10px"/>
+
+  <line class="bold" x1="148" y1="-68" x2="148" y2="580" />
+
+  <line class="bold" x1="364" y1="-68" x2="364" y2="580" />
+
+  <line class="bold" y1="148" x1="-68" y2="148" x2="580" />
+
+  <line class="bold" y1="364" x1="-68" y2="364" x2="580" />
+
+  <!-- in between lines would be at 4 76 220 292 436 508 -->
+  <line x1="4" y1="-68" x2="4" y2="580" />
+
+  <line x1="76" y1="-68" x2="76" y2="580" />
+
+  <line y1="4" x1="-68" y2="4" x2="580" />
+
+  <line y1="76" x1="-68" y2="76" x2="580" />
+
+    <line x1="220" y1="-68" x2="220" y2="580" />
+
+  <line x1="292" y1="-68" x2="292" y2="580" />
+
+  <line y1="220" x1="-68" y2="220" x2="580" />
+
+  <line y1="292" x1="-68" y2="292" x2="580" />
+
+    <line x1="436" y1="-68" x2="436" y2="580" />
+
+  <line x1="508" y1="-68" x2="508" y2="580" />
+
+  <line y1="436" x1="-68" y2="436" x2="580" />
+
+  <line y1="508" x1="-68" y2="508" x2="580" />
+
+<!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M403.8 34.4c12-5 25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6V160H352c-10.1 0-19.6 4.7-25.6 12.8L284 229.3 244 176l31.2-41.6C293.3 110.2 321.8 96 352 96h32V64c0-12.9 7.8-24.6 19.8-29.6zM164 282.7L204 336l-31.2 41.6C154.7 401.8 126.2 416 96 416H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H96c10.1 0 19.6-4.7 25.6-12.8L164 282.7zm274.6 188c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6V416H352c-30.2 0-58.7-14.2-76.8-38.4L121.6 172.8c-6-8.1-15.5-12.8-25.6-12.8H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H96c30.2 0 58.7 14.2 76.8 38.4L326.4 339.2c6 8.1 15.5 12.8 25.6 12.8h32V320c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64z"/></svg>
