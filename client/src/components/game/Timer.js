@@ -1,6 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Countdown from "react-countdown";
+import { useGameContext,
+  // eslint-disable-next-line
+   GameContextProps 
+  } from '../../utils/GameContext';
 
 // Random component
 const Completionist = () => <span>Times out!</span>;
@@ -27,3 +31,13 @@ ReactDOM.render(
   <Countdown date={Date.now() + 600000} renderer={renderer}/>,
   document.getElementById("root")
 );
+
+
+export default function Timer() {
+
+  return (
+    <div>
+      Timer
+    </div>
+  )
+}
