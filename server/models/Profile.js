@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 const bcrypt = require("bcrypt");
 
 // Define the Stats subdocument schema
-const statsSchema = new mongoose.Schema({
+const statsSchema = new Schema({
   difficulty: String,
   bestTime: Number,
   averageTime: Number,
