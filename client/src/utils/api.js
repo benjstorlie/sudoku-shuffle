@@ -164,12 +164,11 @@ async function getBoard(){
     }
     catch{
         return null;
-
     }
 }
 
 async function getBoardByDifficulty(difficulty){
-    for( let i = 0; i < 10; i++){
+    for( let i = 0; i < 3; i++){
         let board = await getBoard();
         if (board && board.newboard.grids[0].difficulty === difficulty){
             console.log("Found board with difficulty "+ board.newboard.grids[0].difficulty + difficulty)
