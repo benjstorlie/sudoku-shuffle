@@ -6,14 +6,14 @@ const typeDefs = gql`
     _id: ID
     gameData: String
     difficulty: String
-    elapsedTime: Float
+    elapsedTime: Number
     isSolved: Boolean
   }
 
   type Stats {
     difficulty: String
-    bestTime: Float
-    averageTime: Float
+    bestTime: Number
+    averageTime: Number
     numSolved: Int
   }
 
@@ -41,11 +41,11 @@ const typeDefs = gql`
   type Mutation {
     addProfile(name: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
-    addGame(gameData: String!, difficulty: String!, elapsedTime: Float): Game
-    updateGame(gameId: ID!, gameData: String!, elapsedTime: Float!): Game
+    addGame(gameData: String!, difficulty: String!, elapsedTime: Number): Game
+    updateGame(gameId: ID!, gameData: String!, elapsedTime: Number!): Game
     removeGame(gameId: ID!): Game
     # Called when a game is finished
-    updateStats(difficulty: String!, elapsedTime: Float!): Profile
+    updateStats(difficulty: String!, elapsedTime: Number!): Profile
   }
 `;
 

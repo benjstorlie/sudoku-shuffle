@@ -4,8 +4,8 @@ const bcrypt = require("bcrypt");
 // Define the Stats subdocument schema
 const statsSchema = new mongoose.Schema({
   difficulty: String,
-  bestTime: Float,
-  averageTime: Float,
+  bestTime: Number,
+  averageTime: Number,
   numSolved: Number
 });
 

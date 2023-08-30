@@ -1,10 +1,22 @@
 const mongoose = require("mongoose");
 
 const gameSchema = new mongoose.Schema({
-  gameData: String,
-  difficulty: String,
-  elapsedTime: Number,
-  isSolved: Boolean
+  gameData: {
+    type: String,
+    required: true,
+  },
+  difficulty: {
+    type: String,
+    required: true,
+  },
+  elapsedTime: {
+    type: Number,
+    default: 0
+  },
+  isSolved: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const Game = mongoose.model("Game", gameSchema);
