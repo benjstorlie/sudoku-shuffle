@@ -177,3 +177,26 @@ export function toggleSelectedHandler(setSelected, modeMultiselect) {
     };
   }
 }
+
+/**
+ * 
+ * @param {React.Dispatch<React.SetStateAction<number[][]>>} setValueArray - set state function for the gameArray
+ * @param {React.Dispatch<React.SetStateAction<string[]>>} getBoardByDifficulty - get board from api using
+ * @returns {(difficulty: string) => void}
+ */
+export async function loadDifficultyHandler(setValueArray, getBoardByDifficulty) {
+  return ( (difficulty) => {
+    setValueArray((prevValueArray) => {
+      // Create shallow copy of previous gameArray
+      const updatedArray = prevValueArray.map((rows) => [...rows]);
+      let board =  getBoardByDifficulty(difficulty);
+      console.log(board);
+      board = board.newboard.grids[0].value;
+      for (const cell of updatedArray) {
+        let digit = board[cell[1]][cell[3]];
+        updatedArray[cell[1]][cell[3]] = digit;
+      }
+      return updatedArray;
+    })
+  })
+}

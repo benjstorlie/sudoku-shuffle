@@ -7,7 +7,12 @@ import {
   toggleCandidateHandler,
   toggleSelectedHandler,
   enterColorHandler,
+  loadDifficultyHandler,
 } from './gameUtils'
+
+import {
+  getBoardByDifficulty
+} from './api'
 
 /**
  * *TODO* Make sure everything being included in the game context is included here, and add a description
@@ -103,6 +108,8 @@ export default function GameProvider( {children}) {
   
   const toggleSelected = toggleSelectedHandler(setSelected, modeMultiselect);
 
+  const loadDifficulty = loadDifficultyHandler(setValueArray, getBoardByDifficulty);
+
   return (
     <GameContext.Provider value = {{
       valueArray,
@@ -126,6 +133,7 @@ export default function GameProvider( {children}) {
       toggleSelected,
       lastSelected,
       enterColor,
+      loadDifficulty,
     }}>
       { children }
     </GameContext.Provider>

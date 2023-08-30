@@ -167,7 +167,7 @@ async function getBoard(){
     }
 }
 
-async function getBoardByDifficulty(difficulty){
+export async function getBoardByDifficulty(difficulty){
     for( let i = 0; i < 3; i++){
         let board = await getBoard();
         if (board && board.newboard.grids[0].difficulty === difficulty){
@@ -192,3 +192,8 @@ async function getBoardByDifficulty(difficulty){
 getBoardByDifficulty("hard").then((data)=>{
     console.log(data.newboard.grids[0].difficulty);
 });
+
+
+function getGridArrFromBoard(board){
+
+}
