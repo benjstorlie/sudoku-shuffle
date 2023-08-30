@@ -30,8 +30,6 @@
 			- [gameUtils.js](client/src/utils/gameUtils.js): Handles functions that change the game data, imported into [GameContext.js](./client/src/contexts/GameContext.js).
 			- [mutations.js](client/src/utils/mutations.js): GraphQL f'ns that change something, like `login`, `updateGame`, etc.
 			- [queries.js](client/src/utils/queries.js): GraphQL f'ns that just ask for something, (like GET routes), like `me`, to get the logged in profile's data.
-			- [shuffle.js](client/src/utils/shuffle.js)
-		- [.DS_Store](client/src/.DS_Store)
 		- [App.js](client/src/App.js): Main React component.
 		- [App.test.js](client/src/App.test.js)
 		- [index.css](client/src/index.css): Styling every component has access to. Includes :root variables, like colors.
@@ -39,7 +37,6 @@
 		- [logo.svg](client/src/logo.svg): Shuffle logo. This is also copied into the public folder
 		- [reportWebVitals.js](client/src/reportWebVitals.js)
 		- [setupTests.js](client/src/setupTests.js)
-	- [.DS_Store](client/.DS_Store)
 	- [package.json](client/package.json)
 - [server/](server/): This directory contains the Node.js back end code.
 	- [config/](server/config/)
@@ -56,7 +53,6 @@
 		- [auth.js](server/utils/auth.js)
 	- [package.json](server/package.json)
 	- [server.js](server/server.js): Entry point for the Express server.
-- [.DS_Store](.DS_Store)
 - [.gitignore](.gitignore)
 - [README.md](README.md)
 - [development-guide.md](development-guide.md)
