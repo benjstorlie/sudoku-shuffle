@@ -26,5 +26,8 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.1"
+  },
+  "dependencies": {
+    "react-countdown": "^2.3.5"
   }
 }
