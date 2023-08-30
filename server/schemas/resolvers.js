@@ -10,7 +10,23 @@ const resolvers = {
     // By adding context to our query, we can retrieve the logged in profile without specifically searching for them
     me: async (parent, args, context) => {
       if (context.profile) {
-        return Profile.findOne({ _id: context.profile._id }).populate('games');
+        return Profile.findOne({ _id: context.profile._id })
+      }
+      throw new AuthenticationError("You need to be logged in!");
+    },
+    /** return profile with unsolved games */
+    meWithGames: async (parent, { allGames }, context) => {
+      if (context.profile) {
+        const profile = await Profile.findOne({ _id: context.profile._id }).populate('games');
+
+        if (allGames) {
+          return profile;
+        } else {
+        // Filter out solved games
+        profile.games = profile.games.filter(game => !game.isSolved);
+
+        return profile;
+        }
       }
       throw new AuthenticationError("You need to be logged in!");
     },
@@ -18,22 +34,19 @@ const resolvers = {
       return Game.findOne({ _id: gameId });
     },
     /** get unsolved games */
-    games: async (parent, args, context) => {
+    games: async (parent, { allGames }, context) => {
       if (context.profile) {
-        const profile = await Profile.findById(context.profile._id);
-        
-        if (!profile) {
-          throw new Error('Profile not found.');
+        const profile = await Profile.findOne({ _id: context.profile._id }).populate('games');
+
+        if (allGames) {
+          return profile.games;
+        } else {
+        // Filter out solved games
+        profile.games = profile.games.filter(game => !game.isSolved);
+
+        return profile.games;
         }
-
-        const unsolvedGames = await Game.find({
-          _id: { $in: profile.games },
-          isSolved: false
-        });
-
-        return unsolvedGames;
       }
-      
       throw new AuthenticationError('You need to be logged in!');
     }
   },
@@ -78,10 +91,10 @@ const resolvers = {
       }
       throw new AuthenticationError('You need to be logged in!');
     },
-    updateGame: async (parent, { gameId, gameData, elapsedTime }, context) => {
+    updateGame: async (parent, { gameId, gameData, elapsedTime, isSolved }, context) => {
       if (context.profile) {
         const profile = await Profile.findById(context.profile._id);
-
+    
         if (!profile) {
           throw new Error('Profile not found.');
         }
@@ -90,16 +103,54 @@ const resolvers = {
         if (!profile.games.includes(gameId)) {
           throw new Error('You do not have permission to update this game.');
         }
-        const game = await Game.findOneAndUpdate(
-          { _id: gameId },
-          { gameData, elapsedTime },
-          { runValidators: true, new: true }
-        );
-  
-        return game;
+    
+        // Find game
+        let game = await Game.findOneAndUpdate({ _id: gameId });
+        
+        // Did the game go from not solved to solved, i.e. was this the winning move?
+        const won = !game.isSolved && isSolved;
+        
+        // update game and save
+        game.gameData = gameData;
+        game.isSolved = isSolved;
+        game.elapsedTime = elapsedTime;
+
+        await game.save();
+    
+        // If the game was won, update the user's stats
+        if (won) {
+          console.log('won')
+          const difficulty = game.difficulty; 
+    
+          // Find or create the stats entry for this difficulty
+          let statsEntry = profile.stats.find(stat => stat.difficulty === difficulty);
+          if (!statsEntry) {
+            profile.stats.push({
+              difficulty,
+              bestTime: elapsedTime,
+              averageTime: elapsedTime,
+              numSolved: 1
+            });
+          } else {
+            if (elapsedTime < statsEntry.bestTime) {
+              statsEntry.bestTime = elapsedTime;
+            }
+            statsEntry.averageTime =
+              (statsEntry.averageTime * statsEntry.numSolved + elapsedTime) /
+              (statsEntry.numSolved + 1);
+            statsEntry.numSolved += 1;
+          }
+          
+          await profile.save(); // Save the updated profile with updated stats
+          console.log(profile.stats)
+          return {game, stats: profile.stats}
+        } else {
+          return {game, stats: [] };
+        }
+        
       }
       throw new AuthenticationError('You need to be logged in!');
-    },    
+    },       
     removeGame: async (parent, { gameId }, context) => {
       if (context.profile) {
         const profile = await Profile.findOneAndUpdate(
@@ -123,40 +174,7 @@ const resolvers = {
       }
       throw new AuthenticationError('You need to be logged in!');
     },
-    /** 
-     * When a game is solved, send its difficulty level and the time. This function uses the profiles current stats to update with the new data
-     */
-    updateStats: async (parent, { difficulty, elapsedTime }, context ) => {
-      if (context.profile) {
-        const profile = await Profile.findOne({ _id: context.profile._id } );
-        // this user's stats array
-        const stats = profile.stats
-        // find index corresponding to this difficulty level
-        const index = stats.findIndex(stat => stat.difficulty === difficulty);
-
-        if (index === -1) {
-          // Create new stats for this difficulty if it doesn't exist
-          stats.push({
-            difficulty,
-            bestTime: elapsedTime,
-            averageTime: elapsedTime,
-            numSolved: 1
-          });
-        } else {
-          // Update existing stats
-          const statsData = stats[index];
-          if (elapsedTime < statsData.bestTime) {
-            statsData.bestTime = elapsedTime;
-          }
-          statsData.averageTime = (statsData.averageTime * statsData.numSolved + elapsedTime) / (statsData.numSolved + 1);
-          statsData.numSolved += 1;
-        }
-      
-        return profile.save();
-      }
-      throw new AuthenticationError('You need to be logged in!');
-    }
-  },
+  }
 };
 
 module.exports = resolvers;

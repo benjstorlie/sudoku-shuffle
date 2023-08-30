@@ -1,28 +1,64 @@
 import { gql } from "@apollo/client";
 
-export const QUERY_PROFILES = gql`
-  query allProfiles {
-    profiles {
+export const QUERY_ME_WITHOUT_GAMES = gql`
+  query me {
+    me {
       _id
       name
-    }
-  }
-`;
-
-export const QUERY_SINGLE_PROFILE = gql`
-  query singleProfile($profileId: ID!) {
-    profile(profileId: $profileId) {
-      _id
-      name
+      email
+      password
+      stats {
+        difficulty
+        bestTime
+        averageTime
+        numSolved
+      }
     }
   }
 `;
 
 export const QUERY_ME = gql`
-  query me {
-    me {
+  query meWithGames {
+    meWithGames {
       _id
       name
+      email
+      password
+      games {
+        _id
+        gameData
+        difficulty
+        elapsedTime
+        isSolved
+      }
+      stats {
+        difficulty
+        bestTime
+        averageTime
+        numSolved
+      }
     }
   }
 `;
+
+export const QUERY_GAME = gql`
+  query Game {
+    games {
+      _id
+      gameData
+      difficulty
+      elapsedTime
+    }
+  }
+`
+
+export const QUERY_UNSOLVED_GAMES = gql`
+  query Games($allGames: Boolean) {
+    games(allGames: $allGames) {
+      _id
+      gameData
+      difficulty
+      elapsedTime
+    }
+  }
+`
