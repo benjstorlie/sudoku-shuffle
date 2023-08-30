@@ -11,9 +11,7 @@ export default function Cell({cellRef, row, col}) {
 
   /** @type {GameContextProps} */
   const { 
-    valueArray,
-    candidatesArray,
-    colorArray, 
+    gameArray,
     highlightedDigit, 
     selected,
     modeMouse, // if false, primary click selects cells, if true, primary click toggles candidates
@@ -21,8 +19,7 @@ export default function Cell({cellRef, row, col}) {
     toggleCandidate,
   } = useGameContext();
 
-  const value = valueArray[row][col];
-  const candidates = candidatesArray[row][col];
+  const {value,candidates,color} = gameArray[row][col];
   const isHighlighted = (!value && candidates.has(highlightedDigit));
   const isSelected = selected.includes(cellRef);
 
@@ -46,21 +43,26 @@ export default function Cell({cellRef, row, col}) {
     }
   }
 
-  if (colorArray[row][col]) {
-    styles.cell.backgroundColor = colorArray[row][col]
+  if (color) {
+    styles.cell.backgroundColor = color
   }
 
+  /** @type {(e:MouseEvent) => void} */
   function onCellClick() {
     if (!modeMouse  || value) {
       toggleSelected(cellRef);
     }
   }
 
+  /** @returns {(e:MouseEvent) => void} */
   function onCandidateClick(num) {
-    return (() => {
+
+    return ((e) => {
       if (modeMouse && !value) {
+        console.log('candidate click')
         toggleSelected(cellRef,true);
         toggleCandidate(num,cellRef);
+        e.stopPropagation();
       }
     });
   }

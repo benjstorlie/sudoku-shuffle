@@ -26,3 +26,7 @@
 #btn-clear {
   grid-row: 5 / span 1;
 }
+
+#shuffle:active {
+  background: var(--rainbow);
+}

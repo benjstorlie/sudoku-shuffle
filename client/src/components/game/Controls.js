@@ -5,6 +5,7 @@ import { useGameContext,
   // eslint-disable-next-line
    GameContextProps 
   } from '../../utils/GameContext';
+import shuffleSvg from './shuffle.svg'
 
 // Of course, it would be super fun to allow the user to modify these colors
 // This current list is just random, so it can be changed to something better
@@ -34,8 +35,10 @@ export default function Controls() {
     modeMultiselect,
     setModeMultiselect,
     loadDifficulty,
+    shuffle
   } = useGameContext();
 
+  /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
   const [ actionName, setActionName ] = useState(HIGHLIGHT);
 
   /**
@@ -97,6 +100,7 @@ export default function Controls() {
   },[actionName,enterColor,enterDigit,setHighlightedDigit,toggleCandidate,loadDifficulty])
 
   useEffect(() => {
+    /** @type {(e:KeyboardEvent) => void} */
     const handleKeyDown = (e) => {
       const key = e.key;
       if (['1','2','3','4','5','6','7','8','9'].includes(key)) {
@@ -152,7 +156,8 @@ export default function Controls() {
           ))
         }
       </div>
-      <button id='btn-clear' onClick={() => actionFunction(0)}>0</button>
+      <button id='btn-clear' onClick={() => actionFunction(0)}>clear</button>
+      <button id='shuffle' onClick={() => shuffle()}><img src={shuffleSvg} alt=""/></button>
     </div>
   )
 }
