@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { iter } from '../../utils/gameUtils';
 import './Controls.css';
+import Timer from './Timer'
 import { useGameContext,
   // eslint-disable-next-line
    GameContextProps 
@@ -151,6 +152,7 @@ export default function Controls() {
       </div>
       <button id='btn-clear' onClick={() => actionFunction(0)}>clear</button>
       <button id='shuffle' onClick={() => shuffle()}><img src={shuffleSvg} alt=""/></button>
+      <Timer />
     </div>
   )
 }
