@@ -9,6 +9,7 @@
   --given-color: #1414bd;
   --cell-border-width: 2px;
   --box-border-width: 3px;
+  --rainbow: linear-gradient(to left top, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 25%, rgb(0, 192, 255) 50%, rgb(192, 0, 255) 75%, rgb(255, 0, 0) 100%);
 }
 
 body {
