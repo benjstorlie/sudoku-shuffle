@@ -122,7 +122,7 @@ export default function GameProvider( {children}) {
       lastSelected,
       enterColor,
       loadDifficulty,
-      shuffle
+      shuffle,
     }}>
       { children }
     </GameContext.Provider>

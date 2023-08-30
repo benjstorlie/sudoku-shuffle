@@ -274,12 +274,13 @@ export function shuffleHandler(setGameArray) {
  * - digit could be 0, which would just empty the cells
  * @param {Dispatch<SetStateAction<Cell[][]>>} setGameArray - set state function for the gameArray
  */
-export function loadDifficultyHandler(setGameArray) {
-  return ((difficulty) => {
-      setGameArray(async (prevArray) => {
-        const updatedArray = blankGameArray();
-        const board = await getBoardByDifficulty(difficulty);
 
+export function loadDifficultyHandler(setGameArray) {
+  return (async (difficulty) => {
+    console.log(difficulty);
+    const updatedArray = blankGameArray();
+    getBoardByDifficulty(difficulty).then((board) =>{
+      setGameArray((prevArray) => {
         if (board?.newboard?.grids?.[0]?.value && board?.newboard?.grids?.[0]?.solution) {
           for (let row = 0; row < 9; row++) {
             for (let col = 0; col < 9; col++) {
@@ -293,14 +294,15 @@ export function loadDifficultyHandler(setGameArray) {
                 solution: newSolution,
               };
               updatedArray[row][col] = newCell;
+              console.log("HUGE!!" + newCell.value);
             }
           }
         } else {
           console.error("Invalid board structure:", board);
         }
-
+        console.log("Done: " + updatedArray);
         return updatedArray;
-      });
-    }
-  )
+      })
+    })
+  })
 }

@@ -94,8 +94,9 @@ export default function Controls() {
       case DIFFICULTY:
         console.log("trying:" + difficultyList[index]+" "+ loadDifficulty);
         try{
-          console.log("attempting...")
+          console.log("attempting...");
           loadDifficulty(difficultyList[index]);
+          console.log("finished?");
         } catch(error){
           console.error("An error occurred:", error);
         }
