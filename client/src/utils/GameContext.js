@@ -8,7 +8,7 @@ import {
   // eslint-disable-next-line
   Cell,
   blankGameArray,
-  enterDigitHandler, 
+  enterDigitHandler,
   toggleCandidateHandler,
   toggleSelectedHandler,
   enterColorHandler,
@@ -100,7 +100,7 @@ export default function GameProvider( {children}) {
   
   const toggleSelected = toggleSelectedHandler(setSelected, modeMultiselect);
 
-  const loadDifficulty = loadDifficultyHandler(setValueArray, getBoardByDifficulty);
+  const loadDifficulty = loadDifficultyHandler(setGameArray, getBoardByDifficulty);
   
   const shuffle = shuffleHandler(setGameArray);
 

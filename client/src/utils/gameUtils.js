@@ -1,6 +1,6 @@
 // eslint-disable-next-line
 import { Dispatch, SetStateAction } from "react";
-
+import { getBoardByDifficulty } from "./api";
 /**
  * @typedef Cell
  * @prop {number} value - the value the cell shows. If 0, the cell is empty and only shows candidates
@@ -263,6 +263,35 @@ export function shuffleHandler(setGameArray) {
           }
         }
       }
+      return updatedArray;
+    })
+  })
+}
+
+/**
+ * Change the value for every cell that is selected.  
+ * - Goes through the selected cells and changes their value to the given digit
+ * - digit could be 0, which would just empty the cells
+ * @param {Dispatch<SetStateAction<Cell[][]>>} setGameArray - set state function for the gameArray
+ * @param {string[]} selected - currently selected cells
+ * @returns {(digit: number) => void}
+ */
+export function loadDifficultyHandler(setGameArray,getBoardByDifficulty) {
+  return ( (difficulty) => {
+    setGameArray((prevArray) => {
+      // Create shallow copy of previous gameArray
+      const updatedArray = prevArray.map((rows) => [...rows]);
+      const board = getBoardByDifficulty(difficulty);
+      for (const cell of updatedArray) {
+        let newValue = board.newboard.grids[0].value[cell[1]][cell[3]];
+        const newCell = {
+          ...cell,
+          value: newValue,
+          candidates: new Set()
+        }
+        updatedArray[cell[1]][cell[3]] = newCell;
+      }
+      
       return updatedArray;
     })
   })
