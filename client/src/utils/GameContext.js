@@ -42,6 +42,7 @@ import {
  * @prop {(color: string) => void} enterColor
  * @prop {(candidate: number, cellRef?:string) => void} toggleCandidate - The optional cellRef parameter is so you don't have to wait for a cell to be added to the selected list.
  * @prop {(cell: string, force?: boolean) => void} toggleSelected - if included, if force is true, this cell will be selected, if force is false, it will not
+ * @prop {(difficulty: string) => void} loadDifficulty
 */
 
 /**

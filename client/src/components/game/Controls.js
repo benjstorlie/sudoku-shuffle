@@ -92,6 +92,7 @@ export default function Controls() {
         }
         break;
       case DIFFICULTY:
+        console.log("WORK PLEASE");
         loadDifficulty(difficultyList[index]);
         break;
       default:

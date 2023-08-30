@@ -275,25 +275,30 @@ export function shuffleHandler(setGameArray) {
  * @param {Dispatch<SetStateAction<Cell[][]>>} setGameArray - set state function for the gameArray
  * @returns {(difficulty: string) => void}
  */
-export function loadDifficultyHandler(setGameArray) {
-  return ( (difficulty) => {
-    setGameArray((prevArray) => {
-      // Create shallow copy of previous gameArray
-      const updatedArray = prevArray.map((rows) => [...rows]);
-      const board = getBoardByDifficulty(difficulty);
-      for (const cell of updatedArray) {
-        let newValue = board.newboard.grids[0].value[cell[1]][cell[3]];
-        let newSolution = board.newboard.grids[0].solution[cell[1]][cell[3]];
-        const newCell = {
-          ...cell,
-          value: newValue,
-          candidates: new Set(),
-          given: !!newValue,
-          solution: newSolution,
+export async function loadDifficultyHandler(setGameArray) {
+  return async (difficulty) => {
+    try {
+      const board = await getBoardByDifficulty(difficulty);
+      setGameArray((prevArray) => {
+        const updatedArray = prevArray.map((rows) => [...rows]);
+        for (let row = 0; row < 9; row++) {
+          for (let col = 0; col < 9; col++) {
+            let newValue = board.newboard.grids[0].value[row][col];
+            let newSolution = board.newboard.grids[0].solution[row][col];
+            const newCell = {
+              ...updatedArray[row][col],
+              value: newValue,
+              candidates: new Set(),
+              given: !!newValue,
+              solution: newSolution,
+            };
+            updatedArray[row][col] = newCell;
+          }
         }
-        updatedArray[cell[1]][cell[3]] = newCell;
-      }
-      return updatedArray;
-    })
-  })
+        return updatedArray;
+      });
+    } catch (error) {
+      console.error("Error loading difficulty:", error);
+    }
+  };
 }
