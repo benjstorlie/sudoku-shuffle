@@ -7,26 +7,30 @@
 	- [src/](client/src/): React application source code.
 		- [components/](client/src/components/)
 			- [game/](client/src/components/game/): Components related to rendering the Sudoku game. Also, these are currently the components that have access to GameContext.
-				- [Cell.js](client/src/components/game/Cell.js)
+				- [Cell.js](client/src/components/game/Cell.js): the Cell component. Reads the current data and renders it. Has event listeners that can change data.
 				- [Controls.css](client/src/components/game/Controls.css): Styling for Controls element
 				- [Controls.js](client/src/components/game/Controls.js): Controls component -- includes settings, digits buttons, highlight tool, etc.
 				- [Game.css](client/src/components/game/Game.css): Styling imported to SudokuGrid.js, so it also applies to Cell.js.
 				- [SudokuGrid.js](client/src/components/game/SudokuGrid.js): Component that displays the grid -- Cells are sub-components
+				- [Timer.js](client/src/components/game/Timer.js)
+				- [shuffle.svg](client/src/components/game/shuffle.svg): This is the rainbow button image that goes on the shuffle button.
 			- [nav/](client/src/components/nav/): *TODO* These components apply to every page
 				- [Footer.js](client/src/components/nav/Footer.js)
 				- [Header.js](client/src/components/nav/Header.js)
 				- [Nav.js](client/src/components/nav/Nav.js)
 		- [pages/](client/src/pages/)
+			- [Game.js](client/src/pages/Game.js): Holds the game components
 			- [Login.js](client/src/pages/Login.js)
-			- [Profile.js](client/src/pages/Profile.js)
+			- [Profile.js](client/src/pages/Profile.js): Shows the user's stats. *TODO* Is this also where buttons to resume a game go?
 			- [Signup.js](client/src/pages/Signup.js)
 		- [utils/](client/src/utils/)
 			- [GameContext.js](client/src/utils/GameContext.js): This is where the components get all the game data.
-			- [api.js](client/src/utils/api.js)
-			- [auth.js](client/src/utils/auth.js)
+			- [api.js](client/src/utils/api.js): Related to external Sudoku API
+			- [auth.js](client/src/utils/auth.js): This is for authenticating users
 			- [gameUtils.js](client/src/utils/gameUtils.js): Handles functions that change the game data, imported into [GameContext.js](./client/src/contexts/GameContext.js).
-			- [mutations.js](client/src/utils/mutations.js)
-			- [queries.js](client/src/utils/queries.js)
+			- [mutations.js](client/src/utils/mutations.js): GraphQL f'ns that change something, like `login`, `updateGame`, etc.
+			- [queries.js](client/src/utils/queries.js): GraphQL f'ns that just ask for something, (like GET routes), like `me`, to get the logged in profile's data.
+			- [shuffle.js](client/src/utils/shuffle.js)
 		- [.DS_Store](client/src/.DS_Store)
 		- [App.js](client/src/App.js): Main React component.
 		- [App.test.js](client/src/App.test.js)
