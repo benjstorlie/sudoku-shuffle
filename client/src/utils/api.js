@@ -189,7 +189,7 @@ export async function getBoardByDifficulty(difficulty){
     }
 }
 
-getBoardByDifficulty("hard").then((data)=>{
-    console.log(data.newboard.grids[0].difficulty);
-});
+// getBoardByDifficulty("hard").then((data)=>{
+//     console.log(data.newboard.grids[0].difficulty);
+// });
 

@@ -273,32 +273,34 @@ export function shuffleHandler(setGameArray) {
  * - Goes through the selected cells and changes their value to the given digit
  * - digit could be 0, which would just empty the cells
  * @param {Dispatch<SetStateAction<Cell[][]>>} setGameArray - set state function for the gameArray
- * @returns {(difficulty: string) => void}
  */
-export async function loadDifficultyHandler(setGameArray) {
-  return async (difficulty) => {
-    try {
-      const board = await getBoardByDifficulty(difficulty);
-      setGameArray((prevArray) => {
-        const updatedArray = prevArray.map((rows) => [...rows]);
-        for (let row = 0; row < 9; row++) {
-          for (let col = 0; col < 9; col++) {
-            let newValue = board.newboard.grids[0].value[row][col];
-            let newSolution = board.newboard.grids[0].solution[row][col];
-            const newCell = {
-              ...updatedArray[row][col],
-              value: newValue,
-              candidates: new Set(),
-              given: !!newValue,
-              solution: newSolution,
-            };
-            updatedArray[row][col] = newCell;
+export function loadDifficultyHandler(setGameArray) {
+  return ((difficulty) => {
+      setGameArray(async (prevArray) => {
+        const updatedArray = blankGameArray();
+        const board = await getBoardByDifficulty(difficulty);
+
+        if (board?.newboard?.grids?.[0]?.value && board?.newboard?.grids?.[0]?.solution) {
+          for (let row = 0; row < 9; row++) {
+            for (let col = 0; col < 9; col++) {
+              let newValue = board.newboard.grids[0].value[row][col];
+              let newSolution = board.newboard.grids[0].solution[row][col];
+              const newCell = {
+                ...prevArray[row][col],
+                value: newValue,
+                candidates: new Set(),
+                given: !!newValue,
+                solution: newSolution,
+              };
+              updatedArray[row][col] = newCell;
+            }
           }
+        } else {
+          console.error("Invalid board structure:", board);
         }
+
         return updatedArray;
       });
-    } catch (error) {
-      console.error("Error loading difficulty:", error);
     }
-  };
+  )
 }

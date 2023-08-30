@@ -16,9 +16,6 @@ import {
   shuffleHandler
 } from './gameUtils'
 
-import {
-  getBoardByDifficulty
-} from './api'
 
 /**
  * *TODO* Make sure everything being included in the game context is included here, and add a description
@@ -101,7 +98,7 @@ export default function GameProvider( {children}) {
   
   const toggleSelected = toggleSelectedHandler(setSelected, modeMultiselect);
 
-  const loadDifficulty = loadDifficultyHandler(setGameArray, getBoardByDifficulty);
+  const loadDifficulty = loadDifficultyHandler(setGameArray);
   
   const shuffle = shuffleHandler(setGameArray);
 

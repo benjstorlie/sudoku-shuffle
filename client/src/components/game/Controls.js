@@ -75,7 +75,7 @@ export default function Controls() {
       }
   }
 
-  const actionFunction = useCallback(function(index) {
+  const actionFunction = useCallback(async function(index) {
     switch (actionName) {
       case HIGHLIGHT:
         setHighlightedDigit(index);
@@ -92,8 +92,13 @@ export default function Controls() {
         }
         break;
       case DIFFICULTY:
-        console.log("WORK PLEASE");
-        loadDifficulty(difficultyList[index]);
+        console.log("trying:" + difficultyList[index]+" "+ loadDifficulty);
+        try{
+          console.log("attempting...")
+          loadDifficulty(difficultyList[index]);
+        } catch(error){
+          console.error("An error occurred:", error);
+        }
         break;
       default:
         return;
