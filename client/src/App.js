@@ -8,7 +8,7 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import GameProvider from '../utils/GameContext';
+import GameProvider from './utils/GameContext';
 
 import Container from 'react-bootstrap/Container'
 

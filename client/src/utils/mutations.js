@@ -26,7 +26,7 @@ export const LOGIN_USER = gql`
 
 export const ADD_GAME = gql`
   mutation addGame($gameData: String!, $difficulty: String!, $elapsedTime: Float) {
-    addGame(gameData: $gameData, difficulty: $difficulty, $elapsedTime: Float) {
+    addGame(gameData: $gameData, difficulty: $difficulty, elapsedTime: $elapsedTime) {
       _id
       gameData
       difficulty

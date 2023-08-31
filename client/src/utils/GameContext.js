@@ -1,7 +1,11 @@
 import React, { createContext, useContext, useState,
   // eslint-disable-next-line
   Dispatch, SetStateAction
- } from 'react';
+} from 'react';
+
+// import things for communication with server
+import { useMutation } from '@apollo/client';
+import { ADD_GAME, UPDATE_GAME } from './mutations';
 
 // import game actions from game utils, to be able to pass them along as game context props.
 import { 
@@ -39,11 +43,6 @@ import {
  * @prop {(cell: string, force?: boolean) => void} toggleSelected - if included, if force is true, this cell will be selected, if force is false, it will not
 */
 
-/**
- * @typedef GameProviderProps
- * @prop {React.ReactElement} children
-*/
-
 // Initialize new context for game
 const GameContext = createContext();
 
@@ -55,50 +54,40 @@ export const useGameContext = () => useContext(GameContext)
 
 /**
  * GameProvider component that holds initial state, returns provider component
- * @param {GameProviderProps} props
- * @returns {React.JSX.Element}
  */
 export default function GameProvider( {children}) {
   
   // ****** define useState hooks ********
 
-  /** @type {[Cell[][], Dispatch<SetStateAction<Cell[][]>>]} */
   const [gameArray , setGameArray] = useState(blankGameArray());
-  
-  /** @type {[string[], Dispatch<SetStateAction<string[]>>]} */
   const [selected, setSelected] = useState(['R0C0']);
-
-  /** @type {[number, Dispatch<SetStateAction<number>>]} */
   const [highlightedDigit, setHighlightedDigit] = useState(0);
-
-  /** @type {[boolean, Dispatch<SetStateAction<boolean>>]} */
   const [modeMultiselect, setModeMultiselect] = useState(false);
-
-  /** @type {[boolean, Dispatch<SetStateAction<boolean>>]} */
   const [modeAuto, setModeAuto] = useState(false);
+  const [modeMouse, setModeMouse] = useState(false);
+  const [gameId, setGameId] = useState('');
+  const [difficulty, setDifficulty] = useState('');
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [isSolved, setIsSolved] = useState(false);
 
-  /** @type {[boolean, Dispatch<SetStateAction<boolean>>]} */
-  const [modeMouse, setModeMouse] = useState(false)
+  // ***** define GraphQL hooks
 
-  // ***** end useState definitions
+  const [addGame] = useMutation(ADD_GAME)
+  const [updateGame] = useMutation(UPDATE_GAME);
+
   // ***** start definition of functions or anything else to pass as game context props
 
   /** the last selected cell is the first cell in the list of selected cells, or, if there are no cells selected, it will just give an empty string
    * @type {string} */
   const lastSelected = selected[0] || '';
-
-  const enterDigit = enterDigitHandler(setGameArray,selected);
-
-  const enterColor = enterColorHandler(setGameArray,selected);
-
-  const toggleCandidate = toggleCandidateHandler(setGameArray, selected, modeMultiselect);
-  
+  const enterDigit = enterDigitHandler(gameArray,setGameArray,selected);
+  const enterColor = enterColorHandler(gameArray,setGameArray,selected);
+  const toggleCandidate = toggleCandidateHandler(gameArray,setGameArray, selected, modeMultiselect);
   const toggleSelected = toggleSelectedHandler(setSelected, modeMultiselect);
+  const shuffle = shuffleHandler(gameArray,setGameArray);
 
-  const shuffle = shuffleHandler(setGameArray);
-
-  return (
-    <GameContext.Provider value = {{
+  /** @type {GameContextProps} */
+  const contextProps = {
       gameArray,
       setGameArray,
       selected,
@@ -117,7 +106,10 @@ export default function GameProvider( {children}) {
       lastSelected,
       enterColor,
       shuffle
-    }}>
+    }
+
+  return (
+    <GameContext.Provider value = { contextProps }>
       { children }
     </GameContext.Provider>
   )

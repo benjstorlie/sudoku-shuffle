@@ -53,22 +53,22 @@ export function isSameBox({row: row1, col: col1}, {row: row2, col: col2}) {
  * Change the value for every cell that is selected.  
  * - Goes through the selected cells and changes their value to the given digit
  * - digit could be 0, which would just empty the cells
+ * @param {Cell[][]} gameArray  
  * @param {Dispatch<SetStateAction<Cell[][]>>} setGameArray - set state function for the gameArray
  * @param {string[]} selected - currently selected cells
  * @returns {(digit: number) => void}
  */
-export function enterDigitHandler(setGameArray,selected) {
+export function enterDigitHandler(gameArray,setGameArray,selected,gameId,elapsedTime) {
   return ( (digit) => {
-    setGameArray((prevArray) => {
-      // Create shallow copy of previous gameArray
-      const updatedArray = prevArray.map((rows) => [...rows]);
 
-      for (const cell of selected) {
-        updatedArray[cell[1]][cell[3]].value = digit;
-      }
+    // Create shallow copy of previous gameArray
+    const updatedArray = gameArray.map((rows) => [...rows]);
 
-      return updatedArray;
-    })
+    for (const [,row,,col] of selected) {
+      updatedArray[row][col].value = digit;
+    }
+
+    setGameArray(updatedArray)
   })
 }
 
@@ -76,77 +76,70 @@ export function enterDigitHandler(setGameArray,selected) {
  * Change the color for every cell that is selected.
  * - data held in `colorArray`
  * - string could be '', which would 
+ * @param {Cell[][]} gameArray  
  * @param {Dispatch<SetStateAction<Cell[][]>>} setGameArray - set state function for the gameArray
  * @param {string[]} selected - currently selected cells
  * @returns {(color: string) => void}
  */
-export function enterColorHandler(setGameArray,selected) {
+export function enterColorHandler(gameArray,setGameArray,selected) {
   return ( (color) => {
-    setGameArray((prevArray) => {
-      // Create shallow copy of previous gameArray
-      const updatedArray = prevArray.map((rows) => [...rows]);
+    // Create shallow copy of previous gameArray
+    const updatedArray = gameArray.map((rows) => [...rows]);
 
-      for (const cell of selected) {
-        updatedArray[cell[1]][cell[3]].color = color;
-      }
+    for (const [,row,,col] of selected) {
+      updatedArray[row][col].color = color;
+    }
 
-      return updatedArray;
-    })
+    setGameArray(updatedArray);
   })
 }
 
 /**
  * Goes through the selected cells and toggles the inclusion of the given candidate.
  * - If any of the cells includes the candidate, then it will be removed, otherwise added.
+ * @param {Cell[][]} gameArray  
  * @param {Dispatch<SetStateAction<Cell[][]>>} setGameArray - set state function for the gameArray
  * @param {string[]} selected - currently selected cells
  * @param {boolean} modeMultiselect - if true, multi-select on, if false, single-select
  * @returns {(candidate: number, cellRef?:string) => void} - The optional cellRef parameter is so you don't have to wait for a cell to be added to the selected list.
 */
-export function toggleCandidateHandler(setGameArray, selected,modeMultiselect) {
+export function toggleCandidateHandler(gameArray,setGameArray, selected,modeMultiselect) {
   return ( (candidate, cellRef) => {
+    // Create shallow copy of previous gameArray
+    const updatedArray = gameArray.map((rows) => [...rows]);
     if (cellRef && !modeMultiselect) {
       // 'if cellRef' means that the user clicked on the grid itself. And, since it's also in single-select mode, that means that the result will be that the cell clicked on will be the only cell selected, AND the only cell whose candidates get updated.
       const [,row,,col] = cellRef;
-      setGameArray((prevArray) => {
-        // Create shallow copy of previous gameArray
-        const updatedArray = prevArray.map((rows) => [...rows]);
-        if (prevArray[row][col].candidates.has(candidate)) {
-          updatedArray[row][col].candidates.delete(candidate)
-        } else {
-          updatedArray[row][col].candidates.add(candidate)
-        }
-        console.log('cellRef && !modeMultiSelect',cellRef,updatedArray[row][col])
-        return updatedArray;
-      });
+      if (gameArray[row][col].candidates.has(candidate)) {
+        updatedArray[row][col].candidates.delete(candidate)
+      } else {
+        updatedArray[row][col].candidates.add(candidate)
+      }
+      console.log('cellRef && !modeMultiSelect',cellRef,updatedArray[row][col])
     } else {
-      setGameArray((prevArray) => {
-        // Create shallow copy of previous gameArray
-        const updatedArray = prevArray.map((rows) => [...rows]);
-        if (cellRef && !selected.includes(cellRef)) {
-          // This should not change the actual selected array values.
-          selected = [cellRef, ...selected];
+      if (cellRef && !selected.includes(cellRef)) {
+        // This should not change the actual selected array values.
+        selected = [cellRef, ...selected];
+      }
+      /**
+       * A boolean for whether the candidates should be removed or added in all cells
+       * - If any of the cells includes the candidate, then it will be removed.
+       * @type {boolean}
+       */
+      const force = !selected.some(([,row,,col]) =>
+        gameArray[row][col].candidates.has(candidate)
+      );
+      for (const [,row,,col] of selected) {
+        if (force) {
+          updatedArray[row][col].candidates.add(candidate);
+        } else {
+          updatedArray[row][col].candidates.delete(candidate);
         }
-        /**
-         * A boolean for whether the candidates should be removed or added in all cells
-         * - If any of the cells includes the candidate, then it will be removed.
-         * @type {boolean}
-         */
-        const force = !selected.some(([,row,,col]) =>
-          prevArray[row][col].candidates.has(candidate)
-        );
-        for (const [,row,,col] of selected) {
-          if (force) {
-            updatedArray[row][col].candidates.add(candidate);
-          } else {
-            updatedArray[row][col].candidates.delete(candidate);
-          }
-        }
-        console.log('else',selected)
-        if (cellRef) {console.log(updatedArray[cellRef[1]][cellRef[3]])}
-        return updatedArray;
-      });
+      }
+      console.log('else',selected)
+      if (cellRef) {console.log(updatedArray[cellRef[1]][cellRef[3]])}
     }
+    setGameArray(updatedArray);
   });
 }
 
@@ -237,11 +230,11 @@ const permuteBands = () => {
  * Shuffles the rows and columns around, and also permutes the digits, resulting in an automorphic game to the first.
  * *TODO* make sure it also shuffles any solution array
  * I think that would have to happen inside the setGameArray function too
+ * @param {Cell[][]} gameArray  
  * @param {Dispatch<SetStateAction<Cell[][]>>} setGameArray - setState function for gameArray
  */
-export function shuffleHandler(setGameArray) {
+export function shuffleHandler(gameArray,setGameArray) {
   return ( () => {
-    setGameArray((prevArray) => {
       const Tr = permuteBands();
       const Tc = permuteBands();
       const Z = permuteDigits();
@@ -251,7 +244,7 @@ export function shuffleHandler(setGameArray) {
         for (let col = 0 ; col < 9 ; col++ ) {
           let newRow = transpose ? Tc[col] : Tr[row];
           let newCol = transpose ? Tr[row] : Tc[col];
-          let cell = { ...prevArray[row][col]};
+          let cell = { ...gameArray[row][col]};
           let newCandidates = new Set();
           for (const entry of cell.candidates.values()) {
             newCandidates.add(Z[entry]);
@@ -263,7 +256,6 @@ export function shuffleHandler(setGameArray) {
           }
         }
       }
-      return updatedArray;
-    })
+      setGameArray( updatedArray );
   })
 }
