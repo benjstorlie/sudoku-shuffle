@@ -199,7 +199,7 @@ async function enterDigit(digit) {
   // Create shallow copy of previous gameArray
   const updatedArray = gameArray.map((rows) => [...rows]);
   for (const [,row,,col] of selected) {
-    updatedArray[row][col].value = digit;
+    if (!gameArray[row][col].given) {updatedArray[row][col].value = digit}
   }
   setGameArray(updatedArray);
   await saveGameState(updatedArray,true);
