@@ -1,3 +1,22 @@
+/**
+ * @description 
+ * @see GameContextProps - describe all the functions and variabled that can be accessed with `useGameContext`.
+ * @see useGameContext - Initialize context with `createContext` and `useContext
+ * @see GameProvider - Defining the actual react component that's exported. The rest of the file is what's inside this function.
+ * useState - There are many variables related to the game and its behavior, and they are all initialized here.
+ * ## Mutations
+ * useMutation - This is for creating functions that do mutations, like add and update game.
+ * saveGameState - To be used inside other functions -- function that saves the game state and handles errors. @see UPDATE_GAME
+ * saveNewGAme - To be used inside other functions -- function that creates a new game in the database. @see ADD_GAME 
+ * ## Game Action functions.  Many components use these, with user input.
+ * toggleSelected, enterColor - These functions don't need to save, so they're more simply defined in {@link ./gameUtils.js}
+ * shuffle
+ * toggleCandidate
+ * enterDigit
+*/
+
+
+
 import React, { createContext, useContext, useState,
   // eslint-disable-next-line
   Dispatch, SetStateAction
@@ -12,7 +31,7 @@ import {
   // eslint-disable-next-line
   Cell,
   blankGameArray,
-  enterDigitHandler, 
+  isSolutionCorrect,
   toggleCandidateHandler,
   toggleSelectedHandler,
   enterColorHandler,
@@ -36,7 +55,6 @@ import {
  * @prop {Dispatch<SetStateAction<boolean>>} setModeAuto
  * @prop {boolean} modeMouse - if false, primary click selects cells, if true, primary click toggles candidates
  * @prop {Dispatch<SetStateAction<boolean>>} setModeMouse - if false, primary click selects cells, if true, primary click toggles candidates
- * @prop {string} lastSelected
  * @prop {(digit: number) => void} enterDigit
  * @prop {(color: string) => void} enterColor
  * @prop {(candidate: number, cellRef?:string) => void} toggleCandidate - The optional cellRef parameter is so you don't have to wait for a cell to be added to the selected list.
@@ -65,28 +83,128 @@ export default function GameProvider( {children}) {
   const [modeMultiselect, setModeMultiselect] = useState(false);
   const [modeAuto, setModeAuto] = useState(false);
   const [modeMouse, setModeMouse] = useState(false);
-  const [gameId, setGameId] = useState('');
-  const [difficulty, setDifficulty] = useState('');
+  const [gameId, setGameId] = useState('test');
+  const [difficulty, setDifficulty] = useState('test');
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isSolved, setIsSolved] = useState(false);
+  const [message, setMessage] = useState('');
 
   // ***** define GraphQL hooks
 
   const [addGame] = useMutation(ADD_GAME)
   const [updateGame] = useMutation(UPDATE_GAME);
 
-  // ***** start definition of functions or anything else to pass as game context props
+  // ****************  These functions are used by the game actions for saving to database
 
-  /** the last selected cell is the first cell in the list of selected cells, or, if there are no cells selected, it will just give an empty string
-   * @type {string} */
-  const lastSelected = selected[0] || '';
-  const enterDigit = enterDigitHandler(gameArray,setGameArray,selected);
-  const enterColor = enterColorHandler(gameArray,setGameArray,selected);
-  const toggleCandidate = toggleCandidateHandler(gameArray,setGameArray, selected, modeMultiselect);
-  const toggleSelected = toggleSelectedHandler(setSelected, modeMultiselect);
-  const shuffle = shuffleHandler(gameArray,setGameArray);
+  /**
+   * Saves the game to the database
+   * @param {Cell[][]} [updatedArray] - the array to save to the database
+   * @param {boolean} [check] - enter true if you want to check to see if the game is solved
+   * @returns 
+   */
+  async function saveGameState(updatedArray, check=false) {
 
-  /** @type {GameContextProps} */
+    if (!gameId) {
+      setMessage('This game cannot be saved.');
+      return;
+    }
+
+    sudokuArray = updatedArray || gameArray;
+
+    if (check) {
+      const { isCorrect, error } = isSolutionCorrect(sudokuArray);
+      error ? setMessage(error) : ( isCorrect ? setIsSolved(true) : null )
+
+      if (isCorrect) {
+        try {
+          const { data } = await updateGame({
+            variables: {
+              gameId,
+              gameData: JSON.stringify(sudokuArray),
+              elapsedTime,
+              isSolved: true,
+            },
+          });
+          if (data.stats) {
+            setMessage('You won!'+JSON.stringify(data.stats))
+            // *TODO* Perform whatever needs to happen when a game is solved, and display new stats.
+            // On the other hand, maybe it's a useEffect() that checks if isSolved === true.
+            // So that component could have the stats as its own useState() variable, so it will show that you won,
+            // and then show loading while the stats come in.
+          }
+          return data;
+        } catch {
+          setMessage('You need to be logged in to save your game.');
+          return;
+        }
+      }
+    }
+    // This is just regular saving the game.  It runs if !check or if !isCorrect. 
+    try {
+      const { data } = await updateGame({
+        variables: {
+          gameId,
+          gameData: JSON.stringify(sudokuArray),
+          elapsedTime
+        },
+      });
+      return data;
+    } catch {
+      setMessage('You need to be logged in to save your game.');
+      return;
+    }
+  }
+  
+  /**
+   * This is for creating a new game.  This will add the new game to the database
+   * @param {Cell[][]} sudokuArray - array to save
+   * @param {string} difficulty - difficulty level to save
+   */
+  async function saveNewGame(sudokuArray,difficulty) {
+    try {
+      const { data } = await addGame({
+        variables: {
+          gameData: JSON.stringify(sudokuArray),
+          difficulty
+        },
+      });
+      setGameId(data.game.gameId);
+    } catch {
+      setMessage('You need to be logged in to save your game.');
+    }
+  }
+
+// ***** start definition of functions or anything else to pass as game context props
+
+const toggleSelected = toggleSelectedHandler(setSelected, modeMultiselect);
+const enterColor = enterColorHandler(gameArray,setGameArray,selected);
+
+async function shuffle() {
+  const updatedArray = shuffleHandler(gameArray);
+  await saveGameState(updatedArray);
+}
+
+async function toggleCandidate(candidate, cellRef) {
+  const updatedArray = toggleCandidateHandler(gameArray,selected,modeMultiselect,candidate,cellRef) ;
+  await saveGameState(updatedArray);
+}
+
+async function enterDigit(digit) {
+  // Create shallow copy of previous gameArray
+  const updatedArray = gameArray.map((rows) => [...rows]);
+  for (const [,row,,col] of selected) {
+    updatedArray[row][col].value = digit;
+  }
+  setGameArray(updatedArray);
+  await saveGameState(updatedArray,true);
+}
+
+// ************ End define game functions
+
+  /** 
+   * Everything the children of GameProvider get access to using `useGameContext()`
+   * @type {GameContextProps} 
+   */
   const contextProps = {
       gameArray,
       setGameArray,
@@ -103,7 +221,6 @@ export default function GameProvider( {children}) {
       toggleCandidate,
       enterDigit,
       toggleSelected,
-      lastSelected,
       enterColor,
       shuffle
     }
