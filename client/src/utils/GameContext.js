@@ -43,20 +43,26 @@ import {
  * - it's confusing, because it would be nice if the descriptions from where they originally got defined got passed along
  * - but this is at least a short description that can be read in the other files that use {@linkcode useGameContext}
  * @typedef GameContextProps
- * @prop {Cell[][]} gameArray
- * @prop {Dispatch<SetStateAction<Cell[][]>>} setGameArray
- * @prop {string[]} selected - selected cells, written as `R${row}C${col}` strings
- * @prop {Dispatch<SetStateAction<string[]>>} setSelected
- * @prop {number} highlightedDigit
- * @prop {Dispatch<SetStateAction<number>>} setHighlightedDigit
- * @prop {boolean} modeMultiselect
- * @prop {Dispatch<SetStateAction<boolean>>} setModeMultiselect
- * @prop {boolean} modeAuto
- * @prop {Dispatch<SetStateAction<boolean>>} setModeAuto
+ * @prop {Cell[][]} gameArray - Holds the game data for all cells. This is the object that will be saved to database
+ * @prop {Dispatch<SetStateAction<Cell[][]>>} setGameArray - update game data
+ * @prop {string[]} selected - Selected cells, written as `R${row}C${col}` strings. Operates as a stack.
+ * @prop {Dispatch<SetStateAction<string[]>>} setSelected - update selected cells array. Most recent cell selected is first.
+ * @prop {number} highlightedDigit - highlight cells with candidates that include this digit
+ * @prop {Dispatch<SetStateAction<number>>} setHighlightedDigit - set candidate digit to highlight
+ * @prop {boolean} modeMultiselect - if true, multiple cells can be selected, else one one cell selected at a time
+ * @prop {Dispatch<SetStateAction<boolean>>} setModeMultiselect - set multi-select mode
+ * @prop {boolean} modeAuto - auto-solve mode. Eliminates candidates and fills in obvious cells
+ * @prop {Dispatch<SetStateAction<boolean>>} setModeAuto - set auto-solve mode.
  * @prop {boolean} modeMouse - if false, primary click selects cells, if true, primary click toggles candidates
  * @prop {Dispatch<SetStateAction<boolean>>} setModeMouse - if false, primary click selects cells, if true, primary click toggles candidates
- * @prop {(digit: number) => void} enterDigit
- * @prop {(color: string) => void} enterColor
+ * @prop {string} gameId - The id of the current game in the database. Is empty if no game started.
+ * @prop {Dispatch<SetStateAction<string>>} setGameId - reset gameId. Used when starting or resuming a game.
+ * @prop {string} difficulty - Difficulty level of current game, like 'medium'. Empty if no game started.
+ * @prop {Dispatch<SetStateAction<string>>} setDifficulty - reset difficulty. Used when starting or resuming a game.
+ * @prop {number} elapsedTime - elapsed time for this game
+ * @prop {number} setElapsedTime - update current elapsed time for this game
+ * @prop {(digit: number) => void} enterDigit - enter a digit to be the value for all selected cells
+ * @prop {(color: string) => void} enterColor - change background color for all selected cells.
  * @prop {(candidate: number, cellRef?:string) => void} toggleCandidate - The optional cellRef parameter is so you don't have to wait for a cell to be added to the selected list.
  * @prop {(cell: string, force?: boolean) => void} toggleSelected - if included, if force is true, this cell will be selected, if force is false, it will not
 */
@@ -98,7 +104,7 @@ export default function GameProvider( {children}) {
 
   /**
    * Saves the game to the database
-   * @param {Cell[][]} [updatedArray] - the array to save to the database
+   * @param {Cell[][]} [updatedArray] - the array to save to the database. If not included, will use the current gameArray
    * @param {boolean} [check] - enter true if you want to check to see if the game is solved
    * @returns 
    */
@@ -206,18 +212,17 @@ async function enterDigit(digit) {
    * @type {GameContextProps} 
    */
   const contextProps = {
-      gameArray,
-      setGameArray,
-      selected,
-      setSelected,
-      highlightedDigit,
-      setHighlightedDigit,
-      modeMultiselect,
-      setModeMultiselect,
-      modeAuto,
-      setModeAuto,
-      modeMouse,
-      setModeMouse,
+      gameArray, setGameArray,
+      selected, setSelected,
+      highlightedDigit, setHighlightedDigit,
+      modeMultiselect, setModeMultiselect,
+      modeAuto, setModeAuto,
+      modeMouse, setModeMouse,
+      difficulty, setDifficulty,
+      elapsedTime, setElapsedTime,
+      gameId, setGameId,
+      isSolved, setIsSolved,
+      message, setMessage,
       toggleCandidate,
       enterDigit,
       toggleSelected,
