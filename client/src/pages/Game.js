@@ -8,7 +8,7 @@ import GameTable from '../components/nav/GameTable';
 export default function Game() {
   return (
       <Row>
-        <Col xs={12} lg={9}>
+        <Col xs={12} lg={7}>
           <SudokuGrid />
         </Col>
         <Col>

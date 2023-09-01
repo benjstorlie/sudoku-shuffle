@@ -8,14 +8,13 @@
 .controls-grid {
   display:grid;
   position: relative;
-  grid-template-rows: repeat(3,1.8rem);
-  grid-template-columns: repeat(3,1.8rem);
-  grid-area: 2 / 1 / 5 / 3;
+  grid-template-rows: repeat(4,fr);
+  grid-template-columns: repeat(3,fr);
+  grid-area: 2 / 1 / end / 3;
+  margin: 1rem;
 }
 
 .controls-grid-btn {
-  width: 1.5rem;
-  height: 1.5rem;
   display: flex;
   flex-wrap: wrap;
   /* This keeps the numbers nicely positioned in when in candidate mode */
@@ -24,11 +23,13 @@
 }
 
 #btn-clear {
-  grid-row: 5 / span 1;
+  grid-column: 1 / span 3;
+  grid-row: 4 / span 1;
 }
 
 #shuffle {
   grid-column-end: span 2;
+  max-width: 120px;
 }
 
 #shuffle:active {

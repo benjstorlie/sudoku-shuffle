@@ -26,6 +26,7 @@ export default function Controls() {
     enterDigit,
     enterColor,
     toggleCandidate,
+    clearCandidates,
     setHighlightedDigit,
     highlightedDigit, 
     modeAuto,
@@ -58,7 +59,7 @@ export default function Controls() {
   const controlsGridStyles = (index) => {
     switch (actionName) {
       case HIGHLIGHT:
-        if (index === highlightedDigit) {
+        if (index && index === highlightedDigit) {
           return {backgroundColor: 'var(--highlight-color)'}
         }
         break;
@@ -103,10 +104,12 @@ export default function Controls() {
       case CANDIDATE:
         if (index) {
           toggleCandidate(index);
+        } else {
+          clearCandidates();
         }
         break;
       case DIFFICULTY:
-        try{
+        try {
           loadDifficulty(difficultyList[index]);
         } catch(error){
           console.error("An error occurred:", error);
@@ -175,8 +178,8 @@ export default function Controls() {
             </button>
           ))
         }
+        <button id="btn-clear" style={controlsGridStyles(0)} onClick={() => actionFunction(0)}>clear</button>
       </div>
-      <Button variant='outline-dark' id='btn-clear' onClick={() => actionFunction(0)}>clear</Button>
       <Button variant='outline-primary' id='shuffle' onClick={() => shuffle()}><img src={shuffleSvg} alt=""/></Button>
     </div>
     <DebugPanel />
