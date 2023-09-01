@@ -134,7 +134,7 @@ export default function GameProvider( {children}) {
           const { data } = await updateGame({
             variables: {
               gameId,
-              gameData: JSON.stringify(sudokuArray),
+              gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
               elapsedTime,
               isSolved: true,
             },
@@ -158,7 +158,7 @@ export default function GameProvider( {children}) {
       const { data } = await updateGame({
         variables: {
           gameId,
-          gameData: JSON.stringify(sudokuArray),
+          gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
           elapsedTime
         },
       });
@@ -178,7 +178,7 @@ export default function GameProvider( {children}) {
     try {
       const { data } = await addGame({
         variables: {
-          gameData: JSON.stringify(sudokuArray),
+          gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
           difficulty
         },
       });
@@ -225,7 +225,7 @@ async function loadDifficulty(difficulty){
           const newCell = {
             ...gameArray[row][col],
             value: newValue,
-            candidates: new Set(),
+            candidates: modeAuto ? new Set([1,2,3,4,5,6,7,8,9]) : new Set() ,
             given: !!newValue,
             solution: newSolution,
           };

@@ -21,7 +21,13 @@
   border: 3px solid;
   border-color: var( --sudoku-grid-border-color);
   background-color: var( --sudoku-grid-border-color);
-  max-width: 700px;
+  max-width: 710px;
+  min-height: 710px;
+}
+
+#sudoku-grid.error-boundary {
+  grid-area: 1 / 1 / 4 / 4;
+  color: white;
 }
 
 .box {

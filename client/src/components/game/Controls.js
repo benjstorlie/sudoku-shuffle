@@ -102,6 +102,7 @@ export default function Controls() {
         } catch(error){
           console.error("An error occurred:", error);
         }
+        setActionName(ENTER_DIGIT);
         break;
       default:
         return;

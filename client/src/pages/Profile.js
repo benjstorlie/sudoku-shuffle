@@ -1,5 +1,7 @@
 import React from "react";
 
+import GameTable from "../components/GameTable";
+
 // import { Navigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 
@@ -29,7 +31,7 @@ const Profile = () => {
 
   return (
     <div>
-      <h2 className="card-header">Your Saved Games</h2>
+      <GameTable profilePage={true}/>
     </div>
   );
 };
