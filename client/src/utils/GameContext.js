@@ -213,9 +213,15 @@ async function enterDigit(digit) {
   await saveGameState(updatedArray,true);
 }
 
+async function loadDifficulty(){
+  loadDifficultyHandler(gameArray).then((updatedArray) =>{
+    setGameArray(updatedArray);
+  });
+  
+}
+
 // ************ End define game functions
 
-  const loadDifficulty = loadDifficultyHandler(setGameArray);
   
   /** 
    * Everything the children of GameProvider get access to using `useGameContext()`
