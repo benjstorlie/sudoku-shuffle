@@ -260,7 +260,7 @@ function isArrayFilled(sudokuArray) {
 export function isSolutionCorrect(sudokuArray) {
   const isFilled = isArrayFilled(sudokuArray);
   if (isFilled) {
-    const isCorrect = true;
+    let isCorrect = true;
     for (let row = 0; row < 9; row++) {
       for (let col = 0; col < 9; col++) {
         if (!sudokuArray[row][col].value) {

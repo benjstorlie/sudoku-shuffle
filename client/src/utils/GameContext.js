@@ -215,7 +215,7 @@ async function enterDigit(digit) {
 }
 
 async function loadDifficulty(difficulty){
-  const updatedArray = getBoardByDifficulty(difficulty).then((board) =>{
+  getBoardByDifficulty(difficulty).then((board) =>{
     const updatedArray = blankGameArray();
     if (board?.newboard?.grids?.[0]?.value && board?.newboard?.grids?.[0]?.solution) {
       for (let row = 0; row < 9; row++) {
@@ -237,11 +237,7 @@ async function loadDifficulty(difficulty){
     }
     setGameArray(updatedArray);
     saveNewGame(updatedArray,difficulty);
-    return updatedArray;
   })
-  await saveGameState(updatedArray);
-  
-  
 }
 
 // ************ End define game functions
