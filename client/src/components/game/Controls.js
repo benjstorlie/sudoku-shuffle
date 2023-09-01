@@ -178,8 +178,8 @@ export default function Controls() {
       <Button variant='outline-dark' id='btn-clear' onClick={() => actionFunction(0)}>clear</Button>
       <Button variant='outline-primary' id='shuffle' onClick={() => shuffle()}><img src={shuffleSvg} alt=""/></Button>
     </div>
-    <div id='debug-panel' style={{border:'solid black 3px',padding:'0.5rem',margin:'0.5rem'}}>
-      <div style={{gridArea:'1/1/1/4'}}><h3>Debug Panel</h3></div>
+    <div id='debug-panel'>
+      <div><h3>Debug Panel</h3></div>
       <Button variant='outline-danger' >Solve Game (debug)</Button>
       <Button variant='outline-success' >New Example Game</Button>
     </div>
