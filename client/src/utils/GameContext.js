@@ -117,7 +117,7 @@ export default function GameProvider( {children}) {
    */
   async function saveGameState(updatedArray, check=false) {
 
-    if (!gameId) {
+    if (!gameId || gameId === 'test') {
       setMessage('This game cannot be saved.');
       return;
     }
