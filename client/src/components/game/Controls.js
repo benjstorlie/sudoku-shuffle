@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { iter } from '../../utils/gameUtils';
+import { useGameContext } from '../../utils/GameContext';
 import './Controls.css';
 // eslint-disable-next-line
 import Timer from './Timer'
-import { useGameContext } from '../../utils/GameContext';
+import DebugPanel from './DebugPanel';
 import shuffleSvg from './shuffle.svg'
 
 // Of course, it would be super fun to allow the user to modify these colors
@@ -36,9 +36,7 @@ export default function Controls() {
     setModeMultiselect,
     selected,
     shuffle,
-    loadDifficulty,
-    debugSolveGame,
-    debugNewExampleGame
+    loadDifficulty
   } = useGameContext();
 
   /** 
@@ -181,15 +179,7 @@ export default function Controls() {
       <Button variant='outline-dark' id='btn-clear' onClick={() => actionFunction(0)}>clear</Button>
       <Button variant='outline-primary' id='shuffle' onClick={() => shuffle()}><img src={shuffleSvg} alt=""/></Button>
     </div>
-    <div id='debug-panel'>
-      <div><h3>Debug Panel</h3></div>
-      <Button variant='primary' onClick={() => debugSolveGame()}>Solve Game (debug)</Button>
-      <ButtonGroup >
-        <Button variant='success' onClick={() => debugNewExampleGame('easy')}>New Easy</Button>
-        <Button variant='warning' onClick={() => debugNewExampleGame('medium')} >New Med</Button>
-        <Button variant='danger' onClick={() => debugNewExampleGame('hard')} >New Hard</Button>
-      </ButtonGroup>
-    </div>
+    <DebugPanel />
   </>
   )
 }

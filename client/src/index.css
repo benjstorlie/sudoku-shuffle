@@ -30,11 +30,3 @@ code {
   height: 128px;
   width: 128px;
 }
-
-button.action {
-  font-size: 1.1em;
-}
-
-button.action.active {
-  background-color: #ebd421f3;
-}

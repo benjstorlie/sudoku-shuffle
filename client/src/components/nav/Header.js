@@ -20,7 +20,7 @@ export default function Header() {
             <Link className="text-dark text-decoration-none" to="/">
               <h1
                 className="mb-0"
-                style={{ fontSize: "3rem", fontFamily: "Black Ops One" }}
+                style={{ fontSize: "3rem", fontFamily: "Black Ops One, cursive" }}
               >
                 Sudoku
               </h1>
