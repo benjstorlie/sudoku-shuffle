@@ -14,7 +14,7 @@ export default function Cell({cellRef, row, col}) {
     toggleSelected,
     toggleCandidate,
   } = useGameContext();
-  const {value,candidates,color} = gameArray[row][col];
+  const {value,candidates,color,given} = gameArray[row][col];
   const isHighlighted = (!value && candidates.has(highlightedDigit));
   const isSelected = selected.includes(cellRef);
 
@@ -64,7 +64,7 @@ export default function Cell({cellRef, row, col}) {
 
   return (
     <div id={cellRef} className={`cell ${isHighlighted ? 'highlighted' : ''} ${isSelected ? 'selected' : ''}`} style={styles.cell} onClick={onCellClick}>
-        <div className={`digit ${value ? 'show' : 'hide'}`}>{value}</div>
+        <div className={`digit ${value ? 'show' : 'hide'} ${given ? 'given' : ''}`}>{value}</div>
       {
         iter(9,1).map((num) => (
           <div 
