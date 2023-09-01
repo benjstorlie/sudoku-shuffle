@@ -97,7 +97,6 @@ export default function Controls() {
         }
         break;
       case DIFFICULTY:
-        console.log("trying:" + difficultyList[index]+" "+loadDifficulty);
         try{
           loadDifficulty(difficultyList[index]);
         } catch(error){
