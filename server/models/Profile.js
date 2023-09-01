@@ -1,6 +1,14 @@
 const { Schema, model } = require("mongoose");
 const bcrypt = require("bcrypt");
 
+// Define the Stats subdocument schema
+const statsSchema = new Schema({
+  difficulty: String,
+  bestTime: Number,
+  averageTime: Number,
+  numSolved: Number
+});
+
 const profileSchema = new Schema({
   name: {
     type: String,
@@ -19,12 +27,13 @@ const profileSchema = new Schema({
     required: true,
     minlength: 5,
   },
-  skills: [
+  games: [
     {
-      type: String,
-      trim: true,
+      type: Schema.Types.ObjectId,
+      ref: 'Game'
     },
   ],
+  stats: [statsSchema]
 });
 
 // set up pre-save middleware to create password

@@ -6,6 +6,7 @@ import { getBoardByDifficulty } from "./api";
  * @prop {number} value - the value the cell shows. If 0, the cell is empty and only shows candidates
  * @prop {Set<number>} candidates - the set of possible candidates for this cell. So, a set {2,5,6} could be 2, 5, or 6. If this.value != 0, then the cell will show the digit, and the candidates will be hidden
  * @prop {boolean} given - if true, this is a given digit/clue, and cannot be changed
+ * @prop {number} solution - 
  * @prop {string} color - background color to show. default is empty string
  */
 
@@ -33,6 +34,7 @@ export function blankGameArray() {
         candidates: new Set(),
         color: '',
         given: false,
+        solution: 0
       }
     }
   }
@@ -50,104 +52,73 @@ export function isSameBox({row: row1, col: col1}, {row: row2, col: col2}) {
 }
 
 /**
- * Change the value for every cell that is selected.  
- * - Goes through the selected cells and changes their value to the given digit
- * - digit could be 0, which would just empty the cells
- * @param {Dispatch<SetStateAction<Cell[][]>>} setGameArray - set state function for the gameArray
- * @param {string[]} selected - currently selected cells
- * @returns {(digit: number) => void}
- */
-export function enterDigitHandler(setGameArray,selected) {
-  return ( (digit) => {
-    setGameArray((prevArray) => {
-      // Create shallow copy of previous gameArray
-      const updatedArray = prevArray.map((rows) => [...rows]);
-
-      for (const cell of selected) {
-        updatedArray[cell[1]][cell[3]].value = digit;
-      }
-
-      return updatedArray;
-    })
-  })
-}
-
-/**
  * Change the color for every cell that is selected.
  * - data held in `colorArray`
- * - string could be '', which would 
+ * - string could be '', which would indicate the cell is not colored
+ * @param {Cell[][]} gameArray  
  * @param {Dispatch<SetStateAction<Cell[][]>>} setGameArray - set state function for the gameArray
  * @param {string[]} selected - currently selected cells
  * @returns {(color: string) => void}
  */
-export function enterColorHandler(setGameArray,selected) {
+export function enterColorHandler(gameArray,setGameArray,selected) {
   return ( (color) => {
-    setGameArray((prevArray) => {
-      // Create shallow copy of previous gameArray
-      const updatedArray = prevArray.map((rows) => [...rows]);
+    // Create shallow copy of previous gameArray
+    const updatedArray = gameArray.map((rows) => [...rows]);
 
-      for (const cell of selected) {
-        updatedArray[cell[1]][cell[3]].color = color;
-      }
+    for (const [,row,,col] of selected) {
+      updatedArray[row][col].color = color;
+    }
 
-      return updatedArray;
-    })
+    setGameArray(updatedArray);
   })
 }
 
 /**
  * Goes through the selected cells and toggles the inclusion of the given candidate.
  * - If any of the cells includes the candidate, then it will be removed, otherwise added.
- * @param {Dispatch<SetStateAction<Cell[][]>>} setGameArray - set state function for the gameArray
+ * @param {Cell[][]} gameArray 
  * @param {string[]} selected - currently selected cells
  * @param {boolean} modeMultiselect - if true, multi-select on, if false, single-select
- * @returns {(candidate: number, cellRef?:string) => void} - The optional cellRef parameter is so you don't have to wait for a cell to be added to the selected list.
+ * @param {number} candidate - candidate number to toggle
+ * @param {string} [cellRef] - cell to make sure to include, this scenario comes up when toggling a candidate by clicking in the cell itself.
+ * @returns {Cell[][]} updatedArray
 */
-export function toggleCandidateHandler(setGameArray, selected,modeMultiselect) {
-  return ( (candidate, cellRef) => {
-    if (cellRef && !modeMultiselect) {
-      // 'if cellRef' means that the user clicked on the grid itself. And, since it's also in single-select mode, that means that the result will be that the cell clicked on will be the only cell selected, AND the only cell whose candidates get updated.
-      const [,row,,col] = cellRef;
-      setGameArray((prevArray) => {
-        // Create shallow copy of previous gameArray
-        const updatedArray = prevArray.map((rows) => [...rows]);
-        if (prevArray[row][col].candidates.has(candidate)) {
-          updatedArray[row][col].candidates.delete(candidate)
-        } else {
-          updatedArray[row][col].candidates.add(candidate)
-        }
-        console.log('cellRef && !modeMultiSelect',cellRef,updatedArray[row][col])
-        return updatedArray;
-      });
+export function toggleCandidateHandler(gameArray,selected,modeMultiselect,candidate,cellRef) {
+  // Create shallow copy of previous gameArray
+  const updatedArray = gameArray.map((rows) => [...rows]);
+  if (cellRef && !modeMultiselect) {
+    // 'if cellRef' means that the user clicked on the grid itself. And, since it's also in single-select mode, that means that the result will be that the cell clicked on will be the only cell selected, AND the only cell whose candidates get updated.
+    const [,row,,col] = cellRef;
+    if (gameArray[row][col].candidates.has(candidate)) {
+      updatedArray[row][col].candidates.delete(candidate)
     } else {
-      setGameArray((prevArray) => {
-        // Create shallow copy of previous gameArray
-        const updatedArray = prevArray.map((rows) => [...rows]);
-        if (cellRef && !selected.includes(cellRef)) {
-          // This should not change the actual selected array values.
-          selected = [cellRef, ...selected];
-        }
-        /**
-         * A boolean for whether the candidates should be removed or added in all cells
-         * - If any of the cells includes the candidate, then it will be removed.
-         * @type {boolean}
-         */
-        const force = !selected.some(([,row,,col]) =>
-          prevArray[row][col].candidates.has(candidate)
-        );
-        for (const [,row,,col] of selected) {
-          if (force) {
-            updatedArray[row][col].candidates.add(candidate);
-          } else {
-            updatedArray[row][col].candidates.delete(candidate);
-          }
-        }
-        console.log('else',selected)
-        if (cellRef) {console.log(updatedArray[cellRef[1]][cellRef[3]])}
-        return updatedArray;
-      });
+      updatedArray[row][col].candidates.add(candidate)
     }
-  });
+    console.log('cellRef && !modeMultiSelect',cellRef,updatedArray[row][col])
+  } else {
+    if (cellRef && !selected.includes(cellRef)) {
+      // This should not change the actual selected array values.
+      selected = [cellRef, ...selected];
+    }
+    /**
+     * A boolean for whether the candidates should be removed or added in all cells
+     * - If any of the cells includes the candidate, then it will be removed.
+     * @type {boolean}
+     */
+    const force = !selected.some(([,row,,col]) =>
+      gameArray[row][col].candidates.has(candidate)
+    );
+    for (const [,row,,col] of selected) {
+      if (force) {
+        updatedArray[row][col].candidates.add(candidate);
+      } else {
+        updatedArray[row][col].candidates.delete(candidate);
+      }
+    }
+    console.log('else',selected)
+    if (cellRef) {console.log(updatedArray[cellRef[1]][cellRef[3]])}
+  }
+  return updatedArray
 }
 
 /**
@@ -235,13 +206,10 @@ const permuteBands = () => {
 
 /**
  * Shuffles the rows and columns around, and also permutes the digits, resulting in an automorphic game to the first.
- * *TODO* make sure it also shuffles any solution array
- * I think that would have to happen inside the setGameArray function too
- * @param {Dispatch<SetStateAction<Cell[][]>>} setGameArray - setState function for gameArray
+ * @param {Cell[][]} gameArray  
  */
-export function shuffleHandler(setGameArray) {
+export function shuffleHandler(gameArray) {
   return ( () => {
-    setGameArray((prevArray) => {
       const Tr = permuteBands();
       const Tc = permuteBands();
       const Z = permuteDigits();
@@ -251,7 +219,7 @@ export function shuffleHandler(setGameArray) {
         for (let col = 0 ; col < 9 ; col++ ) {
           let newRow = transpose ? Tc[col] : Tr[row];
           let newCol = transpose ? Tr[row] : Tc[col];
-          let cell = { ...prevArray[row][col]};
+          let cell = { ...gameArray[row][col]};
           let newCandidates = new Set();
           for (const entry of cell.candidates.values()) {
             newCandidates.add(Z[entry]);
@@ -259,15 +227,16 @@ export function shuffleHandler(setGameArray) {
           updatedArray[newRow][newCol] = {
             ...cell,
             value: Z[cell.value],
+            solution: Z[cell.solution],
             candidates: newCandidates,
           }
         }
       }
       return updatedArray;
-    })
   })
 }
 
+<<<<<<< HEAD
 /**
  * Change the value for every cell that is selected.  
  * - Goes through the selected cells and changes their value to the given digit
@@ -306,3 +275,42 @@ export function loadDifficultyHandler(setGameArray) {
     })
   })
 }
+=======
+function isArrayFilled(sudokuArray) {
+  for (let row = 0; row < 9; row++) {
+    for (let col = 0; col < 9; col++) {
+      if (!sudokuArray[row][col].value) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+/**
+ * To be run after any digits are entered.
+ * - If array is filled, but solution is incorrect, an error message will be given
+ * @param {Cell[][]} sudokuArray - Array to test
+ * @returns {isSolved: boolean, message?: string} 
+ * @example
+ * const { isCorrect, error } = isSolutionCorrect(sudokuArray);
+ * error ? setMessage(error) : ( isCorrect ? setIsSolved(true) : null )
+ */
+export function isSolutionCorrect(sudokuArray) {
+  const isFilled = isArrayFilled(sudokuArray);
+  if (isFilled) {
+    const isCorrect = true;
+    for (let row = 0; row < 9; row++) {
+      for (let col = 0; col < 9; col++) {
+        if (!sudokuArray[row][col].value) {
+          isCorrect = false;
+          break;
+        }
+      }
+    }
+    return isCorrect ? { isCorrect } : { isCorrect, error: 'Solution is incorrect. Try again.' }
+  } else {
+    return { isCorrect: false }
+  }
+}
+>>>>>>> ebe5ea791733f4b066936fa73520985aafc55451

@@ -1,15 +1,11 @@
 import React from 'react';
 import { iter } from '../../utils/gameUtils';
-import { useGameContext,
-  // eslint-disable-next-line
-   GameContextProps 
-  } from '../../utils/GameContext';
+import { useGameContext } from '../../utils/GameContext';
 
 
 
 export default function Cell({cellRef, row, col}) {
 
-  /** @type {GameContextProps} */
   const { 
     gameArray,
     highlightedDigit, 
