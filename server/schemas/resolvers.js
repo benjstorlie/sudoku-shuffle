@@ -105,7 +105,7 @@ const resolvers = {
         }
     
         // Find game
-        let game = await Game.findOneAndUpdate({ _id: gameId });
+        let game = await Game.findById(gameId);
         
         // Did the game go from not solved to solved, i.e. was this the winning move?
         const won = !game.isSolved && isSolved;

@@ -20,7 +20,8 @@ export default function GameTable( {profilePage} ) {
     setDifficulty,
     setElapsedTime,
     setGameArray,
-    setIsSolved
+    setIsSolved,
+    resetGame,
   } = useGameContext();
 
   useEffect(() => {
@@ -42,6 +43,9 @@ export default function GameTable( {profilePage} ) {
 
   const handleRemoveGame = async (gameId) => {
     try {
+      if (gameId === currentGameId) {
+        resetGame();
+      }
       await removeGame({ variables: { gameId } });
       // Refetch the data to update the table after deleting the game
       refetch();
@@ -67,7 +71,7 @@ export default function GameTable( {profilePage} ) {
         {(!error && !data?.games.length) ? <tr><td>No games to resume</td></tr> : null}
         {data?.games?.map(game => (game._id !== currentGameId || profilePage) && (
           <tr key={game._id}>
-            <td><GameSVG gameData={game.gameData} difficulty={game.difficulty}/></td>
+            <td><GameSVG gameData={game.gameData} inputString={game._id}/></td>
             <td>{game.difficulty}</td>
             <td>{game.elapsedTime} seconds</td>
             <td>
@@ -93,9 +97,9 @@ export default function GameTable( {profilePage} ) {
   );
 }
 
-function GameSVG({ gameData, color , difficulty, width=90,padding=3}) {
+function GameSVG({ gameData, color , inputString, width=90,padding=3}) {
 
-  color = color || stringToColor(difficulty);
+  color = color || stringToColor(inputString);
   /* Squares based on array values */
   function Squares() {
     try {

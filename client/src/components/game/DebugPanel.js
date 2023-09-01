@@ -8,9 +8,11 @@ import { blankGameArray } from '../../utils/gameUtils';
 
 export default function DebugPanel() {
   const {
+    gameId,
     message, setMessage,
     gameArray, setGameArray, saveGameState,
     modeAuto, saveNewGame,
+    resetGame,
   } = useGameContext();
 
   const [messageBg, setMessageBg] = useState('light')
@@ -18,6 +20,9 @@ export default function DebugPanel() {
   useEffect(() => {
     if (message) {
       setMessageBg('danger');
+      setTimeout(() => {
+        setMessageBg('light'); // Reset to light
+      }, 1000); // Adjust the delay as needed
 
       // Event listener to clear message when the mouse is clicked
       const handleClick = () => {
@@ -88,13 +93,15 @@ export default function DebugPanel() {
 
   return (<div id='debug-panel' style={panelStyle}>
   <div><h3>Debug Panel</h3></div>
+  <div>Current Game ID: <span style={{fontSize:'0.7em'}}>{gameId}</span></div>
   <Button variant='primary' onClick={() => debugSolveGame()}>Solve Game (debug)</Button>
   <ButtonGroup >
     <Button variant='success' onClick={() => debugNewExampleGame('easy')}>New Easy</Button>
     <Button variant='warning' onClick={() => debugNewExampleGame('medium')} >New Med</Button>
     <Button variant='danger' onClick={() => debugNewExampleGame('hard')} >New Hard</Button>
   </ButtonGroup>
-  <Card bg={messageBg}>
+  <Button variant='secondary' onClick={() => resetGame()}>Reset Game to Blank</Button>
+  <Card bg={messageBg} style={{transition: 'all 0.5s', minHeight:'8rem'}}>
     <Card.Header>Message:</Card.Header>
     <Card.Body><Card.Text>{message}</Card.Text></Card.Body>
   </Card>

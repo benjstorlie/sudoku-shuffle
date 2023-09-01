@@ -71,6 +71,7 @@ import { getBoardByDifficulty } from "./api";
  * @prop {(cell: string, force?: boolean) => void} toggleSelected - if included, if force is true, this cell will be selected, if force is false, it will not
  * @prop {(*)=>*} saveNewGame - create new game in database, with mutation {@link ADD_GAME}, returns response from server, which includes the new gameId
  * @prop {(*)=>*} saveGameState - update current game in database, with mutation {@link UPDATE_GAME}
+ * @prop {() => void} resetGame - resets most game variables, including gameId and gameArray, to their blank, initial values
 */
 
 // Initialize new context for game
@@ -151,25 +152,27 @@ export default function GameProvider( {children}) {
             // and then show loading while the stats come in.
           }
           return data;
-        } catch {
-          setMessage('You need to be logged in to save your game.');
+        } catch (err) {
+          setMessage('Error saving game.');
+          console.error(err);
           return;
         }
       }
     }
     // This is just regular saving the game.  It runs if !check or if !isCorrect. 
     try {
-      const { data } = await updateGame({
+      const { loading, data, error } = await updateGame({
         variables: {
           gameId,
           gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
           elapsedTime
         },
       });
-      console.log(data);
+      console.log(data,(error || 'No error received.'));
       return data;
-    } catch {
-      setMessage('You need to be logged in to save your game.');
+    } catch (err) {
+      setMessage('Error saving game.');
+      console.error(err);
       return;
     }
   }
@@ -188,7 +191,7 @@ export default function GameProvider( {children}) {
         },
       });
       if (data.addGame._id) {
-        setGameId();
+        setGameId(data.addGame._id);
       } else {
         setMessage('Something went wrong saving new game. (Open dev console for help.)');
         console.log(data); // Do Not Erase
@@ -204,6 +207,14 @@ export default function GameProvider( {children}) {
 
 const toggleSelected = toggleSelectedHandler(setSelected, modeMultiselect);
 const enterColor = enterColorHandler(gameArray,setGameArray,selected);
+
+function resetGame() {
+  setGameArray(blankGameArray());
+  setDifficulty('');
+  setGameId('');
+  setElapsedTime(0);
+  setIsSolved(false);
+}
 
 async function shuffle() {
   const updatedArray = shuffleHandler(gameArray);
@@ -276,6 +287,7 @@ async function loadDifficulty(difficulty){
       enterColor,
       loadDifficulty,
       shuffle,
+      resetGame,
       saveNewGame, saveGameState
     }
 
