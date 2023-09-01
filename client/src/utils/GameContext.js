@@ -136,7 +136,7 @@ export default function GameProvider( {children}) {
 
       if (isCorrect) {
         try {
-          const { data } = await updateGame({
+          const { loading, data, error } = await updateGame({
             variables: {
               gameId,
               gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
@@ -144,13 +144,14 @@ export default function GameProvider( {children}) {
               isSolved: true,
             },
           });
-          if (data.stats) {
-            setMessage('You won!'+JSON.stringify(data.stats))
+          if (data?.updateGame.stats.length) {
+            setMessage('You won!\n'+JSON.stringify(data?.updateGame.stats, (key, val) => (key[0]==='_' ? undefined : val)))
             // *TODO* Perform whatever needs to happen when a game is solved, and display new stats.
             // On the other hand, maybe it's a useEffect() that checks if isSolved === true.
             // So that component could have the stats as its own useState() variable, so it will show that you won,
             // and then show loading while the stats come in.
           }
+          console.log( data, (error || 'no error'))
           return data;
         } catch (err) {
           setMessage('Error saving game.');

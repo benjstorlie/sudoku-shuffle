@@ -58,7 +58,7 @@ export default function DebugPanel() {
       }
     }
     setGameArray(updatedArray);
-    saveGameState(updatedArray);
+    saveGameState(updatedArray,true);
   }
 
   function debugNewExampleGame(difficulty) {
