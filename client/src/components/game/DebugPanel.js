@@ -8,7 +8,7 @@ import { blankGameArray, shuffleHandler } from '../../utils/gameUtils';
 
 export default function DebugPanel() {
   const {
-    gameId,
+    gameId, difficulty,
     message, setMessage,
     gameArray, setGameArray, saveGameState,
     modeAuto, saveNewGame,
@@ -95,6 +95,7 @@ export default function DebugPanel() {
   return (<div id='debug-panel' style={panelStyle}>
   <div><h3>Debug Panel</h3></div>
   <div>Current Game ID: <span style={{fontSize:'0.7em'}}>{gameId}</span></div>
+  <div>Difficulty: {difficulty}</div>
   <Button variant='primary' onClick={() => debugSolveGame()}>Solve Game (debug)</Button>
   <ButtonGroup >
     <Button variant='success' onClick={() => debugNewExampleGame('easy')}>New Easy</Button>
