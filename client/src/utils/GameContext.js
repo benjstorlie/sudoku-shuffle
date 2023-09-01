@@ -69,6 +69,7 @@ import { getBoardByDifficulty } from "./api";
  * @prop {(color: string) => void} enterColor - change background color for all selected cells.
  * @prop {(candidate: number, cellRef?:string) => void} toggleCandidate - The optional cellRef parameter is so you don't have to wait for a cell to be added to the selected list.
  * @prop {(options?:{all:boolean})=>void} clearCandidates - clear candidates in selected cells, or, if {all: true}, clear candidates from all cells
+ * @prop {(options?:{all:boolean})=>void} fillCandidates - fill in all candidates in selected cells, or, if {all: true}, fill in candidates in all cells
  * @prop {(cell: string, force?: boolean) => void} toggleSelected - if included, if force is true, this cell will be selected, if force is false, it will not
  * @prop {(*)=>*} saveNewGame - create new game in database, with mutation {@link ADD_GAME}, returns response from server, which includes the new gameId
  * @prop {(*)=>*} saveGameState - update current game in database, with mutation {@link UPDATE_GAME}
@@ -239,10 +240,28 @@ async function clearCandidates(options) {
       }
     }
   } else {
-  for (const [,row,,col] of selected ) {
-    updatedArray[row][col].candidates.clear();
+    for (const [,row,,col] of selected ) {
+      updatedArray[row][col].candidates.clear();
+    }
   }
+  await saveGameState(updatedArray);
+}
+
+async function fillCandidates(options) {
+  // Create shallow copy of previous gameArray
+  const updatedArray = gameArray.map((rows) => [...rows]);
+  if (options?.all) {
+    for (let row = 0; row < 9; row++) {
+      for (let col = 0; col < 9; col++) {
+        updatedArray[row][col].candidates = new Set([1,2,3,4,5,6,7,8,9]);
+      }
+    }
+  } else {
+    for (const [,row,,col] of selected ) {
+      updatedArray[row][col].candidates = new Set([1,2,3,4,5,6,7,8,9]);;
+    }
   }
+  await saveGameState(updatedArray);
 }
 
 async function enterDigit(digit) {
@@ -303,6 +322,7 @@ async function loadDifficulty(difficulty){
       message, setMessage,
       toggleCandidate,
       clearCandidates,
+      fillCandidates,
       enterDigit,
       toggleSelected,
       enterColor,
