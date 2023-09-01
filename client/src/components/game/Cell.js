@@ -14,7 +14,6 @@ export default function Cell({cellRef, row, col}) {
     toggleSelected,
     toggleCandidate,
   } = useGameContext();
-
   const {value,candidates,color} = gameArray[row][col];
   const isHighlighted = (!value && candidates.has(highlightedDigit));
   const isSelected = selected.includes(cellRef);

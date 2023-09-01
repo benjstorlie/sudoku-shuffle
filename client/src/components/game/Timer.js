@@ -1,4 +1,4 @@
-import React from "react";
+/*import React from "react";
 import ReactDOM from "react-dom";
 import Countdown from "react-countdown";
 import { useGameContext } from '../../utils/GameContext';
@@ -37,4 +37,4 @@ export default function Timer() {
       Timer
     </div>
   )
-}
+}*/

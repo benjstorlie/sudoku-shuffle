@@ -37,6 +37,8 @@ import {
   enterColorHandler,
   shuffleHandler
 } from './gameUtils'
+import { getBoardByDifficulty } from "./api";
+
 
 /**
  * *TODO* Make sure everything being included in the game context is included here, and add a description
@@ -180,7 +182,8 @@ export default function GameProvider( {children}) {
           difficulty
         },
       });
-      setGameId(data.game.gameId);
+      setGameId(data.addGame._id);
+      return data
     } catch {
       setMessage('You need to be logged in to save your game.');
     }
@@ -211,8 +214,39 @@ async function enterDigit(digit) {
   await saveGameState(updatedArray,true);
 }
 
+async function loadDifficulty(difficulty){
+  const updatedArray = getBoardByDifficulty(difficulty).then((board) =>{
+    const updatedArray = blankGameArray();
+    if (board?.newboard?.grids?.[0]?.value && board?.newboard?.grids?.[0]?.solution) {
+      for (let row = 0; row < 9; row++) {
+        for (let col = 0; col < 9; col++) {
+          let newValue = board.newboard.grids[0].value[row][col];
+          let newSolution = board.newboard.grids[0].solution[row][col];
+          const newCell = {
+            ...gameArray[row][col],
+            value: newValue,
+            candidates: new Set(),
+            given: !!newValue,
+            solution: newSolution,
+          };
+          updatedArray[row][col] = newCell;
+        }
+      }
+    } else {
+      console.error("Invalid board structure:", board);
+    }
+    setGameArray(updatedArray);
+    saveNewGame(updatedArray,difficulty);
+    return updatedArray;
+  })
+  await saveGameState(updatedArray);
+  
+  
+}
+
 // ************ End define game functions
 
+  
   /** 
    * Everything the children of GameProvider get access to using `useGameContext()`
    * @type {GameContextProps} 
@@ -233,7 +267,8 @@ async function enterDigit(digit) {
       enterDigit,
       toggleSelected,
       enterColor,
-      shuffle
+      loadDifficulty,
+      shuffle,
     }
 
   return (

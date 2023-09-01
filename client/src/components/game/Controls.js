@@ -9,11 +9,13 @@ import shuffleSvg from './shuffle.svg'
 // This current list is just random, so it can be changed to something better
 // Have to make sure that colorList[0] is empty, because then that can be assigned to the 'clear' button
 const colorList = ['','#FF5733', '#33FF57', '#3366FF', '#FF33C8', '#33C8FF', '#FF9433', '#33FFC8', '#3394FF', '#FF3394'];
+const difficultyList = ['easy','easy','medium','hard','easy','medium','hard','easy','medium','hard',];
 
 const HIGHLIGHT = 'highlight';
 const ENTER_DIGIT = 'enterDigit';
 const COLOR = 'enterColor';
 const CANDIDATE = 'toggleCandidate';
+const DIFFICULTY = 'loadDifficulty';
 
 export default function Controls() {
   
@@ -30,7 +32,8 @@ export default function Controls() {
     modeMultiselect,
     setModeMultiselect,
     selected,
-    shuffle
+    shuffle,
+    loadDifficulty,
   } = useGameContext();
 
   /** 
@@ -77,7 +80,7 @@ export default function Controls() {
       }
   }
 
-  const actionFunction = useCallback(function(index) {
+  const actionFunction = useCallback(async function(index) {
     switch (actionName) {
       case HIGHLIGHT:
         setHighlightedDigit(index);
@@ -93,10 +96,17 @@ export default function Controls() {
           toggleCandidate(index);
         }
         break;
+      case DIFFICULTY:
+        try{
+          loadDifficulty(difficultyList[index]);
+        } catch(error){
+          console.error("An error occurred:", error);
+        }
+        break;
       default:
         return;
     }
-  },[actionName,enterColor,enterDigit,setHighlightedDigit,toggleCandidate])
+  },[actionName,enterColor,enterDigit,setHighlightedDigit,toggleCandidate,loadDifficulty])
 
   useEffect(() => {
     /** @type {(e:KeyboardEvent) => void} */
@@ -140,6 +150,7 @@ export default function Controls() {
       <button className={`action ${actionName === ENTER_DIGIT ? 'active' : ''}`} onClick={() => setActionName(ENTER_DIGIT)}>digits</button>
       <button className={`action ${actionName === CANDIDATE ? 'active' : ''}`} onClick={() => setActionName(CANDIDATE)}>candidates</button>
       <button className={`action ${actionName === COLOR ? 'active' : ''}`} onClick={() => setActionName(COLOR)}>colors</button>
+      <button className={`action ${actionName === DIFFICULTY ? 'active' : ''}`} onClick={() => setActionName(DIFFICULTY)}>difficulties</button>
       <div className='controls-grid'>
         {
           iter(9,1).map((index) => (
@@ -156,8 +167,7 @@ export default function Controls() {
       </div>
       <button id='btn-clear' onClick={() => actionFunction(0)}>clear</button>
       <button id='shuffle' onClick={() => shuffle()}><img src={shuffleSvg} alt=""/></button>
-      <Timer />
-    </div>
+      </div>
   )
 }
 
