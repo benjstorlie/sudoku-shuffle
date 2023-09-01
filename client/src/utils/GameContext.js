@@ -235,7 +235,6 @@ async function loadDifficulty(difficulty){
     } else {
       console.error("Invalid board structure:", board);
     }
-    console.log("Done: " + updatedArray);
     setGameArray(updatedArray);
     saveNewGame(updatedArray,difficulty);
     return updatedArray;
