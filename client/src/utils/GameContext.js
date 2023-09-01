@@ -182,7 +182,8 @@ export default function GameProvider( {children}) {
           difficulty
         },
       });
-      setGameId(data.game.gameId);
+      setGameId(data.addGame._id);
+      return data
     } catch {
       setMessage('You need to be logged in to save your game.');
     }
@@ -215,7 +216,6 @@ async function enterDigit(digit) {
 
 async function loadDifficulty(difficulty){
   const updatedArray = getBoardByDifficulty(difficulty).then((board) =>{
-    console.log(difficulty);
     const updatedArray = blankGameArray();
     if (board?.newboard?.grids?.[0]?.value && board?.newboard?.grids?.[0]?.solution) {
       for (let row = 0; row < 9; row++) {
@@ -230,7 +230,6 @@ async function loadDifficulty(difficulty){
             solution: newSolution,
           };
           updatedArray[row][col] = newCell;
-          console.log("HUGE!!" + newCell.value);
         }
       }
     } else {
@@ -238,6 +237,7 @@ async function loadDifficulty(difficulty){
     }
     console.log("Done: " + updatedArray);
     setGameArray(updatedArray);
+    saveNewGame(updatedArray,difficulty);
     return updatedArray;
   })
   await saveGameState(updatedArray);

@@ -171,20 +171,16 @@ export async function getBoardByDifficulty(difficulty){
     for( let i = 0; i < 3; i++){
         let board = await getBoard();
         if (board && board.newboard.grids[0].difficulty === difficulty){
-            console.log("Found board with difficulty "+ board.newboard.grids[0].difficulty + difficulty)
             return board;
         }
     }
     if (difficulty === "easy"){
-        console.log("fetching from template");
         return getBoardEasy();
     }
     if (difficulty === "medium"){
-        console.log("fetching from template");
         return getBoardMedium();
     }
     if (difficulty === "hard"){
-        console.log("fetching from template");
         return getBoardHard();
     }
 }
