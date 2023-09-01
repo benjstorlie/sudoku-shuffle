@@ -8,9 +8,8 @@ import { QUERY_ME } from "../utils/queries";
 // import Auth from "../utils/auth";
 
 const Profile = () => {
-
   // If there is no `profileId` in the URL as a parameter, execute the `QUERY_ME` query instead for the logged in user's information
-  const { loading, data } = useQuery( QUERY_ME );
+  const { loading, data } = useQuery(QUERY_ME);
 
   // Check if data is returning from the `QUERY_ME` query,
   const profile = data?.me || {};
@@ -30,9 +29,7 @@ const Profile = () => {
 
   return (
     <div>
-      <h2 className="card-header">
-        blah blah blah...
-      </h2>
+      <h2 className="card-header">Your Saved Games</h2>
     </div>
   );
 };
