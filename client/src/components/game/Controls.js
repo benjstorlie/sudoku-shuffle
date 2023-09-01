@@ -2,10 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { iter } from '../../utils/gameUtils';
 import './Controls.css';
 import Timer from './Timer'
-import { useGameContext,
-  // eslint-disable-next-line
-   GameContextProps 
-  } from '../../utils/GameContext';
+import { useGameContext } from '../../utils/GameContext';
 import shuffleSvg from './shuffle.svg'
 
 // Of course, it would be super fun to allow the user to modify these colors
@@ -19,8 +16,7 @@ const COLOR = 'enterColor';
 const CANDIDATE = 'toggleCandidate';
 
 export default function Controls() {
-
-  /** @type {GameContextProps} */
+  
   const { 
     enterDigit,
     enterColor,
@@ -35,6 +31,13 @@ export default function Controls() {
     setModeMultiselect,
     shuffle
   } = useGameContext();
+
+  /** 
+   * The last selected cell is the first cell in the list of selected cells, or, if there are no cells selected, it will just give an empty string
+   * - This is used when using arrow keys to navigate the board.
+   * @type {string} 
+   */
+  const lastSelected = selected[0] || '';
 
   /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
   const [ actionName, setActionName ] = useState(HIGHLIGHT);

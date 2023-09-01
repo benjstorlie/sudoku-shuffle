@@ -1,10 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Countdown from "react-countdown";
-import { useGameContext,
-  // eslint-disable-next-line
-   GameContextProps 
-  } from '../../utils/GameContext';
+import { useGameContext } from '../../utils/GameContext';
 
 // Random component
 const Completionist = () => <span>Times out!</span>;
