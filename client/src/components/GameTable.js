@@ -64,8 +64,8 @@ export default function GameTable( {profilePage} ) {
       <tbody>
         {loading ? <tr><td>Loading games...</td></tr> : null}
         {error ? <tr><td>Error: {error.message}</td></tr> : null}
-        {!data?.games.length ? <tr><td>No games to resume</td></tr> : null}
-        {data?.games.map(game => (game._id !== currentGameId || profilePage) && (
+        {(!error && !data?.games.length) ? <tr><td>No games to resume</td></tr> : null}
+        {data?.games?.map(game => (game._id !== currentGameId || profilePage) && (
           <tr key={game._id}>
             <td><GameSVG gameData={game.gameData} difficulty={game.difficulty}/></td>
             <td>{game.difficulty}</td>
