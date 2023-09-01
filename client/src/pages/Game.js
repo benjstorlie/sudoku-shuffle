@@ -3,7 +3,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SudokuGrid from '../components/game/SudokuGrid';
 import Controls from '../components/game/Controls';
-import GameTable from '../components/GameTable';
+import GameTable from '../components/nav/GameTable';
 
 export default function Game() {
   return (

@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import { QUERY_UNSOLVED_GAMES } from '../utils/queries';
-import { REMOVE_GAME } from '../utils/mutations';
+import { QUERY_UNSOLVED_GAMES } from '../../utils/queries';
+import { REMOVE_GAME } from '../../utils/mutations';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
-import { useGameContext } from '../utils/GameContext';
+import { useGameContext } from '../../utils/GameContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function GameTable( {profilePage} ) {

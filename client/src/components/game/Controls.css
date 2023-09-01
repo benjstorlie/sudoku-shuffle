@@ -34,13 +34,3 @@
 #shuffle:active {
   background: var(--rainbow);
 }
-
-#debug-panel {
-  display: grid;
-  grid-template-rows: auto auto auto auto auto auto;
-  grid-template-columns: auto; 
-  border: solid black 3px;
-  border-radius: 1rem;
-  padding: 0.5rem;
-  margin: 0.5rem;
-}

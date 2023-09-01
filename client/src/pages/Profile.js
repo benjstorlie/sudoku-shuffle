@@ -1,6 +1,6 @@
 import React from "react";
 
-import GameTable from "../components/GameTable";
+import GameTable from "../components/nav/GameTable";
 
 // import { Navigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
