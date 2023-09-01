@@ -236,40 +236,6 @@ export function shuffleHandler(gameArray) {
   })
 }
 
-/**
- * Loads a board given difficulty
- * @param {Cell[][]} gameArray  
- */
-
-export function loadDifficultyHandler(gameArray) {
-  return (async (difficulty) => {
-    console.log(difficulty);
-    const updatedArray = blankGameArray();
-    getBoardByDifficulty(difficulty).then((board) =>{
-      if (board?.newboard?.grids?.[0]?.value && board?.newboard?.grids?.[0]?.solution) {
-        for (let row = 0; row < 9; row++) {
-          for (let col = 0; col < 9; col++) {
-            let newValue = board.newboard.grids[0].value[row][col];
-            let newSolution = board.newboard.grids[0].solution[row][col];
-            const newCell = {
-              ...gameArray[row][col],
-              value: newValue,
-              candidates: new Set(),
-              given: !!newValue,
-              solution: newSolution,
-            };
-            updatedArray[row][col] = newCell;
-            console.log("HUGE!!" + newCell.value);
-          }
-        }
-      } else {
-        console.error("Invalid board structure:", board);
-      }
-      console.log("Done: " + updatedArray);
-      return updatedArray;
-    })
-  })
-}
 
 function isArrayFilled(sudokuArray) {
   for (let row = 0; row < 9; row++) {

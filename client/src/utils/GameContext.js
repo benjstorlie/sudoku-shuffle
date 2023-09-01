@@ -35,9 +35,9 @@ import {
   toggleCandidateHandler,
   toggleSelectedHandler,
   enterColorHandler,
-  loadDifficultyHandler,
   shuffleHandler
 } from './gameUtils'
+import { getBoardByDifficulty } from "./api";
 
 
 /**
@@ -213,10 +213,35 @@ async function enterDigit(digit) {
   await saveGameState(updatedArray,true);
 }
 
-async function loadDifficulty(){
-  loadDifficultyHandler(gameArray).then((updatedArray) =>{
+async function loadDifficulty(difficulty){
+  const updatedArray = getBoardByDifficulty(difficulty).then((board) =>{
+    console.log(difficulty);
+    const updatedArray = blankGameArray();
+    if (board?.newboard?.grids?.[0]?.value && board?.newboard?.grids?.[0]?.solution) {
+      for (let row = 0; row < 9; row++) {
+        for (let col = 0; col < 9; col++) {
+          let newValue = board.newboard.grids[0].value[row][col];
+          let newSolution = board.newboard.grids[0].solution[row][col];
+          const newCell = {
+            ...gameArray[row][col],
+            value: newValue,
+            candidates: new Set(),
+            given: !!newValue,
+            solution: newSolution,
+          };
+          updatedArray[row][col] = newCell;
+          console.log("HUGE!!" + newCell.value);
+        }
+      }
+    } else {
+      console.error("Invalid board structure:", board);
+    }
+    console.log("Done: " + updatedArray);
     setGameArray(updatedArray);
-  });
+    return updatedArray;
+  })
+  await saveGameState(updatedArray);
+  
   
 }
 
