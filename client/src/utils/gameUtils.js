@@ -209,31 +209,32 @@ const permuteBands = () => {
  * @param {Cell[][]} gameArray  
  */
 export function shuffleHandler(gameArray) {
-  return ( () => {
-      const Tr = permuteBands();
-      const Tc = permuteBands();
-      const Z = permuteDigits();
-      const transpose = Math.random() < 0.5;
-      const updatedArray = blankGameArray();
-      for (let row = 0 ; row < 9 ; row++ ) {
-        for (let col = 0 ; col < 9 ; col++ ) {
-          let newRow = transpose ? Tc[col] : Tr[row];
-          let newCol = transpose ? Tr[row] : Tc[col];
-          let cell = { ...gameArray[row][col]};
-          let newCandidates = new Set();
-          for (const entry of cell.candidates.values()) {
-            newCandidates.add(Z[entry]);
-          }
-          updatedArray[newRow][newCol] = {
-            ...cell,
-            value: Z[cell.value],
-            solution: Z[cell.solution],
-            candidates: newCandidates,
-          }
-        }
+
+  const Tr = permuteBands();
+  const Tc = permuteBands();
+  const Z = permuteDigits();
+  const transpose = Math.random() < 0.5;
+  
+  const updatedArray = blankGameArray();
+  for (let row = 0 ; row < 9 ; row++ ) {
+    for (let col = 0 ; col < 9 ; col++ ) {
+      let newRow = transpose ? Tc[col] : Tr[row];
+      let newCol = transpose ? Tr[row] : Tc[col];
+      let cell = { ...gameArray[row][col]};
+      let newCandidates = new Set();
+      for (const entry of cell.candidates.values()) {
+        newCandidates.add(Z[entry]);
       }
-      return updatedArray;
-  })
+      updatedArray[newRow][newCol] = {
+        ...cell,
+        value: Z[cell.value],
+        solution: Z[cell.solution],
+        candidates: newCandidates,
+      }
+    }
+  }
+  return updatedArray;
+
 }
 
 

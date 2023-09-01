@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const QUERY_ME_WITHOUT_GAMES = gql`
+export const QUERY_ME = gql`
   query me {
     me {
       _id
@@ -17,7 +17,7 @@ export const QUERY_ME_WITHOUT_GAMES = gql`
   }
 `;
 
-export const QUERY_ME = gql`
+export const QUERY_ME_WITH_GAMES = gql`
   query meWithGames {
     meWithGames {
       _id

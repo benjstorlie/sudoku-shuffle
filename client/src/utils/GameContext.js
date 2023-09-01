@@ -37,7 +37,7 @@ import {
   enterColorHandler,
   shuffleHandler
 } from './gameUtils'
-import { getBoardByDifficulty } from "./api";
+import { temporaryGetBoard, getBoardByDifficulty } from "./api";
 
 
 /**
@@ -67,6 +67,8 @@ import { getBoardByDifficulty } from "./api";
  * @prop {(color: string) => void} enterColor - change background color for all selected cells.
  * @prop {(candidate: number, cellRef?:string) => void} toggleCandidate - The optional cellRef parameter is so you don't have to wait for a cell to be added to the selected list.
  * @prop {(cell: string, force?: boolean) => void} toggleSelected - if included, if force is true, this cell will be selected, if force is false, it will not
+ * @prop {() => void} debugSolveGame - make game into solved state, as if it were the last move
+ * @prop {(difficulty:string)=>void} debugNewExampleGame - get new game without using the external API
 */
 
 // Initialize new context for game
@@ -134,7 +136,7 @@ export default function GameProvider( {children}) {
           const { data } = await updateGame({
             variables: {
               gameId,
-              gameData: JSON.stringify(sudokuArray),
+              gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
               elapsedTime,
               isSolved: true,
             },
@@ -158,7 +160,7 @@ export default function GameProvider( {children}) {
       const { data } = await updateGame({
         variables: {
           gameId,
-          gameData: JSON.stringify(sudokuArray),
+          gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
           elapsedTime
         },
       });
@@ -178,7 +180,7 @@ export default function GameProvider( {children}) {
     try {
       const { data } = await addGame({
         variables: {
-          gameData: JSON.stringify(sudokuArray),
+          gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
           difficulty
         },
       });
@@ -225,7 +227,7 @@ async function loadDifficulty(difficulty){
           const newCell = {
             ...gameArray[row][col],
             value: newValue,
-            candidates: new Set(),
+            candidates: modeAuto ? new Set([1,2,3,4,5,6,7,8,9]) : new Set() ,
             given: !!newValue,
             solution: newSolution,
           };
@@ -238,6 +240,40 @@ async function loadDifficulty(difficulty){
     setGameArray(updatedArray);
     saveNewGame(updatedArray,difficulty);
   })
+}
+
+function debugSolveGame() {
+  let updatedArray = gameArray.map((rows) => [...rows]);
+  for (let r=0 ; r < 9; r++) {
+    for (let c=0 ; c < 9; c++) {
+      if (!gameArray[r][c].given) {
+        updatedArray[r][c].value = gameArray[r][c].solution
+      }
+    }
+  }
+  setGameArray(updatedArray);
+  saveGameState(updatedArray);
+}
+
+function debugNewExampleGame(difficulty) {
+  const board = temporaryGetBoard(difficulty);
+  const updatedArray = blankGameArray();
+  for (let row = 0; row < 9; row++) {
+    for (let col = 0; col < 9; col++) {
+      let newValue = board.newboard.grids[0].value[row][col];
+      let newSolution = board.newboard.grids[0].solution[row][col];
+      const newCell = {
+        ...gameArray[row][col],
+        value: newValue,
+        candidates: modeAuto ? new Set([1,2,3,4,5,6,7,8,9]) : new Set() ,
+        given: !!newValue,
+        solution: newSolution,
+      };
+      updatedArray[row][col] = newCell;
+    }
+  }
+  setGameArray(updatedArray);
+  saveNewGame(updatedArray,difficulty);
 }
 
 // ************ End define game functions
@@ -265,6 +301,7 @@ async function loadDifficulty(difficulty){
       enterColor,
       loadDifficulty,
       shuffle,
+      debugSolveGame, debugNewExampleGame,
     }
 
   return (

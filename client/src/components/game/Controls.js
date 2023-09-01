@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { iter } from '../../utils/gameUtils';
 import './Controls.css';
+// eslint-disable-next-line
 import Timer from './Timer'
 import { useGameContext } from '../../utils/GameContext';
 import shuffleSvg from './shuffle.svg'
@@ -34,6 +37,8 @@ export default function Controls() {
     selected,
     shuffle,
     loadDifficulty,
+    debugSolveGame,
+    debugNewExampleGame
   } = useGameContext();
 
   /** 
@@ -41,6 +46,7 @@ export default function Controls() {
    * - This is used when using arrow keys to navigate the board.
    * @type {string} 
    */
+  // eslint-disable-next-line
   const lastSelected = selected[0] || '';
 
   /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
@@ -75,6 +81,11 @@ export default function Controls() {
           };
         }
         break;
+      case DIFFICULTY:
+        if (difficultyList[index] === 'easy') {return {color: 'transparent', backgroundColor: 'green'}}
+        else if (difficultyList[index] === 'medium') {return {color: 'transparent', backgroundColor: 'yellow'}}
+        else if (difficultyList[index] === 'hard') {return {color: 'transparent', backgroundColor: 'red'}}
+        break;
       default:
         return {};
       }
@@ -102,6 +113,7 @@ export default function Controls() {
         } catch(error){
           console.error("An error occurred:", error);
         }
+        setActionName(ENTER_DIGIT);
         break;
       default:
         return;
@@ -142,19 +154,20 @@ export default function Controls() {
   }, [actionFunction,setModeAuto,setModeMouse,setModeMultiselect]); // Empty dependency array means this effect runs once after the initial render
 
   return (
+    <>
     <div id='controls'>
-    <button onClick={()=> setModeMultiselect((prev) => !prev)}>multi-select: {modeMultiselect ? 'on' : 'off'}</button>
-    <button onClick={()=> setModeAuto((prev) => !prev)}>auto-solve: {modeAuto ? 'on' : 'off'}</button>
-    <button onClick={()=> setModeMouse((prev) => !prev)}>click: {modeMouse ? 'toggle candidates' : 'select cells'}</button>
-      <button className={`action ${actionName === HIGHLIGHT ? 'active' : ''}`} onClick={() => setActionName(HIGHLIGHT)}>highlight</button>
-      <button className={`action ${actionName === ENTER_DIGIT ? 'active' : ''}`} onClick={() => setActionName(ENTER_DIGIT)}>digits</button>
-      <button className={`action ${actionName === CANDIDATE ? 'active' : ''}`} onClick={() => setActionName(CANDIDATE)}>candidates</button>
-      <button className={`action ${actionName === COLOR ? 'active' : ''}`} onClick={() => setActionName(COLOR)}>colors</button>
-      <button className={`action ${actionName === DIFFICULTY ? 'active' : ''}`} onClick={() => setActionName(DIFFICULTY)}>difficulties</button>
+    <Button variant='outline-dark' onClick={()=> setModeMultiselect((prev) => !prev)}>multi-select: {modeMultiselect ? 'on' : 'off'}</Button>
+    <Button variant='outline-dark' onClick={()=> setModeAuto((prev) => !prev)}>auto-solve: {modeAuto ? 'on' : 'off'}</Button>
+    <Button variant='outline-dark' onClick={()=> setModeMouse((prev) => !prev)}>click: {modeMouse ? 'toggle candidates' : 'select cells'}</Button>
+      <Button variant={actionName === HIGHLIGHT ? 'warning' : 'outline-dark'} className={`action`} onClick={() => setActionName(HIGHLIGHT)}>highlight</Button>
+      <Button variant={actionName === ENTER_DIGIT ? 'primary' : 'outline-dark'} className={`action`} onClick={() => setActionName(ENTER_DIGIT)}>digits</Button>
+      <Button variant={actionName === CANDIDATE ? 'info' : 'outline-dark'} className={`action`} onClick={() => setActionName(CANDIDATE)}>candidates</Button>
+      <Button variant={actionName === COLOR ? 'danger' : 'outline-dark'} className={`action`} onClick={() => setActionName(COLOR)}>colors</Button>
+      <Button variant={actionName === DIFFICULTY ? 'success' : 'outline-dark'} className={`action`} onClick={() => setActionName(DIFFICULTY)}>difficulties</Button>
       <div className='controls-grid'>
         {
           iter(9,1).map((index) => (
-            <button 
+            <button
               key={'btn-'+index} 
               id={'btn-'+index} 
               className='controls-grid-btn' 
@@ -165,9 +178,19 @@ export default function Controls() {
           ))
         }
       </div>
-      <button id='btn-clear' onClick={() => actionFunction(0)}>clear</button>
-      <button id='shuffle' onClick={() => shuffle()}><img src={shuffleSvg} alt=""/></button>
-      </div>
+      <Button variant='outline-dark' id='btn-clear' onClick={() => actionFunction(0)}>clear</Button>
+      <Button variant='outline-primary' id='shuffle' onClick={() => shuffle()}><img src={shuffleSvg} alt=""/></Button>
+    </div>
+    <div id='debug-panel'>
+      <div><h3>Debug Panel</h3></div>
+      <Button variant='primary' onClick={() => debugSolveGame()}>Solve Game (debug)</Button>
+      <ButtonGroup >
+        <Button variant='success' onClick={() => debugNewExampleGame('easy')}>New Easy</Button>
+        <Button variant='warning' onClick={() => debugNewExampleGame('medium')} >New Med</Button>
+        <Button variant='danger' onClick={() => debugNewExampleGame('hard')} >New Hard</Button>
+      </ButtonGroup>
+    </div>
+  </>
   )
 }
 
