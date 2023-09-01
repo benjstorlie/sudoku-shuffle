@@ -4,7 +4,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Card from 'react-bootstrap/Card'
 import { useGameContext } from '../../utils/GameContext';
 import { temporaryGetBoard } from '../../utils/api';
-import { blankGameArray } from '../../utils/gameUtils';
+import { blankGameArray, shuffleHandler } from '../../utils/gameUtils';
 
 export default function DebugPanel() {
   const {
@@ -61,7 +61,7 @@ export default function DebugPanel() {
     saveGameState(updatedArray,true);
   }
 
-  function debugNewExampleGame(difficulty) {
+  async function debugNewExampleGame(difficulty) {
     const board = temporaryGetBoard(difficulty);
     const updatedArray = blankGameArray();
     for (let row = 0; row < 9; row++) {
@@ -78,8 +78,9 @@ export default function DebugPanel() {
         updatedArray[row][col] = newCell;
       }
     }
-    setGameArray(updatedArray);
-    saveNewGame(updatedArray,difficulty);
+    const shuffledArray = shuffleHandler(updatedArray)
+    setGameArray(shuffledArray);
+    await saveNewGame(shuffledArray,difficulty);
   }
   /** @type {React.CSSProperties} */
   const panelStyle = {

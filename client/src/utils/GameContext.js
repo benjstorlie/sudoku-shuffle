@@ -219,6 +219,7 @@ function resetGame() {
 
 async function shuffle() {
   const updatedArray = shuffleHandler(gameArray);
+  setGameArray(updatedArray)
   await saveGameState(updatedArray);
 }
 
@@ -238,7 +239,7 @@ async function enterDigit(digit) {
 }
 
 async function loadDifficulty(difficulty){
-  getBoardByDifficulty(difficulty).then((board) =>{
+  getBoardByDifficulty(difficulty).then(async (board) =>{
     const updatedArray = blankGameArray();
     if (board?.newboard?.grids?.[0]?.value && board?.newboard?.grids?.[0]?.solution) {
       for (let row = 0; row < 9; row++) {
@@ -258,8 +259,9 @@ async function loadDifficulty(difficulty){
     } else {
       console.error("Invalid board structure:", board);
     }
-    setGameArray(updatedArray);
-    saveNewGame(updatedArray,difficulty);
+    const shuffledArray = shuffleHandler(updatedArray)
+    setGameArray(shuffledArray);
+    await saveNewGame(shuffledArray,difficulty);
   })
 }
 
