@@ -117,11 +117,17 @@ export default function GameProvider( {children}) {
       return;
     }
 
-    sudokuArray = updatedArray || gameArray;
+    const sudokuArray = updatedArray || gameArray;
 
     if (check) {
       const { isCorrect, error } = isSolutionCorrect(sudokuArray);
-      error ? setMessage(error) : ( isCorrect ? setIsSolved(true) : null )
+      if (error) {
+        setMessage(error)
+      } else {
+        if (isCorrect) {
+          setIsSolved(true)
+        }
+      }
 
       if (isCorrect) {
         try {

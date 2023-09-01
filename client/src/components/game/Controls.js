@@ -32,6 +32,7 @@ export default function Controls() {
     modeMultiselect,
     setModeMultiselect,
     loadDifficulty,
+    selected,
     shuffle
   } = useGameContext();
 
