@@ -14,7 +14,7 @@
 
 * solution values are at: board.newboard.grids[0].solution 
 * as list of list of 9 numbers. **/
-function temporaryGetBoard(difficulty){
+export function temporaryGetBoard(difficulty){
     var board = {};
     if (difficulty === "easy"){
         board = {

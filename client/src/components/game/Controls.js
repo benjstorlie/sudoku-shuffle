@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Button from 'react-bootstrap/Button'
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { iter } from '../../utils/gameUtils';
 import './Controls.css';
 // eslint-disable-next-line
@@ -36,6 +37,8 @@ export default function Controls() {
     selected,
     shuffle,
     loadDifficulty,
+    debugSolveGame,
+    debugNewExampleGame
   } = useGameContext();
 
   /** 
@@ -180,8 +183,12 @@ export default function Controls() {
     </div>
     <div id='debug-panel'>
       <div><h3>Debug Panel</h3></div>
-      <Button variant='outline-danger' >Solve Game (debug)</Button>
-      <Button variant='outline-success' >New Example Game</Button>
+      <Button variant='primary' onClick={() => debugSolveGame()}>Solve Game (debug)</Button>
+      <ButtonGroup >
+        <Button variant='success' onClick={() => debugNewExampleGame('easy')}>New Easy</Button>
+        <Button variant='warning' onClick={() => debugNewExampleGame('medium')} >New Med</Button>
+        <Button variant='danger' onClick={() => debugNewExampleGame('hard')} >New Hard</Button>
+      </ButtonGroup>
     </div>
   </>
   )
