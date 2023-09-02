@@ -283,7 +283,7 @@ async function loadDifficulty(difficulty){
           let newValue = board.newboard.grids[0].value[row][col];
           let newSolution = board.newboard.grids[0].solution[row][col];
           const newCell = {
-            ...gameArray[row][col],
+            ...updatedArray[row][col],
             value: newValue,
             candidates: modeAuto ? new Set([1,2,3,4,5,6,7,8,9]) : new Set() ,
             given: !!newValue,
