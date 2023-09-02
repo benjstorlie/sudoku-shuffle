@@ -94,7 +94,6 @@ export function toggleCandidateHandler(gameArray,selected,modeMultiselect,candid
     } else {
       updatedArray[row][col].candidates.add(candidate)
     }
-    console.log('cellRef && !modeMultiSelect',cellRef,updatedArray[row][col])
   } else {
     if (cellRef && !selected.includes(cellRef)) {
       // This should not change the actual selected array values.
@@ -115,7 +114,6 @@ export function toggleCandidateHandler(gameArray,selected,modeMultiselect,candid
         updatedArray[row][col].candidates.delete(candidate);
       }
     }
-    console.log('else',selected)
     if (cellRef) {console.log(updatedArray[cellRef[1]][cellRef[3]])}
   }
   return updatedArray

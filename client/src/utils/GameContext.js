@@ -68,9 +68,12 @@ import { getBoardByDifficulty } from "./api";
  * @prop {(digit: number) => void} enterDigit - enter a digit to be the value for all selected cells
  * @prop {(color: string) => void} enterColor - change background color for all selected cells.
  * @prop {(candidate: number, cellRef?:string) => void} toggleCandidate - The optional cellRef parameter is so you don't have to wait for a cell to be added to the selected list.
+ * @prop {(options?:{all:boolean})=>void} clearCandidates - clear candidates in selected cells, or, if {all: true}, clear candidates from all cells
+ * @prop {(options?:{all:boolean})=>void} fillCandidates - fill in all candidates in selected cells, or, if {all: true}, fill in candidates in all cells
  * @prop {(cell: string, force?: boolean) => void} toggleSelected - if included, if force is true, this cell will be selected, if force is false, it will not
  * @prop {(*)=>*} saveNewGame - create new game in database, with mutation {@link ADD_GAME}, returns response from server, which includes the new gameId
  * @prop {(*)=>*} saveGameState - update current game in database, with mutation {@link UPDATE_GAME}
+ * @prop {() => void} resetGame - resets most game variables, including gameId and gameArray, to their blank, initial values
 */
 
 // Initialize new context for game
@@ -116,7 +119,7 @@ export default function GameProvider( {children}) {
    */
   async function saveGameState(updatedArray, check=false) {
 
-    if (!gameId) {
+    if (!gameId || gameId === 'test') {
       setMessage('This game cannot be saved.');
       return;
     }
@@ -135,7 +138,7 @@ export default function GameProvider( {children}) {
 
       if (isCorrect) {
         try {
-          const { data } = await updateGame({
+          const { loading, data, error } = await updateGame({
             variables: {
               gameId,
               gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
@@ -143,33 +146,36 @@ export default function GameProvider( {children}) {
               isSolved: true,
             },
           });
-          if (data.stats) {
-            setMessage('You won!'+JSON.stringify(data.stats))
+          if (data?.updateGame.stats.length) {
+            setMessage('You won!\n'+JSON.stringify(data?.updateGame.stats, (key, val) => (key[0]==='_' ? undefined : val)))
             // *TODO* Perform whatever needs to happen when a game is solved, and display new stats.
             // On the other hand, maybe it's a useEffect() that checks if isSolved === true.
             // So that component could have the stats as its own useState() variable, so it will show that you won,
             // and then show loading while the stats come in.
           }
+          console.log( data, (error || 'no error'))
           return data;
-        } catch {
-          setMessage('You need to be logged in to save your game.');
+        } catch (err) {
+          setMessage('Error saving game.');
+          console.error(err);
           return;
         }
       }
     }
     // This is just regular saving the game.  It runs if !check or if !isCorrect. 
     try {
-      const { data } = await updateGame({
+      const { loading, data, error } = await updateGame({
         variables: {
           gameId,
           gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
           elapsedTime
         },
       });
-      console.log(data);
+      console.log(data,(error || 'No error received.'));
       return data;
-    } catch {
-      setMessage('You need to be logged in to save your game.');
+    } catch (err) {
+      setMessage('Error saving game.');
+      console.error(err);
       return;
     }
   }
@@ -188,7 +194,7 @@ export default function GameProvider( {children}) {
         },
       });
       if (data.addGame._id) {
-        setGameId();
+        setGameId(data.addGame._id);
       } else {
         setMessage('Something went wrong saving new game. (Open dev console for help.)');
         console.log(data); // Do Not Erase
@@ -205,13 +211,56 @@ export default function GameProvider( {children}) {
 const toggleSelected = toggleSelectedHandler(setSelected, modeMultiselect);
 const enterColor = enterColorHandler(gameArray,setGameArray,selected);
 
+function resetGame() {
+  setGameArray(blankGameArray());
+  setDifficulty('');
+  setGameId('');
+  setElapsedTime(0);
+  setIsSolved(false);
+}
+
 async function shuffle() {
   const updatedArray = shuffleHandler(gameArray);
+  setGameArray(updatedArray)
   await saveGameState(updatedArray);
 }
 
 async function toggleCandidate(candidate, cellRef) {
   const updatedArray = toggleCandidateHandler(gameArray,selected,modeMultiselect,candidate,cellRef) ;
+  await saveGameState(updatedArray);
+}
+
+async function clearCandidates(options) {
+  // Create shallow copy of previous gameArray
+  const updatedArray = gameArray.map((rows) => [...rows]);
+  if (options?.all) {
+    for (let row = 0; row < 9; row++) {
+      for (let col = 0; col < 9; col++) {
+        updatedArray[row][col].candidates.clear();
+      }
+    }
+  } else {
+    for (const [,row,,col] of selected ) {
+      updatedArray[row][col].candidates.clear();
+    }
+  }
+  await saveGameState(updatedArray);
+}
+
+async function fillCandidates(options) {
+  // Create shallow copy of previous gameArray
+  const updatedArray = gameArray.map((rows) => [...rows]);
+  if (options?.all) {
+    for (let row = 0; row < 9; row++) {
+      for (let col = 0; col < 9; col++) {
+        updatedArray[row][col].candidates = new Set([1,2,3,4,5,6,7,8,9]);
+      }
+    }
+  } else {
+    for (const [,row,,col] of selected ) {
+      updatedArray[row][col].candidates = new Set([1,2,3,4,5,6,7,8,9]);;
+    }
+  }
   await saveGameState(updatedArray);
 }
 
@@ -226,7 +275,7 @@ async function enterDigit(digit) {
 }
 
 async function loadDifficulty(difficulty){
-  getBoardByDifficulty(difficulty).then((board) =>{
+  getBoardByDifficulty(difficulty).then(async (board) =>{
     const updatedArray = blankGameArray();
     if (board?.newboard?.grids?.[0]?.value && board?.newboard?.grids?.[0]?.solution) {
       for (let row = 0; row < 9; row++) {
@@ -234,7 +283,7 @@ async function loadDifficulty(difficulty){
           let newValue = board.newboard.grids[0].value[row][col];
           let newSolution = board.newboard.grids[0].solution[row][col];
           const newCell = {
-            ...gameArray[row][col],
+            ...updatedArray[row][col],
             value: newValue,
             candidates: modeAuto ? new Set([1,2,3,4,5,6,7,8,9]) : new Set() ,
             given: !!newValue,
@@ -246,8 +295,9 @@ async function loadDifficulty(difficulty){
     } else {
       console.error("Invalid board structure:", board);
     }
-    setGameArray(updatedArray);
-    saveNewGame(updatedArray,difficulty);
+    const shuffledArray = shuffleHandler(updatedArray)
+    setGameArray(shuffledArray);
+    await saveNewGame(shuffledArray,difficulty);
   })
 }
 
@@ -271,11 +321,14 @@ async function loadDifficulty(difficulty){
       isSolved, setIsSolved,
       message, setMessage,
       toggleCandidate,
+      clearCandidates,
+      fillCandidates,
       enterDigit,
       toggleSelected,
       enterColor,
       loadDifficulty,
       shuffle,
+      resetGame,
       saveNewGame, saveGameState
     }
 

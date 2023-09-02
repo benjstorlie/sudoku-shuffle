@@ -26,6 +26,8 @@ export default function Controls() {
     enterDigit,
     enterColor,
     toggleCandidate,
+    clearCandidates,
+    fillCandidates,
     setHighlightedDigit,
     highlightedDigit, 
     modeAuto,
@@ -50,6 +52,13 @@ export default function Controls() {
   /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
   const [ actionName, setActionName ] = useState(HIGHLIGHT);
 
+  // fill in all candidates if auto mode gets turned on
+  useEffect(() => {
+    if (modeAuto) {
+      fillCandidates({all:true})
+    }
+  },[modeAuto])
+
   /**
    * Conditonal styling object for controls grid buttons
    * @param {number} index 
@@ -58,7 +67,7 @@ export default function Controls() {
   const controlsGridStyles = (index) => {
     switch (actionName) {
       case HIGHLIGHT:
-        if (index === highlightedDigit) {
+        if (index && index === highlightedDigit) {
           return {backgroundColor: 'var(--highlight-color)'}
         }
         break;
@@ -103,10 +112,12 @@ export default function Controls() {
       case CANDIDATE:
         if (index) {
           toggleCandidate(index);
+        } else {
+          clearCandidates();
         }
         break;
       case DIFFICULTY:
-        try{
+        try {
           loadDifficulty(difficultyList[index]);
         } catch(error){
           console.error("An error occurred:", error);
@@ -155,7 +166,7 @@ export default function Controls() {
     <>
     <div id='controls'>
     <Button variant='outline-dark' onClick={()=> setModeMultiselect((prev) => !prev)}>multi-select: {modeMultiselect ? 'on' : 'off'}</Button>
-    <Button variant='outline-dark' onClick={()=> setModeAuto((prev) => !prev)}>auto-solve: {modeAuto ? 'on' : 'off'}</Button>
+    <Button disabled variant='outline-dark' onClick={()=> setModeAuto((prev) => !prev)}>auto-solve: {modeAuto ? 'on' : 'off'}</Button>
     <Button variant='outline-dark' onClick={()=> setModeMouse((prev) => !prev)}>click: {modeMouse ? 'toggle candidates' : 'select cells'}</Button>
       <Button variant={actionName === HIGHLIGHT ? 'warning' : 'outline-dark'} className={`action`} onClick={() => setActionName(HIGHLIGHT)}>highlight</Button>
       <Button variant={actionName === ENTER_DIGIT ? 'primary' : 'outline-dark'} className={`action`} onClick={() => setActionName(ENTER_DIGIT)}>digits</Button>
@@ -175,9 +186,10 @@ export default function Controls() {
             </button>
           ))
         }
+        <button id="btn-clear" style={controlsGridStyles(0)} onClick={() => actionFunction(0)}>clear</button>
       </div>
-      <Button variant='outline-dark' id='btn-clear' onClick={() => actionFunction(0)}>clear</Button>
       <Button variant='outline-primary' id='shuffle' onClick={() => shuffle()}><img src={shuffleSvg} alt=""/></Button>
+      <Button variant='outline-dark' onClick={() => fillCandidates({all:true})}>Fill in all candidates</Button>
     </div>
     <DebugPanel />
   </>
