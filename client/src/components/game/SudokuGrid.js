@@ -10,7 +10,7 @@ export default function SudokuGrid() {
 
   return (
     <div id="sudoku-grid">
-      <ErrorBoundary fallback={<div className="error-boundary">Something went wrong. 😢</div>}>
+      <ErrorBoundary fallback={<div className="error-boundary" style={{color:'#000',backgroundColor:'#fff'}}>Something went wrong. 😢</div>}>
       {
         iter(3).map((band) => (
           iter(3).map((stack) => (
