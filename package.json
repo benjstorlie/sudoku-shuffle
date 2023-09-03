@@ -17,7 +17,8 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"npm run start-client\" \"npm run start-server\"",
+    "develop": "concurrently \"npm run start-client\" \"npm run start-server\"",
+    "start": "node server/server.js",
     "start-server": "cd server && npm start",
     "install": "cd server && npm i && cd ../client && npm i",
     "start-client": "cd client && npm start",
