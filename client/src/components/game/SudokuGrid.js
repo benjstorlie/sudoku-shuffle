@@ -1,8 +1,7 @@
-'use client'; // This is required by react-error-boundary see https://www.npmjs.com/package/react-error-boundary#errorboundary-component
+
 
 import React from 'react';
 import Cell from './Cell';
-import { ErrorBoundary } from 'react-error-boundary';
 import './Game.css';
 import { iter } from '../../utils/gameUtils'
 
@@ -10,7 +9,6 @@ export default function SudokuGrid() {
 
   return (
     <div id="sudoku-grid">
-      <ErrorBoundary fallback={<div className="error-boundary" style={{color:'#000',backgroundColor:'#fff'}}>Something went wrong. 😢</div>}>
       {
         iter(3).map((band) => (
           iter(3).map((stack) => (
@@ -18,7 +16,6 @@ export default function SudokuGrid() {
           ))
         ))
       }
-      </ErrorBoundary>
     </div>
   )
 }
