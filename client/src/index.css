@@ -1,6 +1,7 @@
 :root {
   --sudoku-grid-bg: #fae7c1;
   --sudoku-grid-border-color: #000;
+  --overlay-bg:#fae7c1dd;
   --candidate-color: #000;
   --candidate-hover: #556ecf;
   --highlight-color: #ebd421f3;

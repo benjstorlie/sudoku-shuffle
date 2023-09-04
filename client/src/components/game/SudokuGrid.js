@@ -5,12 +5,16 @@ import Cell from './Cell';
 import { ErrorBoundary } from 'react-error-boundary';
 import './Game.css';
 import { iter } from '../../utils/gameUtils'
+import { useGameContext } from '../../utils/GameContext';
 
 export default function SudokuGrid() {
 
+  const { overlay } = useGameContext();
+
   return (
     <div id="sudoku-grid">
-      <ErrorBoundary fallback={<div className="error-boundary" style={{color:'#000',backgroundColor:'#fff'}}>Something went wrong. 😢</div>}>
+      <ErrorBoundary fallback={<div className="overlay" style={{color:'#000',backgroundColor:'#fff'}}>Something went wrong. 😢</div>}>
+       {overlay.show && (<div className='overlay'>{overlay.message}</div>)}
       {
         iter(3).map((band) => (
           iter(3).map((stack) => (

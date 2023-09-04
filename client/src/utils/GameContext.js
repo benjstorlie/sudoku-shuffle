@@ -65,6 +65,8 @@ import { getBoardByDifficulty } from "./api";
  * @prop {Dispatch<SetStateAction<string>>} setDifficulty - reset difficulty. Used when starting or resuming a game.
  * @prop {number} elapsedTime - elapsed time for this game
  * @prop {number} setElapsedTime - update current elapsed time for this game
+ * @prop {{show:boolean,message:React.JSX.Element}} overlay - show overlay over sudoku grid
+ * @prop {Dispatch<SetStateAction<{show:boolean,message:React.JSX.Element}>>} setOverlay - set if overlay is shown over sudoku grid, set overlay.message to be a react component
  * @prop {(digit: number) => void} enterDigit - enter a digit to be the value for all selected cells
  * @prop {(color: string) => void} enterColor - change background color for all selected cells.
  * @prop {(candidate: number, cellRef?:string) => void} toggleCandidate - The optional cellRef parameter is so you don't have to wait for a cell to be added to the selected list.
@@ -103,6 +105,7 @@ export default function GameProvider( {children}) {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isSolved, setIsSolved] = useState(false);
   const [message, setMessage] = useState('');
+  const [overlay, setOverlay] = useState({show:false,message:<p></p>});
 
   // ***** define GraphQL hooks
 
@@ -320,6 +323,7 @@ async function loadDifficulty(difficulty){
       gameId, setGameId,
       isSolved, setIsSolved,
       message, setMessage,
+      overlay, setOverlay,
       toggleCandidate,
       clearCandidates,
       fillCandidates,
