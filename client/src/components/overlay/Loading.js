@@ -1,8 +1,8 @@
 import Spinner from 'react-bootstrap/Spinner';
 
 export default function Loading() {
-  <div>
-    <h1>Loading...</h1>
+  return (<div className="container-fluid" style={{padding:'2rem',textAlign:'center'}}>
+    <h1>Building your game...</h1>
     <Spinner variant="primary" animation="border" role="status"/>
-  </div>
+  </div>)
 }

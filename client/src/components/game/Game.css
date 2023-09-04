@@ -25,13 +25,6 @@
   min-height: 710px;
 }
 
-#sudoku-grid.overlay {
-  grid-area: 1 / 1 / 4 / 4;
-  background-color: var(--overlay-bg);
-  color: #000;
-  z-index: 10;
-}
-
 .box {
   gap: var(--cell-border-width)
 }

@@ -19,7 +19,7 @@
 
 
 
-import React, { createContext, useContext, useState,
+import React, { createContext, useContext, useState, useEffect,
   // eslint-disable-next-line
   Dispatch, SetStateAction
 } from 'react';
@@ -41,7 +41,7 @@ import {
 } from './gameUtils'
 import { getBoardByDifficulty } from "./api";
 import Loading from '../components/overlay/Loading';
-import WinGame from '../components/overlay/WinGame';
+import WinGame from '../components/overlay/GameWin';
 
 
 /**
@@ -107,12 +107,16 @@ export default function GameProvider( {children}) {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isSolved, setIsSolved] = useState(false);
   const [message, setMessage] = useState('');
-  const [overlay, setOverlay] = useState({show:false,message:<p></p>});
+  const [overlay, setOverlay] = useState({show:false, message:<p></p>});
 
   // ***** define GraphQL hooks
 
   const [addGame] = useMutation(ADD_GAME)
   const [updateGame] = useMutation(UPDATE_GAME);
+
+  useEffect(() => {
+    setOverlay({show:false,message:<p></p>})
+  },[gameId,setOverlay])
 
   // ****************  These functions are used by the game actions for saving to database
 
@@ -143,7 +147,7 @@ export default function GameProvider( {children}) {
 
       if (isCorrect) {
         try {
-          const { loading, data, error } = await updateGame({
+          const { data, error } = await updateGame({
             variables: {
               gameId,
               gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
@@ -153,7 +157,7 @@ export default function GameProvider( {children}) {
           });
           if (data?.updateGame.stats.length) {
             setMessage('You won!\n'+JSON.stringify(data?.updateGame.stats, (key, val) => (key[0]==='_' ? undefined : val)))
-            setOverlay({show:true,message:<WinGame elapsedTime={elapsedTime} difficulty={difficulty} loading={loading} stats={data?.updateGame.stats}/>})
+            setOverlay({show:true,message:<WinGame elapsedTime={elapsedTime} difficulty={difficulty} stats={data?.updateGame.stats}/>})
           }
           console.log( data, (error || 'No error saving winning game.'))
           return data;
@@ -302,6 +306,7 @@ async function loadDifficulty(difficulty){
     }
     const shuffledArray = shuffleHandler(updatedArray)
     setGameArray(shuffledArray);
+    setDifficulty(difficulty);
     setOverlay({show:false,message:<p></p>})
     await saveNewGame(shuffledArray,difficulty);
   })

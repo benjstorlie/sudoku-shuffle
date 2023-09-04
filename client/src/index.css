@@ -11,6 +11,7 @@
   --cell-border-width: 2px;
   --box-border-width: 3px;
   --rainbow: linear-gradient(to left top, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 25%, rgb(0, 192, 255) 50%, rgb(192, 0, 255) 75%, rgb(255, 0, 0) 100%);
+  --rainbow-light: linear-gradient(to left top, rgb(255, 137, 137) 0%, rgb(255, 255, 137) 25%, rgb(137, 226, 255) 50%, rgb(226, 137, 255) 75%, rgb(255, 137, 137) 100%);
 }
 
 body {
@@ -30,4 +31,13 @@ code {
 .logo {
   height: 128px;
   width: 128px;
+}
+
+.overlay {
+  display: flex;
+  grid-area: 1 / 1 / 4 / 4;
+  background-color: var(--overlay-bg);
+  color: #000;
+  padding: 2rem;
+  z-index: 10;
 }

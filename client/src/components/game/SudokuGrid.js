@@ -13,7 +13,7 @@ export default function SudokuGrid() {
 
   return (
     <div id="sudoku-grid">
-      <ErrorBoundary fallback={<div className="overlay">Something went wrong. 😢</div>}>
+      <ErrorBoundary fallback={<div className="overlay">Something went wrong. 😢 <br /> Please refresh page.</div>}>
        {overlay.show && (<div className='overlay'>{overlay.message}</div>)}
       {
         iter(3).map((band) => (
@@ -29,8 +29,8 @@ export default function SudokuGrid() {
 
 function Box({band, stack}) {
   const style = {
-    gridRow: (band + 1) + ' span 1',
-    gridColumn: (stack + 1) + ' span 1',
+    gridRow: (band + 1) + '/ span 1',
+    gridColumn: (stack + 1) + '/ span 1',
   }
   return (
     <div style={style} className="box">
