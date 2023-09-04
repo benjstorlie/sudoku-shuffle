@@ -27,7 +27,8 @@
 
 #sudoku-grid.overlay {
   grid-area: 1 / 1 / 4 / 4;
-  color: var(--overlay-bg);
+  background-color: var(--overlay-bg);
+  color: #000;
   z-index: 10;
 }
 

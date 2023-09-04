@@ -13,7 +13,7 @@ export default function SudokuGrid() {
 
   return (
     <div id="sudoku-grid">
-      <ErrorBoundary fallback={<div className="overlay" style={{color:'#000',backgroundColor:'#fff'}}>Something went wrong. 😢</div>}>
+      <ErrorBoundary fallback={<div className="overlay">Something went wrong. 😢</div>}>
        {overlay.show && (<div className='overlay'>{overlay.message}</div>)}
       {
         iter(3).map((band) => (
