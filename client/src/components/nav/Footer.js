@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="row align-items-center"> 
       <div className="col-md-6 col-lg-4 d-flex align-items-center">
 <div className="bg-info text-dark mb-4 py-3">
-     <section class="sub-header">
+     <section className="sub-header">
         <img src="https://i.imgur.com/pqnPw4E.png" width="fill" length="fill" alt="Sudoku-Shuffle header" />
         
       

@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "Play Sudoku.",
   "contributors": [
-    "Ben Storlie <benjstorlie@gmail.com> (https://benjstorlie.github.io/)"
+    "Ben Storlie <benjstorlie@gmail.com> (https://benjstorlie.github.io/)",
+    "Patrick Lowe (https://github.com/PatrickWLowe)",
+    "Karelyn Rojas (https://github.com/i-kare)",
+    "Nicolas Coiner (https://github.com/npcoiner)",
+    "Gabreila Avelas (https://github.com/GabySSK)"
   ],
   "license": "MIT",
   "repository": {
@@ -17,12 +21,12 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "develop": "concurrently \"npm run start-client\" \"npm run start-server\"",
+    "develop": "concurrently \"npm run start-client\" \"npm run start-server-dev\"",
     "start": "node server/server.js",
     "start-server": "cd server && npm start",
+    "start-server-dev": "cd server && npm run dev",
     "install": "cd server && npm i && cd ../client && npm i",
     "start-client": "cd client && npm start",
-    "seed": "cd server && npm run seed",
     "build": "cd client && npm run build"
   },
   "devDependencies": {
