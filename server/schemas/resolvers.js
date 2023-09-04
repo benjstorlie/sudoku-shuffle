@@ -112,8 +112,12 @@ const resolvers = {
         
         // update game and save
         game.gameData = gameData;
-        game.isSolved = isSolved;
-        game.elapsedTime = elapsedTime;
+        if (!game.isSolved) {
+          game.elapsedTime = elapsedTime; // Keeps it from incrementing the time after game is solved.
+        }
+        if (isSolved) {
+          game.isSolved = true;
+        } 
 
         await game.save();
     

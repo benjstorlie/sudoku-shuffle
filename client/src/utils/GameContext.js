@@ -23,6 +23,7 @@ import React, { createContext, useContext, useState,
   // eslint-disable-next-line
   Dispatch, SetStateAction
 } from 'react';
+import moment from 'moment';
 
 // import things for communication with server
 import { useMutation } from '@apollo/client';
@@ -101,6 +102,7 @@ export default function GameProvider( {children}) {
   const [gameId, setGameId] = useState('test');
   const [difficulty, setDifficulty] = useState('test');
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [ timeGameStarted, setTimeGameStarted ] = useState(moment());
   const [isSolved, setIsSolved] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -117,7 +119,7 @@ export default function GameProvider( {children}) {
    * @param {boolean} [check] - enter true if you want to check to see if the game is solved
    * @returns 
    */
-  async function saveGameState(updatedArray, check=false) {
+  async function saveGameState(updatedArray, check=false, secondsTotal) {
 
     if (!gameId || gameId === 'test') {
       setMessage('This game cannot be saved.');
@@ -125,6 +127,7 @@ export default function GameProvider( {children}) {
     }
 
     const sudokuArray = updatedArray || gameArray;
+    const time = secondsTotal || elapsedTime;
 
     if (check) {
       const { isCorrect, error } = isSolutionCorrect(sudokuArray);
@@ -138,11 +141,11 @@ export default function GameProvider( {children}) {
 
       if (isCorrect) {
         try {
-          const { loading, data, error } = await updateGame({
+          const { data, error } = await updateGame({
             variables: {
               gameId,
               gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
-              elapsedTime,
+              elapsedTime: time,
               isSolved: true,
             },
           });
@@ -164,14 +167,15 @@ export default function GameProvider( {children}) {
     }
     // This is just regular saving the game.  It runs if !check or if !isCorrect. 
     try {
-      const { loading, data, error } = await updateGame({
+      const { data, error } = await updateGame({
         variables: {
           gameId,
           gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
-          elapsedTime
+          elapsedTime: time,
         },
       });
-      console.log(data,(error || 'No error received.'));
+      console.log(data,data.updateGame.game.elapsedTime);
+      if (error) {console.error(error)}
       return data;
     } catch (err) {
       setMessage('Error saving game.');
@@ -297,6 +301,7 @@ async function loadDifficulty(difficulty){
     }
     const shuffledArray = shuffleHandler(updatedArray)
     setGameArray(shuffledArray);
+    setTimeGameStarted(moment());
     await saveNewGame(shuffledArray,difficulty);
   })
 }
@@ -317,6 +322,7 @@ async function loadDifficulty(difficulty){
       modeMouse, setModeMouse,
       difficulty, setDifficulty,
       elapsedTime, setElapsedTime,
+      timeGameStarted, setTimeGameStarted,
       gameId, setGameId,
       isSolved, setIsSolved,
       message, setMessage,

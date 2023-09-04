@@ -1,4 +1,5 @@
 import React, { useState, useEffect} from 'react';
+import moment from 'moment';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Card from 'react-bootstrap/Card'
@@ -12,7 +13,7 @@ export default function DebugPanel() {
     message, setMessage,
     gameArray, setGameArray, saveGameState,
     modeAuto, saveNewGame,
-    resetGame,
+    resetGame, setTimeGameStarted
   } = useGameContext();
 
   const [messageBg, setMessageBg] = useState('light')
@@ -80,6 +81,7 @@ export default function DebugPanel() {
     }
     const shuffledArray = shuffleHandler(updatedArray)
     setGameArray(shuffledArray);
+    setTimeGameStarted(moment());
     await saveNewGame(shuffledArray,difficulty);
   }
   /** @type {React.CSSProperties} */

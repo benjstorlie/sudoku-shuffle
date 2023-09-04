@@ -3,7 +3,6 @@ import Button from 'react-bootstrap/Button';
 import { iter } from '../../utils/gameUtils';
 import { useGameContext } from '../../utils/GameContext';
 import './Controls.css';
-// eslint-disable-next-line
 import Timer from './Timer'
 import DebugPanel from './DebugPanel';
 import shuffleSvg from './shuffle.svg'
@@ -57,7 +56,7 @@ export default function Controls() {
     if (modeAuto) {
       fillCandidates({all:true})
     }
-  },[modeAuto])
+  },[modeAuto,fillCandidates,clearCandidates])
 
   /**
    * Conditonal styling object for controls grid buttons
@@ -127,7 +126,7 @@ export default function Controls() {
       default:
         return;
     }
-  },[actionName,enterColor,enterDigit,setHighlightedDigit,toggleCandidate,loadDifficulty])
+  },[actionName,enterColor,enterDigit,setHighlightedDigit,toggleCandidate,loadDifficulty,clearCandidates])
 
   useEffect(() => {
     /** @type {(e:KeyboardEvent) => void} */
@@ -160,10 +159,11 @@ export default function Controls() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [actionFunction,setModeAuto,setModeMouse,setModeMultiselect]); // Empty dependency array means this effect runs once after the initial render
+  }, [actionFunction,setModeAuto,setModeMouse,setModeMultiselect]); 
 
   return (
     <>
+    <Timer />
     <div id='controls'>
     <Button variant='outline-dark' onClick={()=> setModeMultiselect((prev) => !prev)}>multi-select: {modeMultiselect ? 'on' : 'off'}</Button>
     <Button disabled variant='outline-dark' onClick={()=> setModeAuto((prev) => !prev)}>auto-solve: {modeAuto ? 'on' : 'off'}</Button>
