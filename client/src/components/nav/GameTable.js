@@ -66,9 +66,9 @@ export default function GameTable( {profilePage} ) {
         </tr>
       </thead>
       <tbody>
-        {loading ? <tr><td>Loading games...</td></tr> : null}
-        {error ? <tr><td>Error: {error.message}</td></tr> : null}
-        {(!error && !data?.games.length) ? <tr><td>No games to resume</td></tr> : null}
+        {loading ? <tr><td colSpan={5}>Loading games...</td></tr> : null}
+        {error ? <tr><td colSpan={5}>{ error.message === "You need to be logged in!" ? "Log in to resume your saved games." : `Error: ${error.message}`}</td></tr> : null}
+        {(!error && !data?.games.length) ? <tr><td colSpan={5}>No games to resume</td></tr> : null}
         {data?.games?.map(game => (game._id !== currentGameId || profilePage) && (
           <tr key={game._id}>
             <td><GameSVG gameData={game.gameData} inputString={game._id}/></td>
