@@ -40,6 +40,8 @@ import {
   shuffleHandler
 } from './gameUtils'
 import { getBoardByDifficulty } from "./api";
+import Loading from '../components/overlay/Loading';
+import WinGame from '../components/overlay/WinGame';
 
 
 /**
@@ -141,7 +143,7 @@ export default function GameProvider( {children}) {
 
       if (isCorrect) {
         try {
-          const {  data, error } = await updateGame({
+          const { loading, data, error } = await updateGame({
             variables: {
               gameId,
               gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
@@ -151,10 +153,7 @@ export default function GameProvider( {children}) {
           });
           if (data?.updateGame.stats.length) {
             setMessage('You won!\n'+JSON.stringify(data?.updateGame.stats, (key, val) => (key[0]==='_' ? undefined : val)))
-            // *TODO* Perform whatever needs to happen when a game is solved, and display new stats.
-            // On the other hand, maybe it's a useEffect() that checks if isSolved === true.
-            // So that component could have the stats as its own useState() variable, so it will show that you won,
-            // and then show loading while the stats come in.
+            setOverlay({show:true,message:<WinGame elapsedTime={elapsedTime} difficulty={difficulty} loading={loading} stats={data?.updateGame.stats}/>})
           }
           console.log( data, (error || 'No error saving winning game.'))
           return data;
@@ -279,7 +278,7 @@ async function enterDigit(digit) {
 
 async function loadDifficulty(difficulty){
   // show loading message (you can put whatever react component in 'message', I'm sure)
-  setOverlay({show:true, message:<h1>loading...</h1>})
+  setOverlay({show:true, message:<Loading />})
   getBoardByDifficulty(difficulty).then(async (board) =>{
     const updatedArray = blankGameArray();
     if (board?.newboard?.grids?.[0]?.value && board?.newboard?.grids?.[0]?.solution) {
