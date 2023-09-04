@@ -278,6 +278,8 @@ async function enterDigit(digit) {
 }
 
 async function loadDifficulty(difficulty){
+  // show loading message (you can put whatever react component in 'message', I'm sure)
+  setOverlay({show:true, message:<h1>loading...</h1>})
   getBoardByDifficulty(difficulty).then(async (board) =>{
     const updatedArray = blankGameArray();
     if (board?.newboard?.grids?.[0]?.value && board?.newboard?.grids?.[0]?.solution) {
@@ -296,10 +298,12 @@ async function loadDifficulty(difficulty){
         }
       }
     } else {
+      setOverlay({show:true, message:<h1>Error loading game.</h1>})
       console.error("Invalid board structure:", board);
     }
     const shuffledArray = shuffleHandler(updatedArray)
     setGameArray(shuffledArray);
+    setOverlay({show:false,message:<p></p>})
     await saveNewGame(shuffledArray,difficulty);
   })
 }
