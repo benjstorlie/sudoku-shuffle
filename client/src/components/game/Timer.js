@@ -67,11 +67,11 @@ function tick() {
 //
 
 
-function timeGameStartedInMilliseconds() {
-  let { timeGameStarted } = useGameContext();
-  let timeGameStartedInMilliseconds = instant(timeGameStarted).milliseconds();
-  return timeGameStartedInMilliseconds;
-}
+//function timeGameStartedInMilliseconds() {
+  //let { timeGameStarted } = useGameContext();
+  //let timeGameStartedInMilliseconds = instant(timeGameStarted).milliseconds();
+  //return timeGameStartedInMilliseconds;
+//}
 //return (
   //<div className="check_time">{ timeGameStartedInMilliseconds()}</div>
 //)
