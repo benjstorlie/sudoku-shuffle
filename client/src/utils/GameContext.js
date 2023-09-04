@@ -138,7 +138,7 @@ export default function GameProvider( {children}) {
 
       if (isCorrect) {
         try {
-          const { loading, data, error } = await updateGame({
+          const {  data, error } = await updateGame({
             variables: {
               gameId,
               gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
@@ -153,7 +153,7 @@ export default function GameProvider( {children}) {
             // So that component could have the stats as its own useState() variable, so it will show that you won,
             // and then show loading while the stats come in.
           }
-          console.log( data, (error || 'no error'))
+          console.log( data, (error || 'No error saving winning game.'))
           return data;
         } catch (err) {
           setMessage('Error saving game.');
@@ -164,7 +164,7 @@ export default function GameProvider( {children}) {
     }
     // This is just regular saving the game.  It runs if !check or if !isCorrect. 
     try {
-      const { loading, data, error } = await updateGame({
+      const { data, error } = await updateGame({
         variables: {
           gameId,
           gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),

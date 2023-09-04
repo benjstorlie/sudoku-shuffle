@@ -1,6 +1,5 @@
 // eslint-disable-next-line
 import { Dispatch, SetStateAction } from "react";
-import { getBoardByDifficulty } from "./api";
 /**
  * @typedef Cell
  * @prop {number} value - the value the cell shows. If 0, the cell is empty and only shows candidates

@@ -57,7 +57,7 @@ export default function Controls() {
     if (modeAuto) {
       fillCandidates({all:true})
     }
-  },[modeAuto])
+  },[modeAuto,fillCandidates])
 
   /**
    * Conditonal styling object for controls grid buttons
@@ -127,7 +127,7 @@ export default function Controls() {
       default:
         return;
     }
-  },[actionName,enterColor,enterDigit,setHighlightedDigit,toggleCandidate,loadDifficulty])
+  },[actionName,enterColor,enterDigit,setHighlightedDigit,toggleCandidate,loadDifficulty,clearCandidates])
 
   useEffect(() => {
     /** @type {(e:KeyboardEvent) => void} */
