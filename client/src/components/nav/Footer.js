@@ -18,7 +18,7 @@ export default function Footer() {
 
 
       <section>
-        <b>In classic Sudoku, the objective is to fill a 9 &00d7; 9 grid with digits so that each column, each row, and each of the nine 3 &00d7; 3 subgrids that compose the grid (also called "boxes", "blocks", or "regions") contain all of the digits from 1 to 9. The puzzle setter provides a partially completed grid, which for a well-posed puzzle has a single solution. The modern Sudoku has a modern design and method. Click the links to find out more!</b>
+        <b>In classic Sudoku, the objective is to fill a 9 &times; 9 grid with digits so that each column, each row, and each of the nine 3 &times; 3 subgrids that compose the grid (also called "boxes", "blocks", or "regions") contain all of the digits from 1 to 9. The puzzle setter provides a partially completed grid, which for a well-posed puzzle has a single solution. The modern Sudoku has a modern design and method. Click the links to find out more!</b>
        
       </section>
       <div className="d-flex justify-content-between">
