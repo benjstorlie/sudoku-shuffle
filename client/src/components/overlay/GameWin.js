@@ -22,7 +22,7 @@ export default function WinGame({elapsedTime, difficulty, stats}) {
         <h2>Time: {elapsedTime} seconds</h2>
         <h6>Use the control panel to start a new game!</h6>
       </div>
-    <Table striped bordered hover>
+    <Table bordered>
       <thead>
         <tr>
           <th>Difficulty</th>
