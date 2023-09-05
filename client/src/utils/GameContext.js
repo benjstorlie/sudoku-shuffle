@@ -19,7 +19,7 @@
 
 
 
-import React, { createContext, useContext, useState,
+import React, { createContext, useContext, useState, useEffect,
   // eslint-disable-next-line
   Dispatch, SetStateAction
 } from 'react';
@@ -40,6 +40,8 @@ import {
   shuffleHandler
 } from './gameUtils'
 import { getBoardByDifficulty } from "./api";
+import Loading from '../components/overlay/Loading';
+import WinGame from '../components/overlay/GameWin';
 
 
 /**
@@ -61,16 +63,23 @@ import { getBoardByDifficulty } from "./api";
  * @prop {Dispatch<SetStateAction<boolean>>} setModeMouse - if false, primary click selects cells, if true, primary click toggles candidates
  * @prop {string} gameId - The id of the current game in the database. Is empty if no game started.
  * @prop {Dispatch<SetStateAction<string>>} setGameId - reset gameId. Used when starting or resuming a game.
+ * @prop {string} message - any message to give to the user
+ * @prop {Dispatch<SetStateAction<string>>} setMessage - set a message to send to the user.
  * @prop {string} difficulty - Difficulty level of current game, like 'medium'. Empty if no game started.
  * @prop {Dispatch<SetStateAction<string>>} setDifficulty - reset difficulty. Used when starting or resuming a game.
  * @prop {number} elapsedTime - elapsed time for this game
- * @prop {number} setElapsedTime - update current elapsed time for this game
+ * @prop {Dispatch<SetStateAction<number>>}} setElapsedTime - update current elapsed time for this game
+ * @prop {number} move - How many moves have you made, or what move number are you on?
+ * @prop {Dispatch<SetStateAction<number>>} setMove - set How many moves have you made, or what move number are you on? Do setMove((prev) => prev+1) to increment.
+ * @prop {{show:boolean,message:React.JSX.Element}} overlay - show overlay over sudoku grid
+ * @prop {Dispatch<SetStateAction<{show:boolean,message:React.JSX.Element}>>} setOverlay - set if overlay is shown over sudoku grid, set overlay.message to be a react component
  * @prop {(digit: number) => void} enterDigit - enter a digit to be the value for all selected cells
  * @prop {(color: string) => void} enterColor - change background color for all selected cells.
  * @prop {(candidate: number, cellRef?:string) => void} toggleCandidate - The optional cellRef parameter is so you don't have to wait for a cell to be added to the selected list.
  * @prop {(options?:{all:boolean})=>void} clearCandidates - clear candidates in selected cells, or, if {all: true}, clear candidates from all cells
  * @prop {(options?:{all:boolean})=>void} fillCandidates - fill in all candidates in selected cells, or, if {all: true}, fill in candidates in all cells
  * @prop {(cell: string, force?: boolean) => void} toggleSelected - if included, if force is true, this cell will be selected, if force is false, it will not
+ * @prop {(difficulty: string) => Promise<*>} loadDifficulty - Start new game
  * @prop {(*)=>*} saveNewGame - create new game in database, with mutation {@link ADD_GAME}, returns response from server, which includes the new gameId
  * @prop {(*)=>*} saveGameState - update current game in database, with mutation {@link UPDATE_GAME}
  * @prop {() => void} resetGame - resets most game variables, including gameId and gameArray, to their blank, initial values
@@ -103,11 +112,17 @@ export default function GameProvider( {children}) {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isSolved, setIsSolved] = useState(false);
   const [message, setMessage] = useState('');
+  const [overlay, setOverlay] = useState({show:false, message:<p></p>});
+  const [move, setMove] = useState(0);
 
   // ***** define GraphQL hooks
 
   const [addGame] = useMutation(ADD_GAME)
   const [updateGame] = useMutation(UPDATE_GAME);
+
+  useEffect(() => {
+    setOverlay({show:false,message:<p></p>})
+  },[gameId,setOverlay])
 
   // ****************  These functions are used by the game actions for saving to database
 
@@ -138,25 +153,25 @@ export default function GameProvider( {children}) {
 
       if (isCorrect) {
         try {
-          const {  data, error } = await updateGame({
+          const { data, error } = await updateGame({
             variables: {
               gameId,
-              gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
+              gameData: JSON.stringify({gameArray:sudokuArray,move}, (key, val) => (key === 'candidates' ? [...val] : val)),
               elapsedTime,
               isSolved: true,
             },
           });
+
           if (data?.updateGame.stats.length) {
-            setMessage('You won!\n'+JSON.stringify(data?.updateGame.stats, (key, val) => (key[0]==='_' ? undefined : val)))
-            // *TODO* Perform whatever needs to happen when a game is solved, and display new stats.
-            // On the other hand, maybe it's a useEffect() that checks if isSolved === true.
-            // So that component could have the stats as its own useState() variable, so it will show that you won,
-            // and then show loading while the stats come in.
+            setMessage('You won!')
+            // JSON.stringify(data?.updateGame.stats, (key, val) => (key[0]==='_' ? undefined : val))
+            setOverlay({show:true,message:<WinGame elapsedTime={elapsedTime} difficulty={difficulty} stats={data?.updateGame.stats}/>})
           }
-          console.log( data, (error || 'No error saving winning game.'))
+          console.log( data, (error?.message || 'No error saving winning game.'))
+          if (error) {setMessage('Error saving game. '+error.message);}
           return data;
         } catch (err) {
-          setMessage('Error saving game.');
+          setMessage('Error saving game: '+err?.message);
           console.error(err);
           return;
         }
@@ -167,10 +182,15 @@ export default function GameProvider( {children}) {
       const { data, error } = await updateGame({
         variables: {
           gameId,
-          gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
+          gameData: JSON.stringify({gameArray:sudokuArray,move}, (key, val) => (key === 'candidates' ? [...val] : val)),
           elapsedTime
         },
       });
+
+      setMove((prev) => prev+1);
+      // *TODO* remove if timer gets working.
+      setElapsedTime((prev) => prev+1);
+      
       console.log(data,(error || 'No error received.'));
       return data;
     } catch (err) {
@@ -186,10 +206,13 @@ export default function GameProvider( {children}) {
    * @param {string} difficulty - difficulty level to save
    */
   async function saveNewGame(sudokuArray,difficulty) {
+    setMove(0);
+    setElapsedTime(0);
+    setOverlay({show:false,message:<p></p>})
     try {
       const { data } = await addGame({
         variables: {
-          gameData: JSON.stringify({gameArray:sudokuArray}, (key, val) => (key === 'candidates' ? [...val] : val)),
+          gameData: JSON.stringify({gameArray:sudokuArray,move}, (key, val) => (key === 'candidates' ? [...val] : val)),
           difficulty
         },
       });
@@ -216,6 +239,7 @@ function resetGame() {
   setDifficulty('');
   setGameId('');
   setElapsedTime(0);
+  setMove(0);
   setIsSolved(false);
 }
 
@@ -275,6 +299,8 @@ async function enterDigit(digit) {
 }
 
 async function loadDifficulty(difficulty){
+  // show loading message (you can put whatever react component in 'message', I'm sure)
+  setOverlay({show:true, message:<Loading />})
   getBoardByDifficulty(difficulty).then(async (board) =>{
     const updatedArray = blankGameArray();
     if (board?.newboard?.grids?.[0]?.value && board?.newboard?.grids?.[0]?.solution) {
@@ -293,10 +319,12 @@ async function loadDifficulty(difficulty){
         }
       }
     } else {
+      setOverlay({show:true, message:<h1>Error loading game.</h1>})
       console.error("Invalid board structure:", board);
     }
     const shuffledArray = shuffleHandler(updatedArray)
     setGameArray(shuffledArray);
+    setDifficulty(difficulty);
     await saveNewGame(shuffledArray,difficulty);
   })
 }
@@ -320,6 +348,8 @@ async function loadDifficulty(difficulty){
       gameId, setGameId,
       isSolved, setIsSolved,
       message, setMessage,
+      overlay, setOverlay,
+      move, setMove,
       toggleCandidate,
       clearCandidates,
       fillCandidates,

@@ -4,6 +4,7 @@ import logo from "../../logo.svg";
 import "../../index.css";
 export default function Footer() {
   return (
+
     <footer className="border-dark text-dark py-3">
       <div className="container">
         <div className="row">

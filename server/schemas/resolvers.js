@@ -111,9 +111,9 @@ const resolvers = {
         const won = !game.isSolved && isSolved;
         
         // update game and save
-        game.gameData = gameData;
-        game.isSolved = isSolved;
-        game.elapsedTime = elapsedTime;
+        if (gameData) {game.gameData = gameData;}
+        if (isSolved) {game.isSolved = isSolved;}
+        if (elapsedTime) {game.elapsedTime = elapsedTime;}
 
         await game.save();
     

@@ -5,12 +5,21 @@ import Cell from './Cell';
 import { ErrorBoundary } from 'react-error-boundary';
 import './Game.css';
 import { iter } from '../../utils/gameUtils'
+import { useGameContext } from '../../utils/GameContext';
 
 export default function SudokuGrid() {
 
+  const { overlay , difficulty, elapsedTime } = useGameContext();
+
   return (
+    <>
+    <div className='d-flex'>
+      <div className='pb-2 px-2'>Difficulty: {difficulty[0].toUpperCase()+difficulty.slice(1)}</div>
+      <div className='pb-2 px-2'>Move Count: {elapsedTime}</div>
+      </div>
     <div id="sudoku-grid">
-      <ErrorBoundary fallback={<div className="error-boundary" style={{color:'#000',backgroundColor:'#fff'}}>Something went wrong. 😢</div>}>
+      <ErrorBoundary fallback={<div className="overlay">Something went wrong. 😢 <br /> Please refresh page.</div>}>
+       {overlay.show && (<div className='overlay'>{overlay.message}</div>)}
       {
         iter(3).map((band) => (
           iter(3).map((stack) => (
@@ -20,13 +29,14 @@ export default function SudokuGrid() {
       }
       </ErrorBoundary>
     </div>
+    </>
   )
 }
 
 function Box({band, stack}) {
   const style = {
-    gridRow: (band + 1) + ' span 1',
-    gridColumn: (stack + 1) + ' span 1',
+    gridRow: (band + 1) + '/ span 1',
+    gridColumn: (stack + 1) + '/ span 1',
   }
   return (
     <div style={style} className="box">
