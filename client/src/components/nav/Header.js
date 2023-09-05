@@ -36,21 +36,30 @@ export default function Header() {
             {Auth.loggedIn() ? (
               <>
                 <Link
-                  className="btn btn-lg btn-secondary m-2 border border-white"
+                  className="btn btn-lg btn-secondary m-2 border-white"
                   to="/me"
                 >
                   View My Profile
                 </Link>
-                <button className="btn btn-lg btn-light m-2" onClick={logout}>
+                <button
+                  className="btn btn-lg btn-light border-black m-2"
+                  onClick={logout}
+                >
                   Logout
                 </button>
               </>
             ) : (
               <>
-                <Link className="btn btn-lg btn-primary m-2 " to="/login">
+                <Link
+                  className="btn btn-lg btn-secondary border-white m-2 "
+                  to="/login"
+                >
                   Login
                 </Link>
-                <Link className="btn btn-lg btn-light m-2" to="/signup">
+                <Link
+                  className="btn btn-lg btn-light border-black m-2"
+                  to="/signup"
+                >
                   Signup
                 </Link>
               </>

@@ -33,9 +33,9 @@ body {
   background: rgb(238, 122, 6);
   background: linear-gradient(
     90deg,
-    rgba(238, 122, 6, 1) 2%,
-    rgba(224, 204, 44, 1) 47%,
-    rgba(224, 130, 22, 1) 100%
+    rgb(6, 238, 230) 2%,
+    rgb(44, 164, 224) 47%,
+    rgb(22, 204, 224) 100%
   );
 }
 
