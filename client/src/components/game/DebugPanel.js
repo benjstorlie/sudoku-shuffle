@@ -88,9 +88,6 @@ export default function DebugPanel() {
     const shuffledArray = shuffleHandler(updatedArray)
     setGameArray(shuffledArray);
     setDifficulty(difficulty);
-    setMove(0);
-    setElapsedTime(0);
-    setOverlay({show:false,message:<p></p>})
     await saveNewGame(shuffledArray,difficulty);
   }
   /** @type {React.CSSProperties} */
