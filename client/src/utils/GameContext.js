@@ -68,8 +68,12 @@ import WinGame from '../components/overlay/GameWin';
  * @prop {Dispatch<SetStateAction<string>>} setDifficulty - reset difficulty. Used when starting or resuming a game.
  * @prop {number} elapsedTime - elapsed time for this game
  * @prop {number} setElapsedTime - update current elapsed time for this game
- * @prop {{show:boolean,message:React.JSX.Element}} overlay - show overlay over sudoku grid
+ * @prop {{show:boolean,message:React.JSX.Element}} overlay - show overlay over sudoku grid, overlay.message is a React component
  * @prop {Dispatch<SetStateAction<{show:boolean,message:React.JSX.Element}>>} setOverlay - set if overlay is shown over sudoku grid, set overlay.message to be a react component
+ * @prop {string} message - String to show in the message/error box
+ * @prop {Dispatch<SetStateAction<string>>} setMessage - set String to show in the message/error box
+ * @prop {moment.Moment} startTime - time this game started/resumed
+ * @prop {Dispatch<SetStateAction<moment.Moment>>} setStartTime - set time this game started/resumed. do setStartTime(moment()) to set to the current time.
  * @prop {(digit: number) => void} enterDigit - enter a digit to be the value for all selected cells
  * @prop {(color: string) => void} enterColor - change background color for all selected cells.
  * @prop {(candidate: number, cellRef?:string) => void} toggleCandidate - The optional cellRef parameter is so you don't have to wait for a cell to be added to the selected list.
@@ -106,7 +110,7 @@ export default function GameProvider( {children}) {
   const [gameId, setGameId] = useState('test');
   const [difficulty, setDifficulty] = useState('test');
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [ timeGameStarted, setTimeGameStarted ] = useState(moment());
+  const [ startTime, setStartTime ] = useState(moment());
   const [isSolved, setIsSolved] = useState(false);
   const [message, setMessage] = useState('');
   const [overlay, setOverlay] = useState({show:false, message:<p></p>});
@@ -116,6 +120,7 @@ export default function GameProvider( {children}) {
   const [addGame] = useMutation(ADD_GAME)
   const [updateGame] = useMutation(UPDATE_GAME);
 
+  // if gameId changes, remove overlay if shown, because a new game probably started.
   useEffect(() => {
     setOverlay({show:false,message:<p></p>})
   },[gameId,setOverlay])
@@ -310,7 +315,7 @@ async function loadDifficulty(difficulty){
     }
     const shuffledArray = shuffleHandler(updatedArray)
     setGameArray(shuffledArray);
-    setTimeGameStarted(moment());
+    setStartTime(moment());
     setDifficulty(difficulty);
     setOverlay({show:false,message:<p></p>})
     await saveNewGame(shuffledArray,difficulty);
@@ -333,7 +338,7 @@ async function loadDifficulty(difficulty){
       modeMouse, setModeMouse,
       difficulty, setDifficulty,
       elapsedTime, setElapsedTime,
-      timeGameStarted, setTimeGameStarted,
+      startTime, setStartTime,
       gameId, setGameId,
       isSolved, setIsSolved,
       message, setMessage,

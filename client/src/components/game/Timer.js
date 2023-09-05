@@ -44,22 +44,83 @@ import { useGameContext } from '../../utils/GameContext';
 import moment from 'moment';
 
 export default function Timer() {
-  let [currentTime, setCurrentTime] = useState(moment());
-  let { timeGameStarted, saveGameState ,setElapsedTime, isSolved, gameId } = useGameContext();
+  // let [currentTime, setCurrentTime] = useState(moment());
+  // let [pausedTime, setPausedTime] = useState(0); // number of seconds to add to current time interval
+
+  // State to track whether the stopwatch is running
+  const [isRunning, setIsRunning] = useState(false);
+
+  const { saveGameState ,setElapsedTime, elapsedTime, isSolved, gameId } = useGameContext();
+
+  // Function to start the stopwatch
+  const startStopwatch = () => {
+    setIsRunning(true);
+  };
+
+  // Function to pause the stopwatch
+  const pauseStopwatch = () => {
+    setIsRunning(false);
+  };
+
+  // Start stopwatch if gameId changes, or game is solved
   useEffect(() => {
-    if(!isSolved && (gameId && gameId !== 'test'))
-      setTimeout(() => {
-        setCurrentTime(moment());
-        let secondsTotal = moment().diff(timeGameStarted, 'seconds');
-        setElapsedTime(secondsTotal);
-        saveGameState(undefined,undefined,secondsTotal);
+    if (isSolved || (gameId && gameId !== 'test')) {
+      setIsRunning(false);
+    } else {
+      setIsRunning(true);
+    }
+  },[gameId,isSolved,setIsRunning])
+
+
+  // useEffect(() => {
+  //   if(!isSolved && (gameId && gameId !== 'test'))
+  //     setTimeout(() => {
+  //       setCurrentTime(moment());
+  //       let secondsTotal = moment().diff(startTime, 'seconds');
+  //       setElapsedTime(prevTime => prevTime + 1 );
+  //     }, 1000);
+  //   },[isSolved,saveGameState,setElapsedTime,startTime,gameId]);
+
+  useEffect(() => {
+    // Function to save game state beforeunload or on unmount
+    const handleBeforeUnload = () => {
+      if (gameId && gameId !== 'test') {
+        saveGameState();
+      }
+    };
+
+    if (isRunning) {
+      // Start an interval to update the elapsed time every second
+      const intervalId = setInterval(() => {
+        // add one second to previous elapsed time
+        setElapsedTime(prevElapsedTime => prevElapsedTime + 1);
       }, 1000);
-    },[isSolved,saveGameState,setElapsedTime,timeGameStarted,gameId]);
+
+      // Add beforeunload event listener to save game state
+      window.addEventListener('beforeunload', handleBeforeUnload);
+
+      // Return a cleanup function to clear the interval and remove the event listener on unmount
+      return () => {
+        // Return a cleanup function to clear the interval on unmount
+        clearInterval(intervalId);
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+
+        // Save game state on unmount if the stopwatch is running
+        if (isRunning && (gameId && gameId !== 'test')) {
+          saveGameState();
+        }
+      };
+    } else {
+      // Remove the beforeunload event listener when the stopwatch is not running
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    }
+  }, [isRunning, saveGameState, gameId, setElapsedTime]);
 
   function getTimer() {
-    let secondsTotal  = currentTime.diff(timeGameStarted, 'seconds');
+    // let secondsTotal  = currentTime.diff(startTime, 'seconds');
+    let secondsTotal = elapsedTime;
     if (secondsTotal <=0) 
-      return "00:00:00";
+      return "00:00";
 
     let duration = moment.duration(secondsTotal, 'seconds');
     let hours = duration.hours();
@@ -74,9 +135,17 @@ export default function Timer() {
     return stringTimer;
   }
 
+  if (gameId && gameId !== 'test') {
   return (
-    <div className="check_time">{(gameId && gameId !== 'test') && getTimer()}</div>
+    <div className="stopwatch">
+      <div className="check_time">{getTimer()}</div>
+      { (isRunning)
+      ? <button onClick={pauseStopwatch}>Pause</button>
+      : <button onClick={startStopwatch}>Start</button>
+      }
+    </div>
   )
+    }
 }
 
 
