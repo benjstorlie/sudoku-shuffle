@@ -1,5 +1,7 @@
 import React from "react";
 import logo from "../../logo.svg";
+import ListGroup from "react-bootstrap/ListGroup";
+
 import "../../index.css";
 export default function Footer() {
   return (
@@ -58,17 +60,20 @@ export default function Footer() {
                   >
                     Repo!
                   </a>
-                  <a
-                  href="mailto:sudokuShuffle@gmail.com?"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="btn btn-light btn-lg m-2"
-                    >
-                      Send an email, recieve an email. Let's G-mail! Contact us here
-                  </a>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div className= "row">
+          <div className="col-md-6 offset-md-6
+                            text-center" style={{maxWidth:'fit-content'}}  >
+            <ListGroup> Contacts
+              <ListGroup.Item variant="info" action href="https://github.com/benjstorlie/">Ben J. Storlie</ListGroup.Item>
+              <ListGroup.Item variant="info" action href="https://github.com/PatrickWLowe">Patrick Lowe</ListGroup.Item>
+              <ListGroup.Item variant="info" action href="https://github.com/benjstorlie/">Karelyn Rojas</ListGroup.Item>
+              <ListGroup.Item variant="info" action href="https://github.com/npcoiner">Nicolas Coiner</ListGroup.Item>
+            </ListGroup>
           </div>
         </div>
       </div>
