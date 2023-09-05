@@ -12,7 +12,13 @@
 
 #### [Gabreila Avelas](https://github.com/GabySSK)
 
+## Description
+
+We made a website called [Sudoku Shuffle](https://mighty-ridge-19238-3e456d2c37f3.herokuapp.com/) that allows you to play games of Sudoku and save your progress. Simply navigate to [Sudoku Shuffle](https://mighty-ridge-19238-3e456d2c37f3.herokuapp.com/signup)'s Signup Page and enter a valid username, email and password to create an account.Once you are logged in, you are ready to start saving in-progess games to your profile.
+
 ## Technologies-Used
+
+![Dosuku](./images/Dosuku.png)
 
 ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
 
@@ -35,3 +41,29 @@
 ![React Hook Form](https://img.shields.io/badge/React%20Hook%20Form-%23EC5990.svg?style=for-the-badge&logo=reacthookform&logoColor=white)
 
 ### bcrypt
+
+## Deployed Website
+
+### Homepage
+
+![Deployed Screenshot](./images/homepage.png)
+
+### Bottom of Homepage
+
+![Deployed Screenshot](./images/bottomofhomepage.png)
+
+### Logged in Homepage
+
+![Deployed Screenshot](./images/loggedinhomepage.png)
+
+### Login Page
+
+![Deployed Screenshot](./images/loginpage.png)
+
+### Signup Page
+
+![Deployed Screenshot](./images/Signuppage.png)
+
+### Profile Page
+
+![Deployed Screenshot](./images/Profile.png)
