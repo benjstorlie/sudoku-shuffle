@@ -49,13 +49,6 @@ export default function Controls() {
   /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
   const [ actionName, setActionName ] = useState(HIGHLIGHT);
 
-  // fill in all candidates if auto mode gets turned on
-  useEffect(() => {
-    if (modeAuto) {
-      fillCandidates({all:true})
-    }
-  },[modeAuto,fillCandidates])
-
   /**
    * Conditonal styling object for controls grid buttons
    * @param {number} index 

@@ -40,6 +40,7 @@ import {
   shuffleHandler,
   eliminate,
   eliminateFromSelected,
+  eliminateAll,
 } from './gameUtils'
 import { getBoardByDifficulty } from "./api";
 import Loading from '../components/overlay/Loading';
@@ -130,7 +131,11 @@ export default function GameProvider( {children}) {
   useEffect(() => {
     setOverlay({show:false,message:<p></p>});
       // Include other things that should reset if a new game starts or resumes.
-  },[gameId,setOverlay])
+    if (modeEliminate) {
+      console.log('eliniateAll')
+      setGameArray(prevState => eliminateAll(prevState));
+    }
+  },[gameId,setOverlay,modeEliminate,setGameArray])
 
   // ****************  These functions are used by the game actions for saving to database
 
@@ -175,7 +180,7 @@ export default function GameProvider( {children}) {
             // JSON.stringify(data?.updateGame.stats, (key, val) => (key[0]==='_' ? undefined : val))
             setOverlay({show:true,message:<WinGame elapsedTime={elapsedTime} difficulty={difficulty} stats={data?.updateGame.stats}/>})
           }
-          console.log( data, (error?.message || 'No error saving winning game.'))
+          // console.log( data, (error?.message || 'No error saving winning game.'))
           if (error) {setMessage('Error saving game. '+error.message);}
           return data;
         } catch (err) {
@@ -199,7 +204,9 @@ export default function GameProvider( {children}) {
       // *TODO* remove if timer gets working.
       setElapsedTime((prev) => prev+1);
       
-      console.log(data,(error || 'No error received.'));
+      if (error) {
+        console.log(data,(error));
+      }
       return data;
     } catch (err) {
       setMessage('Error saving game.');
@@ -230,7 +237,7 @@ export default function GameProvider( {children}) {
         setMessage('Something went wrong saving new game. (Open dev console for help.)');
         console.log(data); // Do Not Erase
       }
-      console.log(data);
+      // console.log(data);
       return data
     } catch {
       setMessage('You need to be logged in to save your game.');
@@ -347,18 +354,22 @@ async function loadDifficulty(difficulty){
  * @param {Cell[][]} sudokuArray - current state of gameArray
  */
 function autoSolve(sudokuArray) {
+  // Create shallow copy of previous gameArray
+  let updatedArray = sudokuArray.map((rows) => [...rows]);
   for (let row = 0; row < 9; row++) {
     for (let col = 0; col < 9; col++) {
-      const cell = sudokuArray[row][col];
+      const cell = updatedArray[row][col];
+      console.log('cell',cell,row,col)
       if (!cell.value) {
         if (cell.candidates.size === 0) {
-          throw new Error(`R${row}C${col}`);
+          setSelected([`R${row}C${col}`]);
+          setMessage(`Could not continue autoSolving, error at R${row}C${col}.`)
+          return updatedArray;
         } else if (cell.candidates.size === 1) {
           const value = cell.candidates.values().next().value;
           cell.value = value;
-          sudokuArray = eliminate(row, col, value, sudokuArray);
-          setGameArray(sudokuArray); // Show the current result. No need to save
-          // Since autoSolve runs when 'gameArray' changes, it effectively runs recursively.
+          updatedArray = eliminate(row, col, value, updatedArray);
+          return updatedArray;
         }
       }
     }
@@ -368,9 +379,9 @@ function autoSolve(sudokuArray) {
 // Set up a useEffect hook to run autoSolve whenever gameArray changes
 useEffect(() => {
   if (modeAuto) {
-    autoSolve(gameArray);
+    setGameArray(autoSolve(gameArray));
   }
-}, [gameArray, modeAuto]); 
+}, [gameArray, setGameArray, modeAuto]); 
 
 // ************ End define game functions
 

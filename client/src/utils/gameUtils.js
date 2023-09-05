@@ -317,3 +317,26 @@ export function eliminateFromSelected(selected, digit, sudokuArray) {
   }
   return sudokuArray;
 }
+
+/**
+ * to be run when modeEliminate is on and new game starts, or modeElimininate gets turned on.
+ * @param {Cell[][]} sudokuArray - current state of game
+ * @returns {Cell[][]}
+ */
+export function eliminateAll(sudokuArray) {
+    // Create shallow copy of previous gameArray
+  let updatedArray = sudokuArray.map((rows) => [...rows]);
+  for (let row = 0; row < 9; row++) {
+    for (let col = 0; col < 9; col++) {
+      updatedArray[row][col].candidates = new Set([1,2,3,4,5,6,7,8,9]);
+    }
+  }
+  for (let row;row<9;row++) {
+    for (let col;col<9;col++) {
+      if (sudokuArray[row][col].value) {
+        updatedArray = eliminate(row,col,sudokuArray[row][col].value,updatedArray);
+      }
+    }
+  }
+  return updatedArray;
+}
