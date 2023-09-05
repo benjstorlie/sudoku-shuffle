@@ -13,7 +13,7 @@ import MessageBox from './MessageBox';
 // Of course, it would be super fun to allow the user to modify these colors
 // This current list is just random, so it can be changed to something better
 // Have to make sure that colorList[0] is empty, because then that can be assigned to the 'clear' button
-const colorList = ['','#FF5733', '#33FF57', '#3366FF', '#FF33C8', '#33C8FF', '#FF9433', '#33FFC8', '#3394FF', '#FF3394'];
+const colorList = ['','rgb(204, 0, 41)', '#33FF57', '#3366FF', '#FF33C8', '#33C8FF', '#FF9433', 'rgb(105, 0, 204)', 'rgb(136, 204, 0)', 'rgb(187, 0, 204)'];
 
 const HIGHLIGHT = 'highlight';
 const ENTER_DIGIT = 'enterDigit';
@@ -37,7 +37,7 @@ export default function Controls() {
     modeMultiselect,
     setModeMultiselect,
     selected, setSelected,
-    shuffle,
+    shuffle, isSolved
   } = useGameContext();
 
   /** 
@@ -71,7 +71,7 @@ export default function Controls() {
         }
         break;
       case ENTER_DIGIT:
-        return {textDecoration: 'underline'}
+        return {fontWeight:'bold', fontSize:'30px'}
       case COLOR:
         if (index) {
           return {color: 'transparent', backgroundColor: colorList[index]}
@@ -93,27 +93,29 @@ export default function Controls() {
   }
 
   const actionFunction = useCallback(async function(index) {
-    switch (actionName) {
-      case HIGHLIGHT:
-        setHighlightedDigit(index);
-        break;
-      case ENTER_DIGIT:
-        enterDigit(index);
-        break;
-      case COLOR:
-        enterColor(colorList[index]);
-        break;
-      case CANDIDATE:
-        if (index) {
-          toggleCandidate(index);
-        } else {
-          clearCandidates();
-        }
-        break;
-      default:
-        return;
+    if (!isSolved) {
+      switch (actionName) {
+        case HIGHLIGHT:
+          setHighlightedDigit(index);
+          break;
+        case ENTER_DIGIT:
+          enterDigit(index);
+          break;
+        case COLOR:
+          enterColor(colorList[index]);
+          break;
+        case CANDIDATE:
+          if (index) {
+            toggleCandidate(index);
+          } else {
+            clearCandidates();
+          }
+          break;
+        default:
+          return;
+      } 
     }
-  },[actionName,enterColor,enterDigit,setHighlightedDigit,toggleCandidate,clearCandidates])
+  },[actionName,enterColor,enterDigit,setHighlightedDigit,toggleCandidate,clearCandidates,isSolved])
 
   useEffect(() => {
     /** @type {(e:KeyboardEvent) => void} */
@@ -189,7 +191,7 @@ export default function Controls() {
         }
         <button id="btn-clear" style={controlsGridStyles(0)} onClick={() => actionFunction(0)}>clear</button>
       </div>
-      <Button aria-label="shuffle" variant='outline-primary' id='shuffle' onClick={() => shuffle()}><img src={shuffleSvg} alt="shuffle icon"/><b>Shuffle!</b></Button>
+      <Button aria-label="shuffle" variant='outline-primary' id='shuffle' onClick={() => (!isSolved && shuffle())}><img src={shuffleSvg} alt="shuffle icon"/><b>Shuffle!</b></Button>
       <Button variant='outline-dark' onClick={() => fillCandidates({all:true})}>Fill in all candidates</Button>
       <ButtonGroup vertical style={{gridRowEnd:'span 2'}}>
       <Button variant='outline-dark' onClick={clearSelection}>Clear Selection</Button>

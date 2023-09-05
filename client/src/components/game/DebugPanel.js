@@ -10,8 +10,7 @@ export default function DebugPanel() {
     gameId, difficulty,
     gameArray, setGameArray, saveGameState,
     modeAuto, saveNewGame,
-    resetGame, setOverlay,
-    setMove, setElapsedTime,
+    resetGame, 
     setDifficulty
   } = useGameContext();
 

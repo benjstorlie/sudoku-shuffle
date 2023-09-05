@@ -15,7 +15,7 @@ export default function SudokuGrid() {
     <>
     <div className='d-flex'>
       <div className='pb-2 px-2'>Difficulty: {difficulty[0].toUpperCase()+difficulty.slice(1)}</div>
-      <div className='pb-2 px-2'>Move: {elapsedTime}</div>
+      <div className='pb-2 px-2'>Move Count: {elapsedTime}</div>
       </div>
     <div id="sudoku-grid">
       <ErrorBoundary fallback={<div className="overlay">Something went wrong. 😢 <br /> Please refresh page.</div>}>

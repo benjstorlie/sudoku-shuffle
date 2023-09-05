@@ -36,6 +36,9 @@
 #shuffle {
   /* grid-column-end: span 2; */
   grid-row-end: span 3;
+}
+
+#shuffle img {
   max-width: 120px;
 }
 

@@ -8,7 +8,11 @@ export default function MessageBox() {
 
   useEffect(() => {
     if (message) {
-      setMessageBg('danger');
+      if (message.startsWith('You won!')) {
+        setMessageBg('success')
+      } else {
+        setMessageBg('danger');
+      }
       setTimeout(() => {
         setMessageBg('light'); // Reset to light
       }, 1000); // Adjust the delay as needed
