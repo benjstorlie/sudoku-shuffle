@@ -160,10 +160,11 @@ export default function GameProvider( {children}) {
             setMessage('You won!\n'+JSON.stringify(data?.updateGame.stats, (key, val) => (key[0]==='_' ? undefined : val)))
             setOverlay({show:true,message:<WinGame elapsedTime={elapsedTime} difficulty={difficulty} stats={data?.updateGame.stats}/>})
           }
-          console.log( data, (error || 'No error saving winning game.'))
+          console.log( data, (error?.message || 'No error saving winning game.'))
+          if (error) {setMessage('Error saving game. '+error.message);}
           return data;
         } catch (err) {
-          setMessage('Error saving game.');
+          setMessage('Error saving game: '+err?.message);
           console.error(err);
           return;
         }

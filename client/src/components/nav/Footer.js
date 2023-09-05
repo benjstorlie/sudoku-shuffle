@@ -4,7 +4,7 @@ import logo from '../../logo.svg'
 export default function Footer() {
   return (
     <footer className="bg-info text-dark mb-4 py-3">
-        <div className="container">
+        <div className="container-fluid">
       <div className="row align-items-center"> 
       <div className="col-md-6 col-lg-4 d-flex align-items-center">
 <div className="bg-info text-dark mb-4 py-3">

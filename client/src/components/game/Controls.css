@@ -2,7 +2,7 @@
   /* width: 200px; */
   display: grid;
   grid-template-rows: auto auto auto auto auto auto;
-  grid-template-columns: auto auto auto; 
+  grid-template-columns: auto auto auto auto; 
   border: solid black 3px;
   border-radius: 1rem;
   padding: 0.5rem;
@@ -15,8 +15,12 @@
   position: relative;
   grid-template-rows: repeat(4,fr);
   grid-template-columns: repeat(3,fr);
-  grid-area: 2 / 1 / end / 3;
+  grid-area: 2 / 1 / 7 / 3;
   font-size: 24px;
+}
+
+#action-buttons {
+  grid-area: 2 / 3 / 7 / 4;
 }
 
 .controls-grid-btn {
@@ -26,12 +30,12 @@
 }
 
 #btn-clear {
-  grid-column: 1 / span 3;
-  grid-row: 4 / span 1;
+  grid-area: 4 / 1 / 5 / 4
 }
 
 #shuffle {
-  grid-column-end: span 2;
+  /* grid-column-end: span 2; */
+  grid-row-end: span 3;
   max-width: 120px;
 }
 
@@ -40,5 +44,5 @@
 }
 
 #message-box {
-  grid-column-end: span 3;
+  grid-column-end: span 4;
 }
