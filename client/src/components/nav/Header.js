@@ -31,6 +31,7 @@ export default function Header() {
                 <br />
                 Shuffle
               </h1>
+              <br />
               <div className="col-3">
                 <NewGame className={"mb-2 mx-2"} />
               </div>

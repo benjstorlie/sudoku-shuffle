@@ -14,7 +14,10 @@ export default function NewGame({ className }) {
       className="pt-2m-2 border border-white"
       style={{ minWidth: "fit-content" }}
     >
-      <Card.Title className="text-white" style={{ textAlign: "center" }}>
+      <Card.Title
+        className="text-white"
+        style={{ textAlign: "center", fontFamily: "Black Ops One" }}
+      >
         Start New Game
       </Card.Title>
       <ButtonGroup size="lg" className={className}>
