@@ -71,8 +71,8 @@ export default function Footer() {
             <ListGroup> Contacts
               <ListGroup.Item variant="info" action href="https://github.com/benjstorlie/">Ben J. Storlie</ListGroup.Item>
               <ListGroup.Item variant="info" action href="https://github.com/PatrickWLowe">Patrick Lowe</ListGroup.Item>
-              <ListGroup.Item variant="info" action href="https://github.com/benjstorlie/">Karelyn Rojas</ListGroup.Item>
-              <ListGroup.Item variant="info" action href="https://github.com/npcoiner">Nicolas Coiner</ListGroup.Item>
+              <ListGroup.Item variant="info" action href="https://github.com/i-kare">Karelyn Rojas</ListGroup.Item>
+              <ListGroup.Item variant="info" action href="https://github.com/npcoiner">Nicholas Coiner</ListGroup.Item>
             </ListGroup>
           </div>
         </div>
