@@ -4,19 +4,17 @@ import "../../index.css";
 
 import Auth from "../../utils/auth";
 
-import NewGame from "./NewGame";
-
 export default function Header() {
   const logout = (event) => {
     event.preventDefault();
     Auth.logout();
   };
   return (
-    <header>
-      <div className="container-fluid">
+    <header className="">
+      <div className="container">
         <div className="row align-items-center">
-          <div className="col-md-6 col-lg-4 d-flex align-items-end">
-
+          <div className="col-md-6 col-lg-4 d-flex align-items-center">
+            <Link className="text-dark text-decoration-none me-3" to="/"></Link>
             <Link className="text-dark text-decoration-none" to="/">
               <h1
                 className="mb-0"
@@ -34,26 +32,34 @@ export default function Header() {
               </h1>
             </Link>
           </div>
-          <div className="col-md-6 col-lg-8 mt-3 mt-md-0 d-flex justify-content-end align-items-end">
-            <NewGame className={"mb-2 mx-2"}/>
+          <div className="col-md-6 col-lg-8 mt-3 mt-md-0 d-flex justify-content-end">
             {Auth.loggedIn() ? (
               <>
                 <Link
-                  className="btn btn-lg btn-secondary m-2 border border-white"
+                  className="btn btn-lg btn-secondary m-2 border-white"
                   to="/me"
                 >
                   View My Profile
                 </Link>
-                <button className="btn btn-lg btn-light m-2" onClick={logout}>
+                <button
+                  className="btn btn-lg btn-light border-black m-2"
+                  onClick={logout}
+                >
                   Logout
                 </button>
               </>
             ) : (
               <>
-                <Link className="btn btn-lg btn-primary m-2 " to="/login">
+                <Link
+                  className="btn btn-lg btn-secondary border-white m-2 "
+                  to="/login"
+                >
                   Login
                 </Link>
-                <Link className="btn btn-lg btn-light m-2" to="/signup">
+                <Link
+                  className="btn btn-lg btn-light border-black m-2"
+                  to="/signup"
+                >
                   Signup
                 </Link>
               </>
