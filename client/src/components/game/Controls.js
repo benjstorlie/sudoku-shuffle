@@ -7,6 +7,7 @@ import './Controls.css';
 import Timer from './Timer'
 import DebugPanel from './DebugPanel';
 import shuffleSvg from './shuffle.svg'
+import MessageBox from './MessageBox';
 
 // Of course, it would be super fun to allow the user to modify these colors
 // This current list is just random, so it can be changed to something better
@@ -190,6 +191,7 @@ export default function Controls() {
       </div>
       <Button variant='outline-primary' id='shuffle' onClick={() => shuffle()}><img src={shuffleSvg} alt=""/></Button>
       <Button variant='outline-dark' onClick={() => fillCandidates({all:true})}>Fill in all candidates</Button>
+      <MessageBox />
     </div>
     <DebugPanel />
   </>
