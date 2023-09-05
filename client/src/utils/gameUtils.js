@@ -272,3 +272,48 @@ export function isSolutionCorrect(sudokuArray) {
     return { isCorrect: false }
   }
 }
+
+/**
+ * Removes the value from the candidates of all cells that share a group with {row,col}. 
+ * @param {number} col - column of cell
+ * @param {number} row - row of cell
+ * @param {number} digit - value to eliminate, i.e. value entered in {row,col}
+ * @param {Cell[][]} sudokuArray - current state of gameArray
+ */ 
+export function eliminate(row,col,digit,sudokuArray) {
+  // Remove the value from candidates in the same row and column
+  for (let i = 0; i < 9; i++) {
+    if (i !== col) {
+      sudokuArray[row][i].candidates.delete(digit);
+    }
+    if (i !== row) {
+      sudokuArray[i][col].candidates.delete(digit);
+    }
+  }
+
+  // Remove the value from candidates in the 3x3 box
+  const boxStartRow = Math.floor(row / 3) * 3;
+  const boxStartCol = Math.floor(col / 3) * 3;
+  for (let r = boxStartRow; r < boxStartRow + 3; r++) {
+    for (let c = boxStartCol; c < boxStartCol + 3; c++) {
+      if (r !== row || c !== col) {
+        sudokuArray[r][c].candidates.delete(digit);
+      }
+    }
+  }
+  return sudokuArray;
+}
+
+/**
+ * Does {@link eliminate} for all cells in the selected array
+ * This would happen after the same digit is entered into each of them.
+ * @param {string[]} selected - list of `R{col}C{row}` strings
+ * @param {number} digit - value to eliminate, i.e. value entered in {row,col}
+ * @param {Cell[][]} sudokuArray - current state of gameArray
+ */
+export function eliminateFromSelected(selected, digit, sudokuArray) {
+  for (const [,row,,col] of selected ) {
+    sudokuArray = eliminate(row,col,digit,sudokuArray)
+  }
+  return sudokuArray;
+}

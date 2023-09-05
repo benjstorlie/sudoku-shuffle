@@ -10,6 +10,10 @@
   gap: 0.5rem;
 }
 
+#controls button {
+--bs-btn-border-color: #212529;
+}
+
 .controls-grid {
   display:grid;
   position: relative;
@@ -36,6 +40,8 @@
 #shuffle {
   /* grid-column-end: span 2; */
   grid-row-end: span 3;
+  --bs-btn-color: #212529;
+  --bs-btn-border-color: #212529;
 }
 
 #shuffle img {
@@ -48,4 +54,12 @@
 
 #message-box {
   grid-column-end: span 4;
+}
+
+button.action {
+--bs-btn-hover-border-color: #212529;
+--bs-btn-focus-shadow-rgb: 33,37,41;
+--bs-btn-active-border-color: #212529;
+--bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+--bs-gradient: none;
 }

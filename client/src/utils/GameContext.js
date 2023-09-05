@@ -37,7 +37,9 @@ import {
   toggleCandidateHandler,
   toggleSelectedHandler,
   enterColorHandler,
-  shuffleHandler
+  shuffleHandler,
+  eliminate,
+  eliminateFromSelected,
 } from './gameUtils'
 import { getBoardByDifficulty } from "./api";
 import Loading from '../components/overlay/Loading';
@@ -59,6 +61,8 @@ import WinGame from '../components/overlay/GameWin';
  * @prop {Dispatch<SetStateAction<boolean>>} setModeMultiselect - set multi-select mode
  * @prop {boolean} modeAuto - auto-solve mode. Eliminates candidates and fills in obvious cells
  * @prop {Dispatch<SetStateAction<boolean>>} setModeAuto - set auto-solve mode.
+ * @prop {boolean} modeEliminate - auto-eliminate mode. Eliminates candidates but does not fill in obvious cells. Over-ridden by modeAuto
+ * @prop {Dispatch<SetStateAction<boolean>>} setModeEliminate - set auto-eliminate mode, over-ridden by modeAuto.
  * @prop {boolean} modeMouse - if false, primary click selects cells, if true, primary click toggles candidates
  * @prop {Dispatch<SetStateAction<boolean>>} setModeMouse - if false, primary click selects cells, if true, primary click toggles candidates
  * @prop {string} gameId - The id of the current game in the database. Is empty if no game started.
@@ -106,6 +110,7 @@ export default function GameProvider( {children}) {
   const [highlightedDigit, setHighlightedDigit] = useState(0);
   const [modeMultiselect, setModeMultiselect] = useState(false);
   const [modeAuto, setModeAuto] = useState(false);
+  const [modeEliminate, setModeEliminate] = useState(false);
   const [modeMouse, setModeMouse] = useState(false);
   const [gameId, setGameId] = useState('test');
   const [difficulty, setDifficulty] = useState('test');
@@ -120,8 +125,11 @@ export default function GameProvider( {children}) {
   const [addGame] = useMutation(ADD_GAME)
   const [updateGame] = useMutation(UPDATE_GAME);
 
+  // Remove the overlay, if it's shown if gameId changes, i.e. if a new game start or resumes.
+  // (note: this would not remove the overlay that's the error-boundary element. I think the page does need to refresh in that case.)
   useEffect(() => {
-    setOverlay({show:false,message:<p></p>})
+    setOverlay({show:false,message:<p></p>});
+      // Include other things that should reset if a new game starts or resumes.
   },[gameId,setOverlay])
 
   // ****************  These functions are used by the game actions for saving to database
@@ -255,6 +263,7 @@ async function toggleCandidate(candidate, cellRef) {
 }
 
 async function clearCandidates(options) {
+  setModeAuto(false);  // auto-solve mode doesn't work if you clear candidates from cells.
   // Create shallow copy of previous gameArray
   const updatedArray = gameArray.map((rows) => [...rows]);
   if (options?.all) {
@@ -290,9 +299,13 @@ async function fillCandidates(options) {
 
 async function enterDigit(digit) {
   // Create shallow copy of previous gameArray
-  const updatedArray = gameArray.map((rows) => [...rows]);
+  let updatedArray = gameArray.map((rows) => [...rows]);
   for (const [,row,,col] of selected) {
     if (!gameArray[row][col].given) {updatedArray[row][col].value = digit}
+  }
+  // Here's where candidates can be automatically updated.
+  if (modeEliminate || modeAuto) {
+    updatedArray = eliminateFromSelected(selected,digit,updatedArray);
   }
   setGameArray(updatedArray);
   await saveGameState(updatedArray,true);
@@ -329,6 +342,36 @@ async function loadDifficulty(difficulty){
   })
 }
 
+/**
+ * Recursively fill in cells with only 1 candidate left (naked singles), until none are left.
+ * @param {Cell[][]} sudokuArray - current state of gameArray
+ */
+function autoSolve(sudokuArray) {
+  for (let row = 0; row < 9; row++) {
+    for (let col = 0; col < 9; col++) {
+      const cell = sudokuArray[row][col];
+      if (!cell.value) {
+        if (cell.candidates.size === 0) {
+          throw new Error(`R${row}C${col}`);
+        } else if (cell.candidates.size === 1) {
+          const value = cell.candidates.values().next().value;
+          cell.value = value;
+          sudokuArray = eliminate(row, col, value, sudokuArray);
+          setGameArray(sudokuArray); // Show the current result. No need to save
+          // Since autoSolve runs when 'gameArray' changes, it effectively runs recursively.
+        }
+      }
+    }
+  }
+}
+
+// Set up a useEffect hook to run autoSolve whenever gameArray changes
+useEffect(() => {
+  if (modeAuto) {
+    autoSolve(gameArray);
+  }
+}, [gameArray, modeAuto]); 
+
 // ************ End define game functions
 
   
@@ -342,6 +385,7 @@ async function loadDifficulty(difficulty){
       highlightedDigit, setHighlightedDigit,
       modeMultiselect, setModeMultiselect,
       modeAuto, setModeAuto,
+      modeEliminate, setModeEliminate,
       modeMouse, setModeMouse,
       difficulty, setDifficulty,
       elapsedTime, setElapsedTime,

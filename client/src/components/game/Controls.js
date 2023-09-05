@@ -30,12 +30,10 @@ export default function Controls() {
     fillCandidates,
     setHighlightedDigit,
     highlightedDigit, 
-    modeAuto,
-    setModeAuto,
-    modeMouse,
-    setModeMouse,
-    modeMultiselect,
-    setModeMultiselect,
+    modeAuto, setModeAuto,
+    modeEliminate, setModeEliminate,
+    modeMouse, setModeMouse,
+    modeMultiselect, setModeMultiselect,
     selected, setSelected,
     shuffle, isSolved
   } = useGameContext();
@@ -164,17 +162,38 @@ export default function Controls() {
     setSelected([]);
   }
 
+
+
   return (
     <>
     <div id='controls'>
     <Button variant='outline-dark' onClick={()=> setModeMultiselect((prev) => !prev)}>multi-select: {modeMultiselect ? 'on' : 'off'}</Button>
-    <Button disabled variant='outline-dark' onClick={()=> setModeAuto((prev) => !prev)}>auto-solve: {modeAuto ? 'on' : 'off'}</Button>
     <Button variant='outline-dark' onClick={()=> setModeMouse((prev) => !prev)}>click: {modeMouse ? 'toggle candidates' : 'select cells'}</Button>
+    <ButtonGroup>
+        <Button
+          variant={modeAuto ? 'secondary' : 'outline-dark'}
+          onClick={() => {
+            !modeAuto && setModeEliminate(true); // If auto-mode starts false, toggle them both to true.
+            setModeAuto((prev) => !prev);
+          }}
+        >
+          Auto-Solve: {modeAuto ? 'On' : 'Off'}
+        </Button>
+        <Button
+          variant={modeEliminate ? 'secondary' : 'outline-dark'}
+          onClick={() => {
+            modeEliminate && setModeAuto(false);
+            setModeEliminate((prev) => !prev);
+          }}
+        >
+          Eliminate Candidates: {modeEliminate ? 'On' : 'Off'}
+        </Button>
+      </ButtonGroup>
     <ButtonGroup vertical id="action-buttons">
-      <Button variant={actionName === HIGHLIGHT ? 'warning' : 'outline-dark'} className={`action`} onClick={() => setActionName(HIGHLIGHT)}>highlight</Button>
-      <Button variant={actionName === ENTER_DIGIT ? 'primary' : 'outline-dark'} className={`action`} onClick={() => setActionName(ENTER_DIGIT)}>digits</Button>
+      <Button variant={actionName === HIGHLIGHT ? 'danger' : 'outline-dark'} className={`action`} onClick={() => setActionName(HIGHLIGHT)}>highlight</Button>
+      <Button variant={actionName === ENTER_DIGIT ? 'success' : 'outline-dark'} className={`action`} onClick={() => setActionName(ENTER_DIGIT)}>digits</Button>
       <Button variant={actionName === CANDIDATE ? 'info' : 'outline-dark'} className={`action`} onClick={() => setActionName(CANDIDATE)}>candidates</Button>
-      <Button variant={actionName === COLOR ? 'danger' : 'outline-dark'} className={`action`} onClick={() => setActionName(COLOR)}>colors</Button>
+      <Button variant={actionName === COLOR ? 'primary' : 'outline-dark'} className={`action`} onClick={() => setActionName(COLOR)}>colors</Button>
     </ButtonGroup>
       <div className='controls-grid'>
         {
