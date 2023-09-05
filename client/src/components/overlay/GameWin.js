@@ -19,7 +19,8 @@ export default function WinGame({elapsedTime, difficulty, stats}) {
     <div className='container-fluid'>
       <div id="you-won" style={{backgroundImage:'var(--rainbow-light)',borderRadius:'20px',textAlign:'center',padding:'0.5rem',marginBottom:'1rem'}}>
         <h1>You won!</h1>
-        <h2>Time: {elapsedTime} seconds</h2>
+        {/* <h2>Time: {elapsedTime} seconds</h2> */}
+        <h2>{elapsedTime} moves!</h2>
         <h6>Use the control panel to start a new game!</h6>
       </div>
     <Table bordered>
@@ -27,8 +28,8 @@ export default function WinGame({elapsedTime, difficulty, stats}) {
         <tr>
           <th>Difficulty</th>
           <th>Num Solved</th>
-          <th>Best Time</th>
-          <th>Average Time</th>
+          <th>Best Moves</th>
+          <th>Average Moves</th>
         </tr>
       </thead>
       <tbody>

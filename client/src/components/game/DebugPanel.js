@@ -13,6 +13,7 @@ export default function DebugPanel() {
     gameArray, setGameArray, saveGameState,
     modeAuto, saveNewGame,
     resetGame, setOverlay,
+    setMove, setElapsedTime,
     setDifficulty
   } = useGameContext();
 
@@ -20,7 +21,12 @@ export default function DebugPanel() {
 
   useEffect(() => {
     if (message) {
-      setMessageBg('danger');
+      if (message.startsWith('You won!')) {
+        setMessageBg('success')
+      } else {
+        setMessageBg('danger');
+      }
+      
       setTimeout(() => {
         setMessageBg('light'); // Reset to light
       }, 1000); // Adjust the delay as needed
@@ -82,6 +88,8 @@ export default function DebugPanel() {
     const shuffledArray = shuffleHandler(updatedArray)
     setGameArray(shuffledArray);
     setDifficulty(difficulty);
+    setMove(0);
+    setElapsedTime(0);
     setOverlay({show:false,message:<p></p>})
     await saveNewGame(shuffledArray,difficulty);
   }
