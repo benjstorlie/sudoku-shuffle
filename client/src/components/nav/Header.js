@@ -4,17 +4,19 @@ import "../../index.css";
 
 import Auth from "../../utils/auth";
 
+import NewGame from "./NewGame";
+
 export default function Header() {
   const logout = (event) => {
     event.preventDefault();
     Auth.logout();
   };
   return (
-    <header className="">
-      <div className="container">
+    <header>
+      <div className="container-fluid">
         <div className="row align-items-center">
-          <div className="col-md-6 col-lg-4 d-flex align-items-center">
-            <Link className="text-dark text-decoration-none me-3" to="/"></Link>
+          <div className="col-md-6 col-lg-4 d-flex align-items-end">
+
             <Link className="text-dark text-decoration-none" to="/">
               <h1
                 className="mb-0"
@@ -32,7 +34,8 @@ export default function Header() {
               </h1>
             </Link>
           </div>
-          <div className="col-md-6 col-lg-8 mt-3 mt-md-0 d-flex justify-content-end">
+          <div className="col-md-6 col-lg-8 mt-3 mt-md-0 d-flex justify-content-end align-items-end">
+            <NewGame className={"mb-2 mx-2"}/>
             {Auth.loggedIn() ? (
               <>
                 <Link

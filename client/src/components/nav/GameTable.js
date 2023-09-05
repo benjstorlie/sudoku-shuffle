@@ -60,7 +60,7 @@ export default function GameTable( {profilePage} ) {
         <tr>
           <th>Game</th>
           <th>Difficulty</th>
-          <th>Elapsed Time</th>
+          <th>Moves</th>
           <th>Resume Game</th>
           <th>Delete</th>
         </tr>
@@ -73,7 +73,7 @@ export default function GameTable( {profilePage} ) {
           <tr key={game._id}>
             <td><GameSVG gameData={game.gameData} inputString={game._id}/></td>
             <td>{game.difficulty}</td>
-            <td>{game.elapsedTime} seconds</td>
+            <td>{game.elapsedTime} moves</td>
             <td>
               <Button
                 variant="primary"

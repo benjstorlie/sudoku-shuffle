@@ -9,9 +9,14 @@ import { useGameContext } from '../../utils/GameContext';
 
 export default function SudokuGrid() {
 
-  const { overlay } = useGameContext();
+  const { overlay , difficulty, elapsedTime } = useGameContext();
 
   return (
+    <>
+    <div className='d-flex'>
+      <div className='pb-2 px-2'>Difficulty: {difficulty[0].toUpperCase()+difficulty.slice(1)}</div>
+      <div className='pb-2 px-2'>Move Count: {elapsedTime}</div>
+      </div>
     <div id="sudoku-grid">
       <ErrorBoundary fallback={<div className="overlay">Something went wrong. 😢 <br /> Please refresh page.</div>}>
        {overlay.show && (<div className='overlay'>{overlay.message}</div>)}
@@ -24,6 +29,7 @@ export default function SudokuGrid() {
       }
       </ErrorBoundary>
     </div>
+    </>
   )
 }
 
