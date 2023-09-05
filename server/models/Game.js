@@ -11,12 +11,12 @@ const gameSchema = new mongoose.Schema({
   },
   elapsedTime: {
     type: Number,
-    default: 0
+    default: 0,
   },
   isSolved: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 const Game = mongoose.model("Game", gameSchema);
