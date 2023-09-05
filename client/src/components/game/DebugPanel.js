@@ -13,7 +13,8 @@ export default function DebugPanel() {
     message, setMessage,
     gameArray, setGameArray, saveGameState,
     modeAuto, saveNewGame,
-    resetGame, setTimeGameStarted
+    resetGame, setOverlay, setTimeGameStarted,
+    setDifficulty
   } = useGameContext();
 
   const [messageBg, setMessageBg] = useState('light')
@@ -82,6 +83,8 @@ export default function DebugPanel() {
     const shuffledArray = shuffleHandler(updatedArray)
     setGameArray(shuffledArray);
     setTimeGameStarted(moment());
+    setDifficulty(difficulty);
+    setOverlay({show:false,message:<p></p>})
     await saveNewGame(shuffledArray,difficulty);
   }
   /** @type {React.CSSProperties} */

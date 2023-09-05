@@ -56,7 +56,7 @@ export default function Controls() {
     if (modeAuto) {
       fillCandidates({all:true})
     }
-  },[modeAuto,fillCandidates,clearCandidates])
+  },[modeAuto,fillCandidates])
 
   /**
    * Conditonal styling object for controls grid buttons

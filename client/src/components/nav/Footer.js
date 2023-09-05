@@ -24,10 +24,10 @@ export default function Footer() {
       <div className="d-flex justify-content-between">
       <h1> <img src={logo} className="logo" alt="logo"/></h1> 
       <button className="btn btn-lg btn-light m-2">  
-   <a href="https://sudoku.com/how-to-play/sudoku-rules-for-complete-beginners/" target="_blank" rel="noreferrer" alt="How to play Sudoku link">How to play Sudoku?</a>
+   <a href="https://sudoku.com/how-to-play/sudoku-rules-for-complete-beginners/" target="_blank"  rel="noreferrer" alt="How to play Sudoku link">How to play Sudoku?</a>
       </button>
     
-      <button className="btn btn-lg btn-light m-2"><a href="https://www.seniorlifestyle.com/resources/blog/5-tips-sudoku-beginners/#:~:text=The%20rules%20for%20sudoku%20are,have%20any%20repeat%20numbers%20either." target="_blank" rel="noreferrer" alt="Sudoku Tips">Sudoku Best Tips!</a>
+      <button className="btn btn-lg btn-light m-2"><a href="https://www.seniorlifestyle.com/resources/blog/5-tips-sudoku-beginners/#:~:text=The%20rules%20for%20sudoku%20are,have%20any%20repeat%20numbers%20either." target="_blank"  rel="noreferrer" alt="Sudoku Tips">Sudoku Best Tips!</a>
       </button>
       </div>
 

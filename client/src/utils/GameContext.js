@@ -19,7 +19,7 @@
 
 
 
-import React, { createContext, useContext, useState,
+import React, { createContext, useContext, useState, useEffect,
   // eslint-disable-next-line
   Dispatch, SetStateAction
 } from 'react';
@@ -41,6 +41,8 @@ import {
   shuffleHandler
 } from './gameUtils'
 import { getBoardByDifficulty } from "./api";
+import Loading from '../components/overlay/Loading';
+import WinGame from '../components/overlay/GameWin';
 
 
 /**
@@ -66,6 +68,8 @@ import { getBoardByDifficulty } from "./api";
  * @prop {Dispatch<SetStateAction<string>>} setDifficulty - reset difficulty. Used when starting or resuming a game.
  * @prop {number} elapsedTime - elapsed time for this game
  * @prop {number} setElapsedTime - update current elapsed time for this game
+ * @prop {{show:boolean,message:React.JSX.Element}} overlay - show overlay over sudoku grid
+ * @prop {Dispatch<SetStateAction<{show:boolean,message:React.JSX.Element}>>} setOverlay - set if overlay is shown over sudoku grid, set overlay.message to be a react component
  * @prop {(digit: number) => void} enterDigit - enter a digit to be the value for all selected cells
  * @prop {(color: string) => void} enterColor - change background color for all selected cells.
  * @prop {(candidate: number, cellRef?:string) => void} toggleCandidate - The optional cellRef parameter is so you don't have to wait for a cell to be added to the selected list.
@@ -105,11 +109,16 @@ export default function GameProvider( {children}) {
   const [ timeGameStarted, setTimeGameStarted ] = useState(moment());
   const [isSolved, setIsSolved] = useState(false);
   const [message, setMessage] = useState('');
+  const [overlay, setOverlay] = useState({show:false, message:<p></p>});
 
   // ***** define GraphQL hooks
 
   const [addGame] = useMutation(ADD_GAME)
   const [updateGame] = useMutation(UPDATE_GAME);
+
+  useEffect(() => {
+    setOverlay({show:false,message:<p></p>})
+  },[gameId,setOverlay])
 
   // ****************  These functions are used by the game actions for saving to database
 
@@ -151,12 +160,9 @@ export default function GameProvider( {children}) {
           });
           if (data?.updateGame.stats.length) {
             setMessage('You won!\n'+JSON.stringify(data?.updateGame.stats, (key, val) => (key[0]==='_' ? undefined : val)))
-            // *TODO* Perform whatever needs to happen when a game is solved, and display new stats.
-            // On the other hand, maybe it's a useEffect() that checks if isSolved === true.
-            // So that component could have the stats as its own useState() variable, so it will show that you won,
-            // and then show loading while the stats come in.
+            setOverlay({show:true,message:<WinGame elapsedTime={elapsedTime} difficulty={difficulty} stats={data?.updateGame.stats}/>})
           }
-          console.log( data, (error || 'no error'))
+          console.log( data, (error || 'No error saving winning game.'))
           return data;
         } catch (err) {
           setMessage('Error saving game.');
@@ -279,6 +285,8 @@ async function enterDigit(digit) {
 }
 
 async function loadDifficulty(difficulty){
+  // show loading message (you can put whatever react component in 'message', I'm sure)
+  setOverlay({show:true, message:<Loading />})
   getBoardByDifficulty(difficulty).then(async (board) =>{
     const updatedArray = blankGameArray();
     if (board?.newboard?.grids?.[0]?.value && board?.newboard?.grids?.[0]?.solution) {
@@ -297,11 +305,14 @@ async function loadDifficulty(difficulty){
         }
       }
     } else {
+      setOverlay({show:true, message:<h1>Error loading game.</h1>})
       console.error("Invalid board structure:", board);
     }
     const shuffledArray = shuffleHandler(updatedArray)
     setGameArray(shuffledArray);
     setTimeGameStarted(moment());
+    setDifficulty(difficulty);
+    setOverlay({show:false,message:<p></p>})
     await saveNewGame(shuffledArray,difficulty);
   })
 }
@@ -326,6 +337,7 @@ async function loadDifficulty(difficulty){
       gameId, setGameId,
       isSolved, setIsSolved,
       message, setMessage,
+      overlay, setOverlay,
       toggleCandidate,
       clearCandidates,
       fillCandidates,
