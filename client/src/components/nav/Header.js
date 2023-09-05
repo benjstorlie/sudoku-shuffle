@@ -15,7 +15,7 @@ export default function Header() {
     <header>
       <div className="container-fluid">
         <div className="row align-items-center">
-          <div className="col-md-6 col-lg-4 d-flex align-items-end">
+          <div className="col-md-6 col-lg-4 d-flex align-items-end" style={{minWidth:'fit-content'}}>
 
             <Link className="text-dark text-decoration-none" to="/">
               <h1

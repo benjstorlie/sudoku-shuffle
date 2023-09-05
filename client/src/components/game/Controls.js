@@ -186,7 +186,7 @@ export default function Controls() {
             setModeEliminate((prev) => !prev);
           }}
         >
-          Eliminate Candidates: {modeEliminate ? 'On' : 'Off'}
+          <span style={{fontSize:'0.85em'}}>Eliminate Candidates</span> {modeEliminate ? 'On' : 'Off'}
         </Button>
       </ButtonGroup>
     <ButtonGroup vertical id="action-buttons">

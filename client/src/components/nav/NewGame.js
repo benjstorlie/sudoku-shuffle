@@ -9,7 +9,7 @@ export default function NewGame({className}) {
   const { loadDifficulty } = useGameContext();
 
   return (
-    <Card bg="info" id="new-game" className='pt-2'>
+    <Card bg="info" id="new-game" className='pt-2' style={{minWidth:'fit-content'}}>
       <Card.Title style={{textAlign:'center'}}>Start New Game</Card.Title>
         <ButtonGroup size='lg' className={className}>
     <Button variant='success' onClick={() => loadDifficulty('easy')}>Easy</Button>
