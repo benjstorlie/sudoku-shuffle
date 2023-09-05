@@ -14,7 +14,7 @@
 
 ## Description
 
-We made a website called [Sudoku Shuffle](https://mighty-ridge-19238-3e456d2c37f3.herokuapp.com/) that allows you to play games of Sudoku and save your progress. Simply navigate to [Sudoku Shuffle](https://mighty-ridge-19238-3e456d2c37f3.herokuapp.com/signup)'s Signup Page and enter a valid username, email and password to create an account.Once you are logged in, you are ready to start saving in-progess games to your profile.
+We made a website called [Sudoku Shuffle](https://mighty-ridge-19238-3e456d2c37f3.herokuapp.com/) that allows you to play games of Sudoku and save your progress. Simply navigate to [Sudoku Shuffle](https://mighty-ridge-19238-3e456d2c37f3.herokuapp.com/signup)'s Signup Page and enter a valid username, email and password to create an account. Once you are logged in, you are ready to start saving in-progess games to your profile.
 
 ## Technologies-Used
 
@@ -67,3 +67,7 @@ We made a website called [Sudoku Shuffle](https://mighty-ridge-19238-3e456d2c37f
 ### Profile Page
 
 ![Deployed Screenshot](./images/Profile.png)
+
+## References
+
+### https://sudoku-api.vercel.app/
