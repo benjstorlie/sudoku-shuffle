@@ -1,10 +1,8 @@
-
 import React from "react";
 import logo from "../../logo.svg";
 import "../../index.css";
 export default function Footer() {
   return (
-
     <footer className="border-dark text-dark py-3">
       <div className="container">
         <div className="row">
@@ -51,6 +49,22 @@ export default function Footer() {
                     className="btn btn-light btn-lg m-2"
                   >
                     Sudoku Best Tips!
+                  </a>
+                  <a
+                    href="https://github.com/benjstorlie/sudoku-shuffle/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn btn-light btn-lg m-2"
+                  >
+                    Repo!
+                  </a>
+                  <a
+                  href="mailto:sudokuShuffle@gmail.com?"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn btn-light btn-lg m-2"
+                    >
+                      Send an email, recieve an email. Let's G-mail! Contact us here
                   </a>
                 </div>
               </div>
