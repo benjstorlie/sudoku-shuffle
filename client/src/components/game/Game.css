@@ -22,6 +22,7 @@
   border-color: var( --sudoku-grid-border-color);
   background-color: var( --sudoku-grid-border-color);
   max-width: 710px;
+  min-width: 600px;
   min-height: 710px;
   user-select: none; /* prevents the text from being highlighted */
 }
