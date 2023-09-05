@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import Auth from "../../utils/auth";
 import logo from "../../logo.svg";
+import NewGame from "./NewGame";
 
 export default function Header() {
   const logout = (event) => {
@@ -26,7 +27,8 @@ export default function Header() {
               </h1>
             </Link>
           </div>
-          <div className="col-md-6 col-lg-8 mt-3 mt-md-0 d-flex justify-content-end">
+          <div className="col-md-6 col-lg-8 mt-3 mt-md-0 d-flex justify-content-end align-items-center">
+            <NewGame />
             {Auth.loggedIn() ? (
               <>
                 <Link className="btn btn-lg btn-primary m-2" to="/me">

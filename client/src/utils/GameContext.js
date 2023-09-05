@@ -75,6 +75,7 @@ import WinGame from '../components/overlay/GameWin';
  * @prop {(options?:{all:boolean})=>void} clearCandidates - clear candidates in selected cells, or, if {all: true}, clear candidates from all cells
  * @prop {(options?:{all:boolean})=>void} fillCandidates - fill in all candidates in selected cells, or, if {all: true}, fill in candidates in all cells
  * @prop {(cell: string, force?: boolean) => void} toggleSelected - if included, if force is true, this cell will be selected, if force is false, it will not
+ * @prop {(difficulty: string) => Promise<*>} loadDifficulty - Start new game
  * @prop {(*)=>*} saveNewGame - create new game in database, with mutation {@link ADD_GAME}, returns response from server, which includes the new gameId
  * @prop {(*)=>*} saveGameState - update current game in database, with mutation {@link UPDATE_GAME}
  * @prop {() => void} resetGame - resets most game variables, including gameId and gameArray, to their blank, initial values
