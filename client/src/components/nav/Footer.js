@@ -65,15 +65,40 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className= "row">
-          <div className="col-md-6 offset-md-6
-                            text-center" style={{maxWidth:'fit-content'}}  >
-            <ListGroup> Contacts
-              <ListGroup.Item variant="info" action href="https://github.com/benjstorlie/">Ben J. Storlie</ListGroup.Item>
-              <ListGroup.Item variant="info" action href="https://github.com/PatrickWLowe">Patrick Lowe</ListGroup.Item>
-              <ListGroup.Item variant="info" action href="https://github.com/i-kare">Karelyn Rojas</ListGroup.Item>
-              <ListGroup.Item variant="info" action href="https://github.com/npcoiner">Nicholas Coiner</ListGroup.Item>
-            </ListGroup>
+        <div className="container">
+          <div className="row">
+            <div className="col-md-6 offset-md-3 text-center">
+              <ListGroup>
+                <ListGroup.Item
+                  variant="info"
+                  action
+                  href="https://github.com/benjstorlie/"
+                >
+                  Ben J. Storlie
+                </ListGroup.Item>
+                <ListGroup.Item
+                  variant="info"
+                  action
+                  href="https://github.com/PatrickWLowe/"
+                >
+                  Patrick Lowe
+                </ListGroup.Item>
+                <ListGroup.Item
+                  variant="info"
+                  action
+                  href="https://github.com/i-kare/"
+                >
+                  Karelyn Rojas
+                </ListGroup.Item>
+                <ListGroup.Item
+                  variant="info"
+                  action
+                  href="https://github.com/npcoiner/"
+                >
+                  Nicholas Coiner
+                </ListGroup.Item>
+              </ListGroup>
+            </div>
           </div>
         </div>
       </div>
