@@ -15,7 +15,7 @@
 ## Table of Contents
 
 - [Description](#description)
-- [Technologies-Used](#technologies-used)
+- [Technologies Used](#technologies-used)
 - [Deployed Website Screenshots](#deployed-website-screenshots)
 - [Link to Deployed Website](#link-to-deployed-website)
 - [References](#references)
@@ -24,7 +24,7 @@
 
 We made a website called [Sudoku Shuffle](https://mighty-ridge-19238-3e456d2c37f3.herokuapp.com/) that allows you to play games of Sudoku and save your progress. Simply navigate to [Sudoku Shuffle](https://mighty-ridge-19238-3e456d2c37f3.herokuapp.com/signup)'s Signup Page and enter a valid username, email and password to create an account. Once you are logged in, you are ready to start saving in-progess games to your profile.
 
-## Technologies-Used
+## Technologies Used
 
 ![Dosuku](./images/Dosuku.png)
 
@@ -50,7 +50,7 @@ We made a website called [Sudoku Shuffle](https://mighty-ridge-19238-3e456d2c37f
 
 ### bcrypt
 
-## Deployed-Website-Screenshots
+## Deployed Website Screenshots
 
 ### Homepage
 
@@ -76,10 +76,14 @@ We made a website called [Sudoku Shuffle](https://mighty-ridge-19238-3e456d2c37f
 
 ![Deployed Screenshot](./images/Profile.png)
 
-## Link-to-Deployed-Website
+## Link to Deployed Website
 
-## https://mighty-ridge-19238-3e456d2c37f3.herokuapp.com/
+* Access the app at [mighty-ridge-19238-3e456d2c37f3.herokuapp.com](https://mighty-ridge-19238-3e456d2c37f3.herokuapp.com/)
 
 ## References
 
-### https://sudoku-api.vercel.app/
+1. [Dusoku API](https://sudoku-api.vercel.app/) for grid generation
+2. [Sudoku Game in React by raravi](https://github.com/raravi/sudoku) was a great reference as it is meant to be "a fun way to learn React for those who are still in the beginning stages!"
+3. [Sudoku Slam](https://www.sudokuslam.com/) is a great inspiration for game functionality.
+4. [Cracking the Cryptic / Sudoku Pad](https://app.crackingthecryptic.com/) is also a great inspiration for game functionality
+5. [A branch from this app is on github pages.](https://benjstorlie.github.io/sudoku-shuffle/) This is as far as Ben had gotten just using JavaScript and HTML. It shows much of the main functionality, including selecting cells, arrow keys, number keys, highlighting, auto-solving, coloring. So it was a good jumping off point to create a React app to handle state management.
