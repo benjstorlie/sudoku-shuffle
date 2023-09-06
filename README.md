@@ -12,6 +12,14 @@
 
 #### [Gabreila Avelas](https://github.com/GabySSK)
 
+## Table of Contents
+
+- [Description](#description)
+- [Technologies-Used](#technologies-used)
+- [Deployed Website Screenshots](#deployed-website-screenshots)
+- [Link to Deployed Website](#link-to-deployed-website)
+- [References](#references)
+
 ## Description
 
 We made a website called [Sudoku Shuffle](https://mighty-ridge-19238-3e456d2c37f3.herokuapp.com/) that allows you to play games of Sudoku and save your progress. Simply navigate to [Sudoku Shuffle](https://mighty-ridge-19238-3e456d2c37f3.herokuapp.com/signup)'s Signup Page and enter a valid username, email and password to create an account. Once you are logged in, you are ready to start saving in-progess games to your profile.
@@ -32,17 +40,17 @@ We made a website called [Sudoku Shuffle](https://mighty-ridge-19238-3e456d2c37f
 
 ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
 
-![Google](https://img.shields.io/badge/google-4285F4?style=for-the-badge&logo=google&logoColor=white)
-
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 
 ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
 
 ![React Hook Form](https://img.shields.io/badge/React%20Hook%20Form-%23EC5990.svg?style=for-the-badge&logo=reacthookform&logoColor=white)
 
+![Heroku](https://img.shields.io/badge/heroku-%23430098.svg?style=for-the-badge&logo=heroku&logoColor=white)
+
 ### bcrypt
 
-## Deployed Website
+## Deployed-Website-Screenshots
 
 ### Homepage
 
@@ -67,6 +75,10 @@ We made a website called [Sudoku Shuffle](https://mighty-ridge-19238-3e456d2c37f
 ### Profile Page
 
 ![Deployed Screenshot](./images/Profile.png)
+
+## Link-to-Deployed-Website
+
+## https://mighty-ridge-19238-3e456d2c37f3.herokuapp.com/
 
 ## References
 
