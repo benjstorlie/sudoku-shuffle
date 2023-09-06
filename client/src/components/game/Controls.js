@@ -93,7 +93,7 @@ export default function Controls() {
   }
 
   const actionFunction = useCallback(async function(index) {
-    if (!isSolved) {
+    //if (!isSolved) {
       switch (actionName) {
         case HIGHLIGHT:
           setHighlightedDigit(index);
@@ -114,8 +114,8 @@ export default function Controls() {
         default:
           return;
       } 
-    }
-  },[actionName,enterColor,enterDigit,setHighlightedDigit,toggleCandidate,clearCandidates,isSolved])
+    //}
+  },[actionName,enterColor,enterDigit,setHighlightedDigit,toggleCandidate,clearCandidates])
 
   useEffect(() => {
     /** @type {(e:KeyboardEvent) => void} */
